@@ -1,7 +1,7 @@
 {
   "name": "@agrid/ai",
   "version": "7.0.0",
-  "description": "PostHog Node.js AI integrations",
+  "description": "Agrid Node.js AI integrations for OpenAI, Anthropic, Gemini, and LangChain",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/agrid/agrid-js.git",
@@ -29,13 +29,14 @@
     "agrid-node": "workspace:*"
   },
   "keywords": [
-    "posthog",
+    "agrid",
     "ai",
     "openai",
     "anthropic",
     "gemini",
     "llm",
-    "observability"
+    "observability",
+    "analytics"
   ],
   "engines": {
     "node": ">=20"
@@ -93,9 +94,16 @@
     "lib": "lib",
     "test": "tests"
   },
-  "author": "PostHog",
-  "bugs": {
-    "url": "https://github.com/PostHog/agrid-js-lite/issues"
+  "author": {
+    "name": "Agrid",
+    "email": "hey@agrid.com",
+    "url": "https://agrid.com"
   },
-  "homepage": "https://github.com/PostHog/agrid-js-lite#readme"
+  "homepage": "https://agrid.com/docs/libraries/ai",
+  "bugs": {
+    "url": "https://github.com/agrid/agrid-js/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -1,4 +1,22 @@
 {
-  "extends": "./.nuxt/tsconfig.json",
-  "exclude": ["dist", "node_modules", "playground"]
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "types": ["node"],
+    "skipLibCheck": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "paths": {
+      "#app": ["./src/nuxt-types.d.ts"],
+      "#imports": ["./src/nuxt-types.d.ts"]
+    }
+  },
+  "include": ["src/**/*", "src/nuxt-types.d.ts"],
+  "exclude": ["dist", "node_modules", "playground", ".nuxt"]
 }

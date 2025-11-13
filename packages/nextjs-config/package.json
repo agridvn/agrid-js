@@ -1,17 +1,18 @@
 {
   "name": "@agrid/nextjs-config",
   "version": "1.4.0",
-  "description": "NextJS configuration helper for Posthog 🦔",
+  "description": "NextJS configuration helper for Agrid - Product analytics and feature flags",
   "repository": {
     "type": "git",
     "url": "https://github.com/agrid/agrid-js.git",
     "directory": "packages/nextjs-config"
   },
   "author": {
-    "name": "PostHog",
+    "name": "Agrid",
     "email": "hey@agrid.com",
-    "url": "https://posthog.com"
+    "url": "https://agrid.com"
   },
+  "homepage": "https://agrid.com/docs/libraries/nextjs",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -47,9 +48,14 @@
     "@agrid/core": "workspace:*"
   },
   "keywords": [
-    "posthog",
-    "nextjs"
+    "agrid",
+    "nextjs",
+    "analytics",
+    "feature-flags"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@agrid-tooling/rollup-utils": "workspace:*",
     "@agrid-tooling/tsconfig-base": "workspace:*",

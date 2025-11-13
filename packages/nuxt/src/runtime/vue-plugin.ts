@@ -3,13 +3,13 @@ import { defineNuxtPlugin, useRuntimeConfig } from '#app'
 import posthog from 'agrid-js'
 import type { PostHogClientConfig, PostHogCommon } from '../module'
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin((nuxtApp: any) => {
   const runtimeConfig = useRuntimeConfig()
   const posthogCommon = runtimeConfig.public.posthog as PostHogCommon
   const posthogClientConfig = runtimeConfig.public.posthogClientConfig as PostHogClientConfig
 
   // prevent nitro from trying to load this
-  if (!window || posthog.__loaded) {
+  if (typeof window === 'undefined' || posthog.__loaded) {
     return
   }
 
@@ -23,7 +23,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   if (autocaptureEnabled(posthogClientConfig)) {
-    nuxtApp.hook('vue:error', (error, info) => {
+    nuxtApp.hook('vue:error', (error: any, info: any) => {
       posthog.captureException(error, { info })
     })
   }

@@ -1,15 +1,29 @@
 {
     "name": "@agrid/react",
     "version": "1.4.0",
-    "description": "Provides components and hooks for React integrations of PostHog.",
+    "description": "Provides components and hooks for React integrations of Agrid.",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/agrid/agrid-js.git",
         "directory": "packages/react"
     },
-    "author": "hey@agrid.com",
+    "author": {
+        "name": "Agrid",
+        "email": "hey@agrid.com",
+        "url": "https://agrid.com"
+    },
     "license": "MIT",
-    "homepage": "https://posthog.com/docs/libraries/react",
+    "homepage": "https://agrid.com/docs/libraries/react",
+    "keywords": [
+        "agrid",
+        "react",
+        "analytics",
+        "feature-flags",
+        "hooks"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
     "packageManager": "pnpm@10.12.4",
     "scripts": {
         "clean": "rimraf dist",

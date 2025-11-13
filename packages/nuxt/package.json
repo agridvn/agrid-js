@@ -1,7 +1,22 @@
 {
   "name": "@agrid/nuxt",
   "version": "1.1.5",
-  "description": "Nuxt module for Posthog 🦔",
+  "description": "Nuxt module for Agrid - Product analytics and feature flags",
+  "author": {
+    "name": "Agrid",
+    "email": "hey@agrid.com",
+    "url": "https://agrid.com"
+  },
+  "homepage": "https://agrid.com/docs/libraries/nuxt",
+  "keywords": [
+    "agrid",
+    "nuxt",
+    "analytics",
+    "feature-flags"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/agrid/agrid-js.git",
@@ -20,7 +35,7 @@
     "dist"
   ],
   "scripts": {
-    "prepare": "nuxt prepare",
+    "prepare": "nuxt prepare || true",
     "build": "nuxt-module-build build",
     "package": "pnpm pack --out $PACKAGE_DEST/%s.tgz",
     "lint": "eslint ."

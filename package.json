@@ -58,5 +58,16 @@
             "prettier --write"
         ],
         "*.{json,md}": "prettier --write"
-    }
+    },
+    "name": "agrid",
+    "version": "1.0.0",
+    "description": "<p align=\"center\">   <img alt=\"Agrid Logo\" src=\"https://user-images.githubusercontent.com/65415371/205059737-c8a4f836-4889-4654-902e-f302b187b6a0.png\" width=\"200\"> </p>",
+    "main": "index.js",
+    "directories": {
+        "doc": "docs",
+        "example": "examples"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }

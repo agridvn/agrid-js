@@ -1,7 +1,23 @@
 {
   "name": "@agrid/core",
   "version": "1.5.2",
+  "description": "Shared core functionality for Agrid JavaScript SDKs",
   "license": "MIT",
+  "author": {
+    "name": "Agrid",
+    "email": "hey@agrid.com",
+    "url": "https://agrid.com"
+  },
+  "homepage": "https://agrid.com/docs",
+  "keywords": [
+    "agrid",
+    "analytics",
+    "core",
+    "sdk"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

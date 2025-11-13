@@ -678,8 +678,6 @@ importers:
 
   tooling/eslint-plugin-agrid-js: {}
 
-  tooling/eslint-plugin-posthog-js: {}
-
   tooling/rollup-utils:
     dependencies:
       '@babel/core':

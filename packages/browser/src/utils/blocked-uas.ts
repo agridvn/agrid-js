@@ -1,4 +1,4 @@
-// Re-export shared bot detection logic from @posthog/core
+// Re-export shared bot detection logic from @agrid/core
 import { isBlockedUA as isBlockedUACore } from '@agrid/core'
 export { DEFAULT_BLOCKED_UA_STRS, isBlockedUA } from '@agrid/core'
 

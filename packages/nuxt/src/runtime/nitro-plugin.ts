@@ -1,5 +1,5 @@
 import { PostHog } from 'agrid-node'
-import { uuidv7 } from '@posthog/core/vendor/uuidv7'
+import { uuidv7 } from '@agrid/core/vendor/uuidv7'
 import { defineNitroPlugin } from 'nitropack/runtime'
 import { useRuntimeConfig } from '#imports'
 import type { PostHogCommon, PostHogServerConfig } from '../module'

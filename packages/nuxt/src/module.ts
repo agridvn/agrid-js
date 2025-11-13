@@ -1,7 +1,7 @@
 import { defineNuxtModule, addPlugin, createResolver, addServerPlugin } from '@nuxt/kit'
 import type { PostHogConfig } from 'agrid-js'
 import type { PostHogOptions } from 'agrid-node'
-import { resolveBinaryPath, spawnLocal } from '@posthog/core/process'
+import { resolveBinaryPath, spawnLocal } from '@agrid/core/process'
 import { fileURLToPath } from 'node:url'
 import { dirname } from 'node:path'
 
@@ -41,8 +41,8 @@ export type PostHogClientConfig = Partial<PostHogConfig>
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: '@posthog/nuxt',
-    configKey: 'posthogConfig',
+    name: '@agrid/nuxt',
+    configKey: 'agridConfig',
     compatibility: {
       nuxt: '>=3.7.0',
     },

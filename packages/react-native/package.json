@@ -1,7 +1,24 @@
 {
   "name": "agrid-react-native",
   "version": "4.11.0",
+  "description": "Agrid React Native SDK for mobile analytics and feature flags",
   "license": "MIT",
+  "author": {
+    "name": "Agrid",
+    "email": "hey@agrid.com",
+    "url": "https://agrid.com"
+  },
+  "homepage": "https://agrid.com/docs/libraries/react-native",
+  "keywords": [
+    "agrid",
+    "react-native",
+    "mobile",
+    "analytics",
+    "feature-flags"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
