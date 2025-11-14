@@ -73,10 +73,31 @@ export function makeSafeText(s: string | null | undefined): string | null {
 export function getSafeText(el: Element): string {
     let elText = ''
 
+    if (shouldCaptureElement(el)) {
+        if (isTextNode(el) && el.textContent) {
+            elText += makeSafeText(el.textContent) ?? ''
+        }
+        // check if input element with value
+        if (isElementNode(el) && isTag(el, 'input')) {
+            const inputEl = el as HTMLInputElement
+            if (inputEl.value) {
+                elText += makeSafeText(inputEl.value) ?? ''
+            }
+        }
+    }
+
     if (shouldCaptureElement(el) && !isSensitiveElement(el) && el.childNodes && el.childNodes.length) {
         each(el.childNodes, function (child) {
             if (isTextNode(child) && child.textContent) {
                 elText += makeSafeText(child.textContent) ?? ''
+            }
+
+            // check if input element with value
+            if (isElementNode(child) && isTag(child, 'input')) {
+                const inputEl = child as HTMLInputElement
+                if (inputEl.value) {
+                    elText += makeSafeText(inputEl.value) ?? ''
+                }
             }
         })
     }
