@@ -1,6 +1,6 @@
 {
     "name": "agrid-js",
-    "version": "1.292.4",
+    "version": "1.292.5",
     "description": "Agrid JS allows you to automatically capture usage and send events to Agrid.",
     "repository": {
         "type": "git",
@@ -63,6 +63,8 @@
     "module": "dist/module.js",
     "types": "dist/module.d.ts",
     "files": [
+        "README.md",
+        "LICENSE",
         "lib/*",
         "dist/*",
         "react/dist/*",
