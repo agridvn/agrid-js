@@ -50,7 +50,7 @@ npm config set //registry.npmjs.org/:_authToken YOUR_NPM_TOKEN
 
 Kiểm tra quyền:
 ```bash
-npm access ls-packages
+npm access list packages
 ```
 
 ---
@@ -294,6 +294,74 @@ cd packages/browser
 npm publish --access public
 ```
 
+### Publish package mới lần đầu (hoặc publish lại sau khi bị unpublish)
+
+Nếu package chưa tồn tại trên npm hoặc đã bị unpublish, bạn cần publish như package mới:
+
+**Bước 1: Kiểm tra package đã tồn tại chưa**
+```bash
+# Kiểm tra package có tồn tại trên npm không
+npm view agrid-js
+
+# Nếu package đã bị unpublish, bạn sẽ thấy lỗi 404
+# Điều này có nghĩa là bạn có thể publish lại với version mới
+```
+
+**Bước 2: Đảm bảo package.json đã đúng cấu hình**
+```bash
+# Kiểm tra package.json
+cat packages/browser/package.json | grep -A 5 '"name"'
+cat packages/browser/package.json | grep -A 2 '"publishConfig"'
+
+# Đảm bảo có:
+# - "name": "agrid-js"
+# - "publishConfig": { "access": "public" }
+# - "version": "x.x.x" (version hợp lệ)
+```
+
+**Bước 3: Build package**
+```bash
+# Build package
+pnpm --filter=agrid-js build
+
+# Kiểm tra build output
+ls -la packages/browser/dist/
+```
+
+**Bước 4: Kiểm tra trước khi publish (dry-run)**
+```bash
+# Test publish mà không thực sự publish
+cd packages/browser
+npm publish --dry-run --access public
+
+# Hoặc từ root
+pnpm publish --filter=agrid-js --dry-run --access public
+```
+
+**Bước 5: Publish package**
+```bash
+# Publish từ root (khuyến nghị)
+pnpm publish --filter=agrid-js --access public
+
+# Hoặc publish từ package directory
+cd packages/browser
+npm publish --access public
+```
+
+**Bước 6: Xác nhận đã publish thành công**
+```bash
+# Kiểm tra package đã có trên npm
+npm view agrid-js
+
+# Hoặc xem trên trình duyệt
+# https://www.npmjs.com/package/agrid-js
+```
+
+**Lưu ý quan trọng:**
+- Nếu package đã bị unpublish, bạn có thể publish lại với version mới hoặc cùng version (nếu đã đủ 72 giờ kể từ khi unpublish)
+- Đảm bảo bạn đã đăng nhập đúng tài khoản npm có quyền publish
+- Kiểm tra `npm whoami` để xác nhận tài khoản
+
 ---
 
 ## Quy trình đầy đủ (Step-by-step)
@@ -475,7 +543,7 @@ Nên để GitHub Actions tự động publish sau khi merge PR.
 **Giải pháp:**
 ```bash
 # Kiểm tra quyền
-npm access ls-packages
+npm access list packages
 
 # Yêu cầu quyền từ package owner
 npm owner add your-username agrid-js
