@@ -9,6 +9,7 @@ Tài liệu này hướng dẫn cách tích hợp thư viện `agrid-js` vào c�
 3. [Các tính năng chính](#các-tính-năng-chính)
 4. [Cấu hình nâng cao](#cấu-hình-nâng-cao)
 5. [Ví dụ thực tế](#ví-dụ-thực-tế)
+6. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -18,7 +19,7 @@ Tài liệu này hướng dẫn cách tích hợp thư viện `agrid-js` vào c�
 
 #### Cách 1: Sử dụng CDN (Khuyến nghị cho production)
 
-Thêm script vào thẻ `<head>` của HTML:
+Thêm script loader vào thẻ `<head>` của HTML. Script này sẽ tự động tải SDK từ server:
 
 ```html
 <!DOCTYPE html>
@@ -26,9 +27,9 @@ Thêm script vào thẻ `<head>` của HTML:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web 2Nông</title>
+    <title>Ứng dụng của bạn</title>
 
-    <!-- Agrid JS SDK -->
+    <!-- Agrid JS SDK Loader -->
     <script>
         !function(t,e){var o,n,p,r;e.__SV||(window.agrid=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="agrid",u.people=u.people||[],u.toString=function(t){var e="agrid";return"agrid"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getSurveys getActiveMatchingSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.agrid||[]);
     </script>
@@ -43,22 +44,26 @@ Thêm script vào thẻ `<head>` của HTML:
 
 ```bash
 npm install agrid-js
+# hoặc
+yarn add agrid-js
+# hoặc
+pnpm add agrid-js
 ```
 
 Sau đó import vào file JavaScript:
 
 ```javascript
-import posthog from 'agrid-js'
+import agrid from 'agrid-js'
 ```
 
 ### Khởi tạo
 
-Thêm đoạn code sau vào file JavaScript của bạn (sau khi trang đã load):
+Sau khi script đã được load, khởi tạo Agrid với API key của bạn:
 
 ```javascript
 // Khởi tạo Agrid
 agrid.init('YOUR_PROJECT_API_KEY', {
-    api_host: 'https://app.agrid.com', // URL của Agrid instance
+    api_host: 'https://us.i.agrid.com', // URL của Agrid instance
     // Các tùy chọn khác
     loaded: function(agrid) {
         // Callback khi Agrid đã load xong
@@ -67,6 +72,8 @@ agrid.init('YOUR_PROJECT_API_KEY', {
 });
 ```
 
+**Lưu ý:** Nếu bạn sử dụng CDN, script loader sẽ tự động gọi `init()` khi SDK được tải. Bạn có thể gọi `agrid.init()` ngay sau script loader mà không cần đợi DOM ready.
+
 ### Ví dụ tích hợp cơ bản
 
 ```html
@@ -74,13 +81,13 @@ agrid.init('YOUR_PROJECT_API_KEY', {
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Web 2Nông - Tích hợp Agrid</title>
+    <title>Ứng dụng Web - Tích hợp Agrid</title>
     <script>
         !function(t,e){var o,n,p,r;e.__SV||(window.agrid=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="agrid",u.people=u.people||[],u.toString=function(t){var e="agrid";return"agrid"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getSurveys getActiveMatchingSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.agrid||[]);
     </script>
 </head>
 <body>
-    <h1>Web 2Nông</h1>
+    <h1>Ứng dụng của tôi</h1>
     <button id="btn-dang-ky">Đăng ký</button>
     <button id="btn-dang-nhap">Đăng nhập</button>
     <button id="btn-mua-hang">Mua hàng</button>
@@ -88,7 +95,7 @@ agrid.init('YOUR_PROJECT_API_KEY', {
     <script>
         // Khởi tạo Agrid
         agrid.init('YOUR_PROJECT_API_KEY', {
-            api_host: 'https://app.agrid.com',
+            api_host: 'https://us.i.agrid.com',
             loaded: function(agrid) {
                 console.log('Agrid đã sẵn sàng!');
             }
@@ -112,7 +119,7 @@ agrid.init('YOUR_PROJECT_API_KEY', {
         // Track sự kiện mua hàng
         document.getElementById('btn-mua-hang').addEventListener('click', function() {
             agrid.capture('purchase_completed', {
-                product_name: 'Phân bón hữu cơ',
+                product_name: 'Sản phẩm A',
                 price: 500000,
                 currency: 'VND'
             });
@@ -120,6 +127,30 @@ agrid.init('YOUR_PROJECT_API_KEY', {
     </script>
 </body>
 </html>
+```
+
+### Ví dụ với ES Modules
+
+Nếu bạn sử dụng ES modules:
+
+```javascript
+import agrid from 'agrid-js'
+
+// Khởi tạo
+agrid.init('YOUR_PROJECT_API_KEY', {
+    api_host: 'https://us.i.agrid.com'
+})
+
+// Track events
+agrid.capture('page_viewed', {
+    page: 'homepage'
+})
+
+// Identify user
+agrid.identify('user_123', {
+    email: 'user@example.com',
+    name: 'Nguyễn Văn A'
+})
 ```
 
 ---
@@ -130,78 +161,60 @@ agrid.init('YOUR_PROJECT_API_KEY', {
 
 ```bash
 npm install agrid-js @agrid/react
-```
-
-hoặc với yarn:
-
-```bash
+# hoặc
 yarn add agrid-js @agrid/react
+# hoặc
+pnpm add agrid-js @agrid/react
 ```
 
 ### Cấu hình cơ bản
 
-#### 1. Tạo file cấu hình Agrid
+#### Sử dụng AgridProvider
 
-Tạo file `src/agrid.js`:
-
-```javascript
-import posthog from 'agrid-js'
-
-// Khởi tạo Agrid
-posthog.init('YOUR_PROJECT_API_KEY', {
-    api_host: 'https://app.agrid.com',
-    loaded: function(posthog) {
-        if (process.env.NODE_ENV === 'development') {
-            console.log('Agrid đã sẵn sàng!', posthog);
-        }
-    }
-})
-
-export default posthog
-```
-
-#### 2. Sử dụng PostHogProvider trong App
-
-Cập nhật file `src/App.jsx` hoặc `src/App.tsx`:
+Bọc ứng dụng của bạn với `AgridProvider` trong component gốc (thường là `App.jsx` hoặc `App.tsx`):
 
 ```jsx
 import React from 'react'
-import { PostHogProvider } from '@agrid/react'
-import posthog from 'agrid-js'
-
-// Khởi tạo Agrid
-posthog.init('YOUR_PROJECT_API_KEY', {
-    api_host: 'https://app.agrid.com'
-})
+import { AgridProvider } from '@agrid/react'
+import YourApp from './YourApp'
 
 function App() {
     return (
-        <PostHogProvider client={posthog}>
-            {/* Các component của bạn */}
-            <YourComponents />
-        </PostHogProvider>
+        <AgridProvider
+            apiKey="YOUR_PROJECT_API_KEY"
+            options={{
+                api_host: 'https://us.i.agrid.com',
+                capture_pageview: true,
+                capture_pageleave: true
+            }}
+        >
+            <YourApp />
+        </AgridProvider>
     )
 }
 
 export default App
 ```
 
-Hoặc sử dụng với API key trực tiếp:
+#### Sử dụng với client instance đã khởi tạo
+
+Nếu bạn muốn khởi tạo client riêng:
 
 ```jsx
 import React from 'react'
-import { PostHogProvider } from '@agrid/react'
+import { AgridProvider } from '@agrid/react'
+import agrid from 'agrid-js'
+
+// Khởi tạo Agrid
+agrid.init('YOUR_PROJECT_API_KEY', {
+    api_host: 'https://us.i.agrid.com'
+})
 
 function App() {
     return (
-        <PostHogProvider
-            apiKey="YOUR_PROJECT_API_KEY"
-            options={{
-                api_host: 'https://app.agrid.com'
-            }}
-        >
-            <YourComponents />
-        </PostHogProvider>
+        <AgridProvider client={agrid}>
+            <YourApp />
+        </AgridProvider>
     )
 }
 
@@ -210,18 +223,20 @@ export default App
 
 ### Sử dụng Hooks
 
-#### usePostHog Hook
+#### useAgrid Hook
+
+Hook này trả về instance của Agrid client để bạn có thể gọi các phương thức như `capture`, `identify`, v.v.
 
 ```jsx
 import React from 'react'
-import { usePostHog } from '@agrid/react'
+import { useAgrid } from '@agrid/react'
 
 function ProductCard({ product }) {
-    const posthog = usePostHog()
+    const agrid = useAgrid()
 
     const handlePurchase = () => {
         // Track sự kiện mua hàng
-        posthog?.capture('product_purchased', {
+        agrid?.capture('product_purchased', {
             product_id: product.id,
             product_name: product.name,
             price: product.price,
@@ -241,7 +256,11 @@ function ProductCard({ product }) {
 export default ProductCard
 ```
 
+**Lưu ý:** Sử dụng optional chaining (`?.`) vì `agrid` có thể là `undefined` trong một số trường hợp (ví dụ: khi chưa khởi tạo xong).
+
 #### useFeatureFlagEnabled Hook
+
+Kiểm tra xem một feature flag có được bật hay không:
 
 ```jsx
 import React from 'react'
@@ -266,6 +285,8 @@ export default PromoBanner
 ```
 
 #### useFeatureFlagVariantKey Hook
+
+Lấy variant key của feature flag (hữu ích cho A/B testing):
 
 ```jsx
 import React from 'react'
@@ -295,12 +316,89 @@ function CheckoutButton() {
 export default CheckoutButton
 ```
 
+#### useFeatureFlagPayload Hook
+
+Lấy payload của feature flag (dữ liệu JSON tùy chỉnh):
+
+```jsx
+import React from 'react'
+import { useFeatureFlagPayload } from '@agrid/react'
+
+function ProductCard({ product }) {
+    const discountConfig = useFeatureFlagPayload('product-discount-config')
+
+    const getDiscountPrice = () => {
+        if (discountConfig && discountConfig.discountPercent) {
+            return product.price * (1 - discountConfig.discountPercent / 100)
+        }
+        return product.price
+    }
+
+    return (
+        <div className="product-card">
+            <h3>{product.name}</h3>
+            <p className="price">{getDiscountPrice()} VND</p>
+            {discountConfig?.showBadge && (
+                <span className="badge">Giảm giá!</span>
+            )}
+        </div>
+    )
+}
+
+export default ProductCard
+```
+
+#### useActiveFeatureFlags Hook
+
+Lấy danh sách tất cả các feature flags đang active:
+
+```jsx
+import React from 'react'
+import { useActiveFeatureFlags } from '@agrid/react'
+
+function FeatureFlagsDebug() {
+    const activeFlags = useActiveFeatureFlags()
+
+    return (
+        <div>
+            <h3>Active Feature Flags:</h3>
+            <ul>
+                {activeFlags.map(flag => (
+                    <li key={flag}>{flag}</li>
+                ))}
+            </ul>
+        </div>
+    )
+}
+
+export default FeatureFlagsDebug
+```
+
+### Components
+
+#### AgridErrorBoundary
+
+Component này giúp track lỗi React và gửi về Agrid:
+
+```jsx
+import React from 'react'
+import { AgridErrorBoundary } from '@agrid/react'
+
+function App() {
+    return (
+        <AgridErrorBoundary>
+            <YourApp />
+        </AgridErrorBoundary>
+    )
+}
+```
+
 ### Ví dụ tích hợp đầy đủ cho React App
 
 ```jsx
 // src/App.jsx
 import React from 'react'
-import { PostHogProvider } from '@agrid/react'
+import { AgridProvider } from '@agrid/react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import ProductPage from './pages/ProductPage'
@@ -308,10 +406,10 @@ import CheckoutPage from './pages/CheckoutPage'
 
 function App() {
     return (
-        <PostHogProvider
+        <AgridProvider
             apiKey={process.env.REACT_APP_AGRID_API_KEY}
             options={{
-                api_host: process.env.REACT_APP_AGRID_API_HOST || 'https://app.agrid.com',
+                api_host: process.env.REACT_APP_AGRID_API_HOST || 'https://us.i.agrid.com',
                 person_profiles: 'identified_only',
                 capture_pageview: true,
                 capture_pageleave: true
@@ -324,7 +422,7 @@ function App() {
                     <Route path="/checkout" element={<CheckoutPage />} />
                 </Routes>
             </BrowserRouter>
-        </PostHogProvider>
+        </AgridProvider>
     )
 }
 
@@ -334,22 +432,23 @@ export default App
 ```jsx
 // src/pages/ProductPage.jsx
 import React, { useEffect } from 'react'
-import { usePostHog } from '@agrid/react'
+import { useAgrid, useFeatureFlagEnabled } from '@agrid/react'
 import { useParams } from 'react-router-dom'
 
 function ProductPage() {
     const { id } = useParams()
-    const posthog = usePostHog()
+    const agrid = useAgrid()
+    const showNewCheckout = useFeatureFlagEnabled('new-checkout-flow')
 
     useEffect(() => {
         // Track page view
-        posthog?.capture('product_viewed', {
+        agrid?.capture('product_viewed', {
             product_id: id
         })
-    }, [id, posthog])
+    }, [id, agrid])
 
     const handleAddToCart = () => {
-        posthog?.capture('product_added_to_cart', {
+        agrid?.capture('product_added_to_cart', {
             product_id: id
         })
     }
@@ -358,6 +457,9 @@ function ProductPage() {
         <div>
             <h1>Chi tiết sản phẩm {id}</h1>
             <button onClick={handleAddToCart}>Thêm vào giỏ</button>
+            {showNewCheckout && (
+                <div>Checkout flow mới đã được bật!</div>
+            )}
         </div>
     )
 }
@@ -371,16 +473,19 @@ export default ProductPage
 
 ### 1. Track Events (Ghi lại sự kiện)
 
+Capture các sự kiện người dùng với các thuộc tính tùy chỉnh:
+
 ```javascript
 // JavaScript thuần
 agrid.capture('event_name', {
     property1: 'value1',
-    property2: 'value2'
+    property2: 'value2',
+    numeric_property: 123
 })
 
 // ReactJS
-const posthog = usePostHog()
-posthog?.capture('event_name', {
+const agrid = useAgrid()
+agrid?.capture('event_name', {
     property1: 'value1',
     property2: 'value2'
 })
@@ -388,55 +493,113 @@ posthog?.capture('event_name', {
 
 ### 2. Identify Users (Xác định người dùng)
 
+Xác định người dùng khi họ đăng nhập:
+
 ```javascript
 // Khi người dùng đăng nhập
 agrid.identify('user_id_123', {
     email: 'user@example.com',
     name: 'Nguyễn Văn A',
-    phone: '0123456789'
+    phone: '0123456789',
+    plan: 'premium'
 })
 ```
 
 ### 3. Set User Properties (Thiết lập thuộc tính người dùng)
 
+Cập nhật thông tin người dùng:
+
 ```javascript
-// Set một lần
+// Set một lần (chỉ set nếu chưa có giá trị)
 agrid.people.set_once({
-    first_visit: new Date().toISOString()
+    first_visit: new Date().toISOString(),
+    signup_date: '2024-01-01'
 })
 
 // Set hoặc cập nhật
 agrid.people.set({
     plan: 'premium',
-    subscription_date: new Date().toISOString()
+    subscription_date: new Date().toISOString(),
+    last_active: new Date().toISOString()
 })
 
-// Increment (tăng giá trị)
+// Increment (tăng giá trị số)
 agrid.people.increment('purchase_count', 1)
+agrid.people.increment('total_spent', 50000)
 ```
 
 ### 4. Feature Flags (Cờ tính năng)
 
+Kiểm tra và sử dụng feature flags:
+
 ```javascript
-// Kiểm tra feature flag
+// Kiểm tra feature flag có được bật không
 const isEnabled = agrid.isFeatureEnabled('new-checkout-flow')
 
 if (isEnabled) {
     // Hiển thị tính năng mới
+    showNewCheckoutFlow()
 }
 
-// Lấy giá trị feature flag
+// Lấy giá trị variant của feature flag
 const variant = agrid.getFeatureFlag('button-color')
+// variant có thể là: 'red', 'blue', 'green', hoặc false nếu flag không được bật
+
+// Lấy payload của feature flag
+const payload = agrid.getFeatureFlagPayload('discount-config')
+// payload có thể là: { discountPercent: 20, showBadge: true }
+
+// Lắng nghe thay đổi của feature flags
+agrid.onFeatureFlags(function(flags) {
+    console.log('Feature flags updated:', flags)
+})
 ```
 
 ### 5. Session Recording (Ghi lại phiên làm việc)
 
+Bật session recording để ghi lại hành vi người dùng:
+
 ```javascript
 agrid.init('YOUR_API_KEY', {
-    api_host: 'https://app.agrid.com',
+    api_host: 'https://us.i.agrid.com',
     session_recording: {
-        recordCrossOriginIframes: true
+        recordCrossOriginIframes: true,
+        maskAllInputs: false,
+        maskInputOptions: {
+            password: true,
+            email: false
+        }
     }
+})
+```
+
+### 6. Autocapture (Tự động capture)
+
+Tự động capture các sự kiện click, form submission, và pageview:
+
+```javascript
+agrid.init('YOUR_API_KEY', {
+    api_host: 'https://us.i.agrid.com',
+    autocapture: true, // Bật autocapture
+    capture_pageview: true, // Tự động capture pageview
+    capture_pageleave: true // Tự động capture khi rời trang
+})
+```
+
+### 7. Surveys (Khảo sát)
+
+Lấy và hiển thị surveys:
+
+```javascript
+// Lấy tất cả surveys
+const surveys = agrid.getSurveys()
+
+// Lấy các surveys đang active và match với user hiện tại
+const activeSurveys = agrid.getActiveMatchingSurveys()
+
+// Lắng nghe thay đổi surveys
+agrid.on('surveys', function(surveys) {
+    console.log('Surveys updated:', surveys)
 })
 ```
 
@@ -448,7 +611,7 @@ agrid.init('YOUR_API_KEY', {
 
 ```javascript
 agrid.init('YOUR_PROJECT_API_KEY', {
-    api_host: 'https://app.agrid.com',
+    api_host: 'https://us.i.agrid.com',
 
     // Tự động capture pageview
     capture_pageview: true,
@@ -456,12 +619,16 @@ agrid.init('YOUR_PROJECT_API_KEY', {
     // Tự động capture pageleave
     capture_pageleave: true,
 
+    // Autocapture (tự động capture clicks, form submissions)
+    autocapture: true,
+
     // Session recording
     session_recording: {
         recordCrossOriginIframes: true,
         maskAllInputs: false,
         maskInputOptions: {
-            password: true
+            password: true,
+            email: false
         }
     },
 
@@ -472,7 +639,7 @@ agrid.init('YOUR_PROJECT_API_KEY', {
     person_profiles: 'identified_only', // 'always' | 'identified_only' | 'never'
 
     // Persistence
-    persistence: 'localStorage+cookie',
+    persistence: 'localStorage+cookie', // 'localStorage+cookie' | 'localStorage' | 'cookie' | 'memory' | 'disabled'
 
     // Debug mode (chỉ dùng trong development)
     debug: process.env.NODE_ENV === 'development',
@@ -490,7 +657,7 @@ Tạo file `.env`:
 
 ```env
 REACT_APP_AGRID_API_KEY=your_api_key_here
-REACT_APP_AGRID_API_HOST=https://app.agrid.com
+REACT_APP_AGRID_API_HOST=https://us.i.agrid.com
 ```
 
 Sử dụng trong code:
@@ -501,21 +668,38 @@ agrid.init(process.env.REACT_APP_AGRID_API_KEY, {
 })
 ```
 
+### TypeScript Support
+
+Agrid JS có hỗ trợ TypeScript đầy đủ:
+
+```typescript
+import agrid from 'agrid-js'
+
+agrid.init('YOUR_API_KEY', {
+    api_host: 'https://us.i.agrid.com'
+})
+
+// TypeScript sẽ tự động gợi ý các phương thức và thuộc tính
+agrid.capture('event_name', {
+    // TypeScript sẽ kiểm tra types
+})
+```
+
 ---
 
 ## Ví dụ thực tế
 
-### E-commerce Website (Web 2Nông)
+### E-commerce Website
 
 ```jsx
 // src/hooks/useTracking.js
-import { usePostHog } from '@agrid/react'
+import { useAgrid } from '@agrid/react'
 
 export function useTracking() {
-    const posthog = usePostHog()
+    const agrid = useAgrid()
 
     const trackProductView = (product) => {
-        posthog?.capture('product_viewed', {
+        agrid?.capture('product_viewed', {
             product_id: product.id,
             product_name: product.name,
             category: product.category,
@@ -524,7 +708,7 @@ export function useTracking() {
     }
 
     const trackAddToCart = (product, quantity = 1) => {
-        posthog?.capture('product_added_to_cart', {
+        agrid?.capture('product_added_to_cart', {
             product_id: product.id,
             product_name: product.name,
             quantity: quantity,
@@ -534,7 +718,7 @@ export function useTracking() {
     }
 
     const trackPurchase = (order) => {
-        posthog?.capture('purchase_completed', {
+        agrid?.capture('purchase_completed', {
             order_id: order.id,
             total: order.total,
             items: order.items,
@@ -543,7 +727,7 @@ export function useTracking() {
     }
 
     const trackSearch = (query, resultsCount) => {
-        posthog?.capture('search_performed', {
+        agrid?.capture('search_performed', {
             search_query: query,
             results_count: resultsCount
         })
@@ -560,15 +744,17 @@ export function useTracking() {
 
 ```jsx
 // src/components/ProductCard.jsx
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTracking } from '../hooks/useTracking'
+import { useFeatureFlagEnabled } from '@agrid/react'
 
 function ProductCard({ product }) {
     const { trackProductView, trackAddToCart } = useTracking()
+    const showDiscount = useFeatureFlagEnabled('show-product-discount')
 
     useEffect(() => {
         trackProductView(product)
-    }, [product])
+    }, [product, trackProductView])
 
     const handleAddToCart = () => {
         trackAddToCart(product, 1)
@@ -580,6 +766,9 @@ function ProductCard({ product }) {
             <img src={product.image} alt={product.name} />
             <h3>{product.name}</h3>
             <p>{product.price} VND</p>
+            {showDiscount && product.discount && (
+                <span className="discount">Giảm {product.discount}%</span>
+            )}
             <button onClick={handleAddToCart}>Thêm vào giỏ</button>
         </div>
     )
@@ -588,34 +777,83 @@ function ProductCard({ product }) {
 export default ProductCard
 ```
 
+### User Authentication Flow
+
+```javascript
+// Khi người dùng đăng nhập
+function handleLogin(user) {
+    // Identify user
+    agrid.identify(user.id, {
+        email: user.email,
+        name: user.name,
+        plan: user.plan
+    })
+
+    // Set user properties
+    agrid.people.set({
+        last_login: new Date().toISOString(),
+        login_count: user.loginCount
+    })
+
+    // Track login event
+    agrid.capture('user_logged_in', {
+        login_method: 'email',
+        user_id: user.id
+    })
+}
+
+// Khi người dùng đăng xuất
+function handleLogout() {
+    agrid.capture('user_logged_out')
+    agrid.reset() // Reset user session
+}
+```
+
 ---
 
 ## Troubleshooting
 
 ### Agrid không load
 
-1. Kiểm tra API key và API host
-2. Kiểm tra console để xem có lỗi không
-3. Đảm bảo script được load trước khi gọi `agrid.init()`
+1. **Kiểm tra API key và API host**: Đảm bảo bạn đã cung cấp đúng API key và host
+2. **Kiểm tra console**: Mở DevTools và kiểm tra tab Console để xem có lỗi không
+3. **Kiểm tra network**: Xem tab Network để đảm bảo requests được gửi đi
+4. **Đảm bảo script được load**: Nếu dùng CDN, đảm bảo script loader được đặt trong `<head>`
 
 ### Events không được gửi
 
-1. Kiểm tra network tab trong DevTools
-2. Đảm bảo không có ad blocker chặn requests
-3. Kiểm tra CORS settings trên server
+1. **Kiểm tra network tab**: Xem có requests đến Agrid server không
+2. **Kiểm tra ad blocker**: Một số ad blocker có thể chặn requests đến analytics services
+3. **Kiểm tra CORS**: Đảm bảo server Agrid cho phép CORS từ domain của bạn
+4. **Kiểm tra debug mode**: Bật `debug: true` trong config để xem logs chi tiết
 
 ### Feature flags không hoạt động
 
-1. Đảm bảo feature flags đã được bật trong Agrid dashboard
-2. Kiểm tra user đã được identify chưa
-3. Sử dụng `agrid.getFeatureFlag('flag-name')` để debug
+1. **Đảm bảo feature flags đã được bật**: Kiểm tra trong Agrid dashboard
+2. **Kiểm tra user đã được identify chưa**: Một số flags yêu cầu user phải được identify
+3. **Sử dụng debug**: Gọi `agrid.getFeatureFlag('flag-name')` để xem giá trị hiện tại
+4. **Kiểm tra network**: Đảm bảo requests để load feature flags thành công
+
+### React hooks trả về undefined
+
+1. **Đảm bảo AgridProvider đã được bọc**: Component sử dụng hooks phải nằm trong `AgridProvider`
+2. **Kiểm tra API key**: Đảm bảo API key đã được cung cấp
+3. **Sử dụng optional chaining**: Luôn sử dụng `agrid?.capture()` thay vì `agrid.capture()`
+
+### Session recording không hoạt động
+
+1. **Kiểm tra cấu hình**: Đảm bảo `session_recording` đã được bật trong config
+2. **Kiểm tra permissions**: Một số browser có thể chặn recording
+3. **Kiểm tra console**: Xem có lỗi liên quan đến recording không
 
 ---
 
 ## Tài liệu tham khảo
 
-- [Agrid JS Documentation](https://github.com/advnsoftware-oss/agrid-js#readme)
-- [React Integration Guide](https://agrid.com/docs/libraries/react)
+- [Agrid JS Repository](https://github.com/advnsoftware-oss/agrid-js)
+- [Agrid JS npm Package](https://www.npmjs.com/package/agrid-js)
+- [@agrid/react npm Package](https://www.npmjs.com/package/@agrid/react)
+- [Agrid Documentation](https://agrid.com/docs)
 - [API Reference](https://agrid.com/docs/api)
 
 ---
@@ -623,7 +861,39 @@ export default ProductCard
 ## Hỗ trợ
 
 Nếu gặp vấn đề, vui lòng:
+
 1. Kiểm tra [tài liệu chính thức](https://agrid.com/docs)
-2. Tạo issue trên [GitHub](https://github.com/agrid/agrid-js/issues)
+2. Tạo issue trên [GitHub](https://github.com/advnsoftware-oss/agrid-js/issues)
 3. Liên hệ team phát triển
 
+---
+
+## Tóm tắt nhanh
+
+### JavaScript thuần
+
+```javascript
+// 1. Thêm script loader vào <head>
+// 2. Khởi tạo
+agrid.init('YOUR_API_KEY', { api_host: 'https://us.i.agrid.com' })
+// 3. Track events
+agrid.capture('event_name', { property: 'value' })
+// 4. Identify users
+agrid.identify('user_id', { email: 'user@example.com' })
+```
+
+### ReactJS
+
+```jsx
+// 1. Cài đặt
+// npm install agrid-js @agrid/react
+
+// 2. Bọc app với AgridProvider
+<AgridProvider apiKey="YOUR_API_KEY" options={{ api_host: 'https://us.i.agrid.com' }}>
+    <App />
+</AgridProvider>
+
+// 3. Sử dụng hooks
+const agrid = useAgrid()
+agrid?.capture('event_name')
+```
