@@ -1,32 +1,35 @@
-# PostHog Next.js Config
+# Agrid Next.js Config
 
-This package handles sourcemap configuration and upload for the PostHog Error Tracking product.
-
-Please see the main [PostHog Error Tracking docs](https://posthog.com/docs/error-tracking).
+Helper to configure and upload sourcemaps for Agrid Error Tracking in Next.js projects.
 
 ## Usage
 
-```typescript
+```ts
 // next.config.ts
-import { withPostHogConfig } from "@agrid/nextjs-config";
+import { withPostHogConfig } from '@agrid/nextjs-config'
 
 const nextConfig = {
-  // Your Next.js configuration here
-};
+  // Your Next.js configuration
+}
 
 export default withPostHogConfig(nextConfig, {
-  personalApiKey: process.env.POSTHOG_PERSONAL_API_KEY!, // Personal API key used for sourcemap uploads, see https://app.posthog.com/settings/user-api-keys
-  envId: process.env.POSTHOG_ENV_ID!, // Environment ID, see https://app.posthog.com/settings/environment#variables
-  host: process.env.NEXT_PUBLIC_POSTHOG_HOST!, // (optional) Host URL, defaults to https://us.posthog.com
-  sourcemaps: { // (optional)
-    enabled: true, // (optional) Enable sourcemaps generation and upload, default to true on production builds
-    project: "my-application", // (optional) Project name, defaults to repository name
-    version: "1.0.0", // (optional) Release version, defaults to current git commit
-    deleteAfterUpload: true, // (optional) Delete sourcemaps after upload, defaults to true
+  personalApiKey: process.env.AGRID_PERSONAL_API_KEY!,
+  envId: process.env.AGRID_ENV_ID!,
+  host: process.env.NEXT_PUBLIC_AGRID_HOST ?? 'https://app.agrid.com',
+  sourcemaps: {
+    enabled: true,
+    project: 'my-application',
+    version: process.env.AGRID_RELEASE_VERSION,
+    deleteAfterUpload: true,
   },
-});
+})
 ```
 
-## Questions?
+## Notes
 
-### [Check out our community page.](https://posthog.com/posts)
+- Uses compiler or webpack hook depending on NextJS version.
+- Turbopack support requires Next `>= 15.4.1`.
+
+## Links
+
+- Main repo: https://github.com/advnsoftware-oss/agrid-js

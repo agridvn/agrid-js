@@ -1,9 +1,39 @@
-# PostHog React Native
+# Agrid React Native (unscoped)
 
-Please see the main [PostHog docs](https://www.posthog.com/docs).
+React Native SDK for Agrid analytics and feature flags. This package provides `PostHogProvider` and hooks for RN apps.
 
-Specifically, the [React Native docs](https://posthog.com/docs/libraries/react-native) details.
+## Installation
 
-## Questions?
+```bash
+npm install agrid-react-native
+# or
+yarn add agrid-react-native
+# or
+pnpm add agrid-react-native
+```
 
-### [Check out our community page.](https://posthog.com/posts)
+## Quick Start
+
+```tsx
+import { PostHogProvider } from 'agrid-react-native'
+
+export function App() {
+  return (
+    <PostHogProvider
+      apiKey="YOUR_PROJECT_API_KEY"
+      options={{ host: 'https://app.agrid.com' }}
+    >
+      <YourApp />
+    </PostHogProvider>
+  )
+}
+```
+
+### Hooks
+
+- `usePostHog()` to access the client
+- `useFeatureFlagEnabled(flag)` to check flags
+
+## Links
+
+- Main repo: https://github.com/advnsoftware-oss/agrid-js

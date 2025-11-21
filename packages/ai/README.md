@@ -1,8 +1,6 @@
-# PostHog Node AI
+# Agrid Node AI
 
-Initial Typescript SDK for LLM Observability
-
-[SEE FULL DOCS](https://posthog.com/docs/ai-engineering/observability)
+TypeScript SDK for LLM observability and analytics. Integrates OpenAI, Anthropic, Gemini, LangChain, and Vercel AI SDK with Agrid.
 
 ## Installation
 
@@ -12,37 +10,32 @@ npm install @agrid/ai
 
 ## Usage
 
-```typescript
+```ts
 import { OpenAI } from '@agrid/ai'
 import { PostHog } from 'agrid-node'
 
-const phClient = new PostHog('<YOUR_PROJECT_API_KEY>', { host: 'https://us.i.posthog.com' })
+const agrid = new PostHog('YOUR_PROJECT_API_KEY', { host: 'https://app.agrid.com' })
 
 const client = new OpenAI({
-  apiKey: '<YOUR_OPENAI_API_KEY>',
-  posthog: phClient,
+  apiKey: process.env.OPENAI_API_KEY!,
+  posthog: agrid,
 })
 
 const completion = await client.chat.completions.create({
-  model: 'gpt-3.5-turbo',
+  model: 'gpt-4o-mini',
   messages: [{ role: 'user', content: 'Tell me a fun fact about hedgehogs' }],
-  posthogDistinctId: 'user_123', // optional
-  posthogTraceId: 'trace_123', // optional
-  posthogProperties: { conversation_id: 'abc123', paid: true }, //optional
-  posthogGroups: { company: 'company_id_in_your_db' }, // optional
-  posthogPrivacyMode: false, // optional
+  posthogDistinctId: 'user_123',
+  posthogTraceId: 'trace_123',
+  posthogProperties: { conversation_id: 'abc123', paid: true },
+  posthogGroups: { company: 'company_42' },
 })
 
 console.log(completion.choices[0].message.content)
 
-// YOU HAVE TO HAVE THIS OR THE CLIENT MAY NOT SEND EVENTS
-await phClient.shutdown()
+await agrid.shutdown()
 ```
 
-LLM Observability [docs](https://posthog.com/docs/ai-engineering/observability)
+## Links
 
-Please see the main [PostHog docs](https://www.posthog.com/docs).
-
-## Questions?
-
-### [Check out our community page.](https://posthog.com/posts)
+- Main repo: https://github.com/advnsoftware-oss/agrid-js
+- npm: https://www.npmjs.com/package/@agrid/ai

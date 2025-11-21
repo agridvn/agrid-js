@@ -1,10 +1,6 @@
-# PostHog Web
+# Agrid JS Lite (Web)
 
-> 🚧 This is a reduced feature set package. Currently the only officially supported feature complete way of using PostHog on the web is [agrid-js](https://github.com/PostHog/agrid-js)
-
-This package is currently published to npm as [agrid-js-lite](https://www.npmjs.com/package/agrid-js-lite) and is a simplified version of the recommended and officially supported `agrid-js`.
-
-You'd want to use this only if you're very conscious about package sizes, and this reduced feature set (only analytics and feature flags) works for your use case. The most common use case is in chrome extensions.
+Reduced-feature browser SDK focused on small bundle size. Supports analytics and feature flags. Use `agrid-js` for full capabilities including session recording, heatmaps, and surveys.
 
 ## Installation
 
@@ -19,16 +15,15 @@ It is entirely written in Typescript and has a minimal API as follows:
 ```ts
 import PostHog from 'agrid-js-lite'
 
-const posthog = new PostHog('my-api-key', {
-  /* options, e.g. for self-hosted users */
-  // host: "https://my-posthog.app.com"
+const posthog = new PostHog('YOUR_PROJECT_API_KEY', {
+  // host: 'https://app.agrid.com'
 })
 
 // Capture generic events
 posthog.capture('my-event', { myProperty: 'foo' })
 
 // Identify a user (e.g. on login)
-posthog.identify('my-unique-user-id', { email: 'example@agrid.com', name: 'Jane Doe' })
+posthog.identify('my-unique-user-id', { email: 'user@example.com', name: 'Jane Doe' })
 // ...or with Set Once additional properties
 posthog.identify('my-unique-user-id', { $set: { email: 'example@agrid.com', name: 'Jane Doe' }, $set_once: { vip: true } })
 
