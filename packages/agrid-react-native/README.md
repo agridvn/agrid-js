@@ -1,21 +1,31 @@
-# Agrid React Native
+# Hướng dẫn tích hợp thư viện Agrid React Native cho các ứng dụng React Native
 
 Thư viện Agrid React Native cho phép bạn tích hợp analytics vào ứng dụng React Native của mình. Thư viện này được xây dựng dựa trên PostHog và hỗ trợ đầy đủ cho ứng dụng React Native.
 
 ## Mục lục
 
-- [Cài đặt](#cài-đặt)
-- [Cấu hình](#cấu-hình)
-- [Ghi nhận sự kiện](#ghi-nhận-sự-kiện)
-- [Tự động ghi nhận (Autocapture)](#tự-động-ghi-nhận-autocapture)
-- [Nhận diện người dùng](#nhận-diện-người-dùng)
-- [Super Properties](#super-properties)
-- [Feature Flags](#feature-flags)
-- [Tùy chọn nâng cao](#tùy-chọn-nâng-cao)
+1. [Cài đặt](#1-cài-đặt)
+2. [Thông tin mặc định](#2-thông-tin-mặc-định)
+3. [Cấu hình](#3-cấu-hình)
+4. [Ghi nhận sự kiện](#4-ghi-nhận-sự-kiện)
+5. [Tự động ghi nhận (Autocapture)](#5-tự-động-ghi-nhận-autocapture)
+6. [Nhận diện người dùng](#6-nhận-diện-người-dùng)
+7. [Super Properties](#7-super-properties)
+8. [Feature Flags](#8-feature-flags)
+9. [Tùy chọn nâng cao](#9-tùy-chọn-nâng-cao)
+10. [Session Replay](#10-session-replay)
+11. [Error Tracking](#11-error-tracking)
+12. [Surveys](#12-surveys)
+13. [Ví dụ hoàn chỉnh](#13-ví-dụ-hoàn-chỉnh)
+14. [Liên hệ & Hỗ trợ](#14-liên-hệ--hỗ-trợ)
 
-## Cài đặt
+---
+
+## 1. Cài đặt
 
 ### Ứng dụng React Native
+
+Chạy lệnh sau để cài đặt các gói cần thiết:
 
 ```bash
 yarn add @agrid/agrid-react-native @react-native-async-storage/async-storage react-native-device-info react-native-localize
@@ -23,20 +33,24 @@ yarn add @agrid/agrid-react-native @react-native-async-storage/async-storage rea
 npm i -s @agrid/agrid-react-native @react-native-async-storage/async-storage react-native-device-info react-native-localize
 ```
 
-Đối với iOS, chạy thêm:
+Đối với iOS, cần chạy thêm lệnh sau để cài đặt CocoaPods:
 
 ```bash
 bundle install
 cd ios && pod install && cd ..
 ```
 
-## Thông tin mặc định
+---
+
+## 2. Thông tin mặc định
 
 Để bắt đầu nhanh, bạn có thể sử dụng các giá trị mặc định sau:
 
 - **Host mặc định**: `https://gw.track-asia.vn`
 
-## Cấu hình
+---
+
+## 3. Cấu hình
 
 ### Cấu hình cơ bản
 
@@ -106,7 +120,9 @@ export const agrid = new Agrid('<your_api_key>', {
 </AgridProvider>
 ```
 
-## Ghi nhận sự kiện
+---
+
+## 4. Ghi nhận sự kiện
 
 ### Ghi nhận sự kiện tùy chỉnh
 
@@ -231,7 +247,9 @@ export function App() {
 }
 ```
 
-## Tự động ghi nhận (Autocapture)
+---
+
+## 5. Tự động ghi nhận (Autocapture)
 
 Agrid có thể tự động ghi nhận các sự kiện sau:
 
@@ -282,7 +300,9 @@ Sử dụng prop `ph-no-capture` để ngăn Agrid capture một phần tử c�
 />
 ```
 
-## Nhận diện người dùng
+---
+
+## 6. Nhận diện người dùng
 
 ### Identify
 
@@ -351,7 +371,9 @@ agrid?.capture('purchase_completed', {
 })
 ```
 
-## Super Properties
+---
+
+## 7. Super Properties
 
 Super properties là các thuộc tính được gửi kèm với **mọi** sự kiện sau khi được thiết lập:
 
@@ -373,7 +395,9 @@ agrid?.unregister('app_version')
 
 > **⚠️ Lưu ý:** Super properties khác với person properties. Super properties chỉ áp dụng cho sự kiện, không lưu trữ thông tin người dùng.
 
-## Feature Flags
+---
+
+## 8. Feature Flags
 
 Feature flags cho phép bạn triển khai và rollback tính năng một cách an toàn.
 
@@ -440,7 +464,9 @@ agrid?.setPersonPropertiesForFlags({
 })
 ```
 
-## Tùy chọn nâng cao
+---
+
+## 9. Tùy chọn nâng cao
 
 ### Flush thủ công
 
@@ -533,7 +559,9 @@ Bật logging để debug:
 </AgridProvider>
 ```
 
-## Session Replay
+---
+
+## 10. Session Replay
 
 Ghi lại và phát lại session của người dùng:
 
@@ -553,7 +581,9 @@ Ghi lại và phát lại session của người dùng:
 </AgridProvider>
 ```
 
-## Error Tracking
+---
+
+## 11. Error Tracking
 
 Tự động ghi nhận lỗi JavaScript:
 
@@ -571,7 +601,9 @@ Tự động ghi nhận lỗi JavaScript:
 </AgridProvider>
 ```
 
-## Surveys
+---
+
+## 12. Surveys
 
 Hiển thị khảo sát cho người dùng:
 
@@ -585,7 +617,9 @@ import { AgridSurveyProvider } from '@agrid/agrid-react-native'
 </AgridProvider>
 ```
 
-## Ví dụ hoàn chỉnh
+---
+
+## 13. Ví dụ hoàn chỉnh
 
 ```tsx
 import React, { useEffect, useState } from 'react'
@@ -648,14 +682,10 @@ function MyApp() {
 export default App
 ```
 
-## Câu hỏi?
+---
+
+## 14. Liên hệ & Hỗ trợ
 
 - Liên hệ với đội ngũ hỗ trợ Agrid qua email (advn.software@gmail.com) để được giúp đỡ.
-
-## Project ví dụ:
-
-- Ứng dụng React Native: [example-agrid-react-native](https://github.com/advnsoftware-oss/agrid-js/tree/main/examples/example-agrid-react-native)
-
-## Tài liệu tham khảo
-
-- [React Native Documentation](https://reactnative.dev/)
+- Project ví dụ: [example-agrid-react-native](https://github.com/advnsoftware-oss/agrid-js/tree/main/examples/example-agrid-react-native)
+- Tài liệu tham khảo: [React Native Documentation](https://reactnative.dev/)

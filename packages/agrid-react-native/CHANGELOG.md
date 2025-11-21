@@ -1,5 +1,9 @@
 # agrid-react-native
 
+## 4.12.10
+
+### Updates documentation
+
 ## 4.12.9
 
 ### Updates documentation
