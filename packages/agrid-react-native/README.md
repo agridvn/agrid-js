@@ -686,6 +686,6 @@ export default App
 
 ## 14. Liên hệ & Hỗ trợ
 
-- Liên hệ với đội ngũ hỗ trợ Agrid qua email (advn.software@gmail.com) để được giúp đỡ.
-- Project ví dụ: [example-agrid-react-native](https://github.com/advnsoftware-oss/agrid-js/tree/main/examples/example-agrid-react-native)
+- Liên hệ với đội ngũ hỗ trợ Agrid qua [email agrid](info@agrid.vn) để được giúp đỡ.
+- Project ví dụ: [example-agrid-react-native](https://github.com/agridvn/agrid-js/tree/main/examples/example-agrid-react-native)
 - Tài liệu tham khảo: [React Native Documentation](https://reactnative.dev/)
