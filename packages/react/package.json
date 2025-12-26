@@ -1,19 +1,19 @@
 {
     "name": "@agrid/react",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "description": "Provides components and hooks for React integrations of Agrid.",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/advnsoftware-oss/agrid-js.git",
+        "url": "git+https://github.com/agridvn/agrid-js.git",
         "directory": "packages/react"
     },
-    "author": {
-        "name": "Agrid",
-        "email": "hey@agrid.com",
-        "url": "https://agrid.com"
-    },
+  "author": {
+    "name": "Agrid",
+    "email": "info@agrid.vn",
+    "url": "https://agrid.com"
+  },
     "license": "MIT",
-    "homepage": "https://github.com/advnsoftware-oss/agrid-js#readme",
+    "homepage": "https://github.com/agridvn/agrid-js#readme",
     "keywords": [
         "agrid",
         "react",

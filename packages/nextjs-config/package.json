@@ -1,15 +1,15 @@
 {
   "name": "@agrid/nextjs-config",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "NextJS configuration helper for Agrid - Product analytics and feature flags",
   "repository": {
     "type": "git",
-    "url": "https://github.com/advnsoftware-oss/agrid-js.git",
+    "url": "https://github.com/agridvn/agrid-js.git",
     "directory": "packages/nextjs-config"
   },
   "author": {
     "name": "Agrid",
-    "email": "hey@agrid.com",
+    "email": "info@agrid.vn",
     "url": "https://agrid.com"
   },
   "homepage": "https://agrid.com/docs/libraries/nextjs",

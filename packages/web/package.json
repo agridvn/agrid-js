@@ -5,10 +5,10 @@
   "license": "MIT",
   "author": {
     "name": "Agrid",
-    "email": "hey@agrid.com",
+    "email": "info@agrid.vn",
     "url": "https://agrid.com"
   },
-  "homepage": "https://github.com/advnsoftware-oss/agrid-js#readme",
+  "homepage": "https://github.com/agridvn/agrid-js#readme",
   "keywords": [
     "agrid",
     "analytics",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/agrid/agrid-js.git",
+    "url": "git+https://github.com/agridvn/agrid-js.git",
     "directory": "packages/web"
   },
   "main": "dist/index.cjs",

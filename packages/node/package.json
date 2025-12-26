@@ -1,10 +1,10 @@
 {
   "name": "agrid-node",
-  "version": "5.11.2",
+  "version": "5.11.3",
   "description": "Agrid Node.js integration for server-side analytics and feature flags",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/advnsoftware-oss/agrid-js.git",
+    "url": "git+https://github.com/agridvn/agrid-js.git",
     "directory": "packages/node"
   },
   "scripts": {
@@ -30,7 +30,7 @@
   "license": "MIT",
   "author": {
     "name": "Agrid",
-    "email": "hey@agrid.com",
+    "email": "info@agrid.vn",
     "url": "https://agrid.com"
   },
   "homepage": "https://agrid.com/docs/libraries/node",
