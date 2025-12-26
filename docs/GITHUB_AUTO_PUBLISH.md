@@ -73,7 +73,7 @@ Kiểm tra các trường quan trọng:
   "description": "...",
   "repository": {
     "type": "git",
-    "url": "https://github.com/advnsoftware-oss/agrid-js.git"
+    "url": "https://github.com/agridvn/agrid-js.git"
   },
   "files": ["dist/**", "lib/**"]  // Chỉ định files sẽ publish
 }

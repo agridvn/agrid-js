@@ -294,7 +294,7 @@ export type ExternalIntegrationKind = 'intercom' | 'crispChat'
 
 /**
  * Configuration options for the Agrid JavaScript SDK.
- * @see https://github.com/advnsoftware-oss/agrid-js#readme
+ * @see https://github.com/agridvn/agrid-js#readme
  */
 export interface AgridConfig {
     /** URL of your Agrid instance.
@@ -373,7 +373,7 @@ export interface AgridConfig {
     cross_subdomain_cookie: boolean
 
     /**
-     * Determines how Agrid stores information about the user. See [GitHub README](https://github.com/advnsoftware-oss/agrid-js#readme) for details.
+     * Determines how Agrid stores information about the user. See [GitHub README](https://github.com/agridvn/agrid-js#readme) for details.
      *
      * @default 'localStorage+cookie'
      */

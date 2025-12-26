@@ -7,7 +7,7 @@
     "title": "Agrid JavaScript Web SDK",
     "description": "Agrid-js allows you to automatically capture usage and send events to Agrid.",
     "slugPrefix": "agrid-js",
-    "specUrl": "https://github.com/Agrid/agrid-js"
+    "specUrl": "https://github.com/agridvn/agrid-js"
   },
   "classes": [
     {
@@ -947,7 +947,7 @@
         {
           "category": "Initialization",
           "description": "Initializes a new instance of the Agrid capturing object.",
-          "details": "All new instances are added to the main agrid object as sub properties (such as `agrid.library_name`) and also returned by this function. [Learn more about configuration options](https://github.com/agrid/agrid-js/blob/6e0e873/src/agrid-core.js#L57-L91)",
+          "details": "All new instances are added to the main agrid object as sub properties (such as `agrid.library_name`) and also returned by this function. [Learn more about configuration options](https://github.com/agridvn/agrid-js/blob/6e0e873/src/agrid-core.js#L57-L91)",
           "id": "init",
           "showDocs": true,
           "title": "init",

@@ -77,7 +77,7 @@ jobs:
       #     curl -f -X POST \
       #          -H "Accept: application/vnd.github+json" \
       #          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-      #          https://api.github.com/repos/agrid/agrid-js/actions/workflows/agrid-upgrade.yml/dispatches \
+      #          https://api.github.com/repos/agridvn/agrid-js/actions/workflows/agrid-upgrade.yml/dispatches \
       #          -d '{
       #            "ref": "main",
       #            "inputs": {
@@ -92,7 +92,7 @@ jobs:
       #     curl -f -X POST \
       #          -H "Accept: application/vnd.github+json" \
       #          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-      #          https://api.github.com/repos/agrid/agrid-js/actions/workflows/agrid-com-upgrade.yml/dispatches \
+      #          https://api.github.com/repos/agridvn/agrid-js/actions/workflows/agrid-com-upgrade.yml/dispatches \
       #          -d '{
       #            "ref": "main",
       #            "inputs": {

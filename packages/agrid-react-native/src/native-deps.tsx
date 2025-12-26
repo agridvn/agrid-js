@@ -120,7 +120,7 @@ const buildLegacyStorage = (filesystem: any): AgridCustomStorage => {
 
 export const buildOptimisiticAsyncStorage = (): AgridCustomStorage => {
   // expo-file-system is not supported on web and macos, so we need to use the react-native-async-storage package instead
-  // see https://github.com/Agrid/agrid-js-lite/blob/5fb7bee96f739b243dfea5589e2027f16629e8cd/agrid-react-native/src/optional/OptionalExpoFileSystem.ts#L7-L11
+  // see https://github.com/agridvn/agrid-js-lite/blob/5fb7bee96f739b243dfea5589e2027f16629e8cd/agrid-react-native/src/optional/OptionalExpoFileSystem.ts#L7-L11
   const supportedPlatform = Platform.OS !== 'web' && Platform.OS !== 'macos'
 
   // expo-54 uses expo-file-system v19 which removed the async methods and added new APIs

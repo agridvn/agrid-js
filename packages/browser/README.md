@@ -5,7 +5,7 @@
 
 **Agrid JS** is a comprehensive JavaScript SDK for product analytics, feature flags, session recording, heatmaps, and surveys. This is the main browser SDK package that provides full-featured tracking capabilities for web applications.
 
-For complete documentation and examples, see the [main repository README](https://github.com/advnsoftware-oss/agrid-js#readme).
+For complete documentation and examples, see the [main repository README](https://github.com/agridvn/agrid-js#readme).
 
 ---
 
@@ -149,9 +149,9 @@ function MyComponent() {
 
 ## 📚 Documentation
 
-- **Main Repository**: [https://github.com/advnsoftware-oss/agrid-js](https://github.com/advnsoftware-oss/agrid-js)
+- **Main Repository**: [https://github.com/agridvn/agrid-js](https://github.com/agridvn/agrid-js)
 - **npm Package**: [https://www.npmjs.com/package/agrid-js](https://www.npmjs.com/package/agrid-js)
-- **Issues**: [https://github.com/advnsoftware-oss/agrid-js/issues](https://github.com/advnsoftware-oss/agrid-js/issues)
+- **Issues**: [https://github.com/agridvn/agrid-js/issues](https://github.com/agridvn/agrid-js/issues)
 
 ---
 
@@ -252,7 +252,7 @@ Then, once this link has been created, any time you need to make a change to `ag
 
 ## 📄 License
 
-MIT License - see [LICENSE](https://github.com/advnsoftware-oss/agrid-js/blob/main/LICENSE) file for details.
+MIT License - see [LICENSE](https://github.com/agridvn/agrid-js/blob/main/LICENSE) file for details.
 
 ---
 

@@ -1,7 +1,7 @@
 /**
  * Having Survey types in types.ts was confusing tsc
  * and generating an invalid module.d.ts
- * See https://github.com/Agrid/agrid-js/issues/698
+ * See https://github.com/agridvn/agrid-js/issues/698
  */
 
 import type { PropertyMatchType } from './types'

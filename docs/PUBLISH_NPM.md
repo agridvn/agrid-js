@@ -623,6 +623,6 @@ Có thể trigger thủ công từ GitHub Actions tab.
 
 Nếu gặp vấn đề:
 1. Kiểm tra [Troubleshooting](#troubleshooting)
-2. Xem [GitHub Issues](https://github.com/agrid/agrid-js/issues)
+2. Xem [GitHub Issues](https://github.com/agridvn/agrid-js/issues)
 3. Liên hệ team phát triển
 

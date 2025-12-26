@@ -69,6 +69,7 @@ export function AgridProvider({ children, client, apiKey, options }: WithOptiona
             '[Agrid.js] No `apiKey` or `client` were provided to `AgridProvider`. Using default global `window.agrid` instance. You must initialize it manually. This is not recommended behavior.'
         )
         return agridJs
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [client, apiKey, JSON.stringify(options)]) // Stringify options to be a stable reference
 
     // TRICKY: The init needs to happen in a useEffect rather than useMemo, as useEffect does not happen during SSR. Otherwise
@@ -122,12 +123,11 @@ export function AgridProvider({ children, client, apiKey, options }: WithOptiona
                 options: options ?? {},
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [client, apiKey, JSON.stringify(options)]) // Stringify options to be a stable reference
 
     return (
-        <AgridContext.Provider
-            value={{ client: agrid, bootstrap: options?.bootstrap ?? client?.config?.bootstrap }}
-        >
+        <AgridContext.Provider value={{ client: agrid, bootstrap: options?.bootstrap ?? client?.config?.bootstrap }}>
             {children}
         </AgridContext.Provider>
     )

@@ -33,7 +33,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/advnsoftware-oss/agrid-js.git",
+    "url": "git+https://github.com/agridvn/agrid-js.git",
     "directory": "packages/agrid-react-native"
   },
   "scripts": {

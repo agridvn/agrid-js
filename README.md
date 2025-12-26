@@ -10,10 +10,10 @@
   <a href="https://www.npmjs.com/package/agrid-js">
     <img alt="npm version" src="https://img.shields.io/npm/v/agrid-js?style=flat-square">
   </a>
-  <a href="https://github.com/advnsoftware-oss/agrid-js/blob/main/LICENSE">
+  <a href="https://github.com/agridvn/agrid-js/blob/main/LICENSE">
     <img alt="MIT License" src="https://img.shields.io/badge/License-MIT-red.svg?style=flat-square">
   </a>
-  <a href="https://github.com/advnsoftware-oss/agrid-js">
+  <a href="https://github.com/agridvn/agrid-js">
     <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/advnsoftware-oss/agrid-js?style=flat-square">
   </a>
   <a href="http://makeapullrequest.com">
@@ -273,9 +273,9 @@ MIT — see [LICENSE](./LICENSE).
 
 - Website: https://agrid.com
 - Documentation: https://agrid.com/docs
-- GitHub: https://github.com/advnsoftware-oss/agrid-js
+- GitHub: https://github.com/agridvn/agrid-js
 - npm: https://www.npmjs.com/package/agrid-js
-- Issues: https://github.com/advnsoftware-oss/agrid-js/issues
+- Issues: https://github.com/agridvn/agrid-js/issues
 
 ---
 

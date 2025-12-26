@@ -24,4 +24,4 @@ pnpm add @agrid/core
 
 ## Links
 
-- Main repo: https://github.com/advnsoftware-oss/agrid-js
+- Main repo: https://github.com/agridvn/agrid-js

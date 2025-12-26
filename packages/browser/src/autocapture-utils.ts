@@ -340,7 +340,7 @@ export function shouldCaptureElement(el: Element): boolean {
 
     // filter out data from fields that look like sensitive fields
     const name = (el as HTMLInputElement).name || el.id || ''
-    // See https://github.com/agrid/agrid-js/issues/165
+    // See https://github.com/agridvn/agrid-js/issues/165
     // Under specific circumstances a bug caused .replace to be called on a DOM element
     // instead of a string, removing the element from the page. Ensure this issue is mitigated.
     if (isString(name)) {

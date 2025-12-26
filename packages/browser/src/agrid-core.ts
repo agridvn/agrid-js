@@ -410,7 +410,7 @@ export class Agrid {
      *
      * @remarks
      * All new instances are added to the main agrid object as sub properties (such as
-     * `agrid.library_name`) and also returned by this function. [Learn more about configuration options](https://github.com/agrid/agrid-js/blob/6e0e873/src/agrid-core.js#L57-L91)
+     * `agrid.library_name`) and also returned by this function. [Learn more about configuration options](https://github.com/agridvn/agrid-js/blob/6e0e873/src/agrid-core.js#L57-L91)
      *
      * @example
      * ```js

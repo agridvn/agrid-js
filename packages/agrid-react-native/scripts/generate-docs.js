@@ -13,7 +13,7 @@ const REACT_NATIVE_SPEC_INFO = {
     title: 'Agrid React Native SDK',
     description: 'Agrid React Native SDK allows you to capture events and send them to Agrid from your React Native applications.',
     slugPrefix: 'agrid-react-native',
-    specUrl: 'https://github.com/advnsoftware-oss/agrid-js.git'
+    specUrl: 'https://github.com/agridvn/agrid-js.git'
 };
 
 // React Native-specific type examples (can be customized as needed)

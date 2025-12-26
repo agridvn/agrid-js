@@ -274,4 +274,4 @@ pnpm turbo --filter=<package-name> test:unit -- -u
 - [Agrid Documentation](https://agrid.com/docs)
 - [Contributing Guide](./CONTRIBUTING.md)
 - [Release Process](./RELEASING.md)
-- [Issue Tracker](https://github.com/agrid/agrid-js/issues)
+- [Issue Tracker](https://github.com/agridvn/agrid-js/issues)

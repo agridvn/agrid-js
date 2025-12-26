@@ -19,7 +19,7 @@ const config = {
         title: 'Agrid JavaScript Web SDK',
         description: 'Agrid-js allows you to automatically capture usage and send events to Agrid.',
         slugPrefix: 'agrid-js',
-        specUrl: 'https://github.com/advnsoftware-oss/agrid-js'
+        specUrl: 'https://github.com/agridvn/agrid-js'
     },
     typeExamples: {
         Properties: PROPERTIES_EXAMPLE,

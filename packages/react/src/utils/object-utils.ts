@@ -1,3 +1,5 @@
+import { isNull } from './type-utils'
+
 // Deeply compares two objects for equality.
 // Use a WeakMap to keep track of visited objects to avoid infinite recursion.
 // WeakMap is supported in IE11, see https://caniuse.com/?search=JavaScript%20WeakMap
@@ -7,7 +9,7 @@ export function isDeepEqual(obj1: any, obj2: any, visited = new WeakMap()): bool
         return true
     }
 
-    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+    if (typeof obj1 !== 'object' || isNull(obj1) || typeof obj2 !== 'object' || isNull(obj2)) {
         return false
     }
 

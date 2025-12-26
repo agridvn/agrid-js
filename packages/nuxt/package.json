@@ -4,7 +4,7 @@
   "description": "Nuxt module for Agrid - Product analytics and feature flags",
   "author": {
     "name": "Agrid",
-    "email": "hey@agrid.com",
+    "email": "info@agrid.vn",
     "url": "https://agrid.com"
   },
   "homepage": "https://agrid.com/docs/libraries/nuxt",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/advnsoftware-oss/agrid-js.git",
+    "url": "https://github.com/agridvn/agrid-js.git",
     "directory": "packages/nuxt"
   },
   "license": "MIT",

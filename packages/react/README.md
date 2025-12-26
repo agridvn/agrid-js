@@ -73,8 +73,8 @@ function MyComponent() {
 
 ## Documentation
 
-For complete documentation, see the [main repository README](https://github.com/advnsoftware-oss/agrid-js#readme).
+For complete documentation, see the [main repository README](https://github.com/agridvn/agrid-js#readme).
 
 ## License
 
-MIT License - see [LICENSE](https://github.com/advnsoftware-oss/agrid-js/blob/main/LICENSE) file for details.
+MIT License - see [LICENSE](https://github.com/agridvn/agrid-js/blob/main/LICENSE) file for details.

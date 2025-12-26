@@ -76,11 +76,11 @@ Nếu bạn cần hỗ trợ:
 
 1. Đọc [Hướng dẫn tích hợp chính](./INTEGRATION_GUIDE.md)
 2. Xem [Ví dụ tích hợp](./INTEGRATION_EXAMPLES.md)
-3. Tạo issue trên [GitHub](https://github.com/agrid/agrid-js/issues)
+3. Tạo issue trên [GitHub](https://github.com/agridvn/agrid-js/issues)
 
 ## Liên kết hữu ích
 
-- [Agrid JS Documentation](https://github.com/advnsoftware-oss/agrid-js#readme)
+- [Agrid JS Documentation](https://github.com/agridvn/agrid-js#readme)
 - [React Integration](https://agrid.com/docs/libraries/react)
 - [API Reference](https://agrid.com/docs/api)
 - [Publish to NPM Guide](./PUBLISH_NPM.md) - Hướng dẫn build và publish packages

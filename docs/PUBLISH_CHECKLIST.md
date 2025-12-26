@@ -19,7 +19,7 @@ Tài liệu này liệt kê tất cả các bước và kiểm tra cần thiết
 Tất cả packages đã được cập nhật với:
 - ✅ **name** - Đã đổi sang agrid-*
 - ✅ **description** - Mô tả rõ ràng, không còn "PostHog"
-- ✅ **repository** - Đã cập nhật sang `github.com/agrid/agrid-js`
+- ✅ **repository** - Đã cập nhật sang `github.com/agridvn/agrid-js`
 - ✅ **author** - Thông tin Agrid đầy đủ
 - ✅ **homepage** - Links đến agrid.com/docs
 - ✅ **keywords** - Keywords phù hợp cho npm search
@@ -255,16 +255,16 @@ Một package.json chuẩn để publish:
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/agrid/agrid-js.git",
+    "url": "https://github.com/agridvn/agrid-js.git",
     "directory": "packages/browser"
   },
   "author": {
     "name": "Agrid",
-    "email": "hey@agrid.com",
+    "email": "info@agrid.vn",
     "url": "https://agrid.com"
   },
   "license": "MIT",
-  "homepage": "https://github.com/advnsoftware-oss/agrid-js#readme",
+  "homepage": "https://github.com/agridvn/agrid-js#readme",
   "keywords": [
     "agrid",
     "analytics"
