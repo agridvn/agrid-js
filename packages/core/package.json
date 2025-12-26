@@ -1,6 +1,6 @@
 {
   "name": "@agrid/core",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "Shared core functionality for Agrid JavaScript SDKs",
   "license": "MIT",
   "author": {

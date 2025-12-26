@@ -1,6 +1,6 @@
 {
     "name": "agrid-js",
-    "version": "1.292.12",
+    "version": "1.292.13",
     "description": "Agrid JS allows you to automatically capture usage and send events to Agrid.",
     "repository": {
         "type": "git",

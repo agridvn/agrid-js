@@ -1,6 +1,6 @@
 {
     "name": "@agrid/react",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "description": "Provides components and hooks for React integrations of Agrid.",
     "repository": {
         "type": "git",

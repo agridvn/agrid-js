@@ -1,6 +1,6 @@
 {
   "name": "@agrid/nextjs-config",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "NextJS configuration helper for Agrid - Product analytics and feature flags",
   "repository": {
     "type": "git",
