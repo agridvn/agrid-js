@@ -1,6 +1,6 @@
 {
   "name": "@agrid/ai",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Agrid Node.js AI integrations for OpenAI, Anthropic, Gemini, and LangChain",
   "repository": {
     "type": "git",

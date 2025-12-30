@@ -1,6 +1,6 @@
 {
   "name": "@agrid/nuxt",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Nuxt module for Agrid - Product analytics and feature flags",
   "author": {
     "name": "Agrid",

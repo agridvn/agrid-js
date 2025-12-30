@@ -14,7 +14,7 @@
     <img alt="MIT License" src="https://img.shields.io/badge/License-MIT-red.svg?style=flat-square">
   </a>
   <a href="https://github.com/agridvn/agrid-js">
-    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/advnsoftware-oss/agrid-js?style=flat-square">
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/agridvn/agrid-js?style=flat-square">
   </a>
   <a href="http://makeapullrequest.com">
     <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square">

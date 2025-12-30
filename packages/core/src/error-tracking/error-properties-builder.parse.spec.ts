@@ -8,7 +8,7 @@ describe('ErrorPropertiesBuilder', () => {
 
     function parseStack(error: Error): StackFrame[] | undefined {
       const ctx = {}
-      const exception = errorPropertiesBuilder.parseStacktrace(
+      const exception = (errorPropertiesBuilder as any).parseStacktrace(
         {
           type: 'Error',
           value: 'Whatever',

@@ -29,7 +29,7 @@ describe('ErrorPropertiesBuilder', () => {
     )
 
     function coerceInput(input: unknown, error: Error = new Error()): ExceptionLike | undefined {
-      const coercingContext = errorPropertiesBuilder.buildCoercingContext(
+      const coercingContext = (errorPropertiesBuilder as any).buildCoercingContext(
         { handled: false },
         {
           syntheticException: error,

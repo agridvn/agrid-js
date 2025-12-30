@@ -87,6 +87,10 @@ export enum PostHogPersistedProperty {
   PersonProperties = 'person_properties',
   GroupProperties = 'group_properties',
 
+  SessionReplay = 'session_replay',
+  Surveys = 'surveys',
+  FlagsEndpointWasHit = 'flags_endpoint_was_hit',
+
   RemoteConfig = 'remote_config',
 }
 
