@@ -940,7 +940,7 @@ export interface AgridConfig {
     /**
      * The segment analytics object.
      *
-     * @see https://agrid.com/docs/libraries/segment
+     * @see https://agrid.vn/docs/libraries/segment
      */
     segment?: SegmentAnalytics
 
@@ -1117,7 +1117,7 @@ export interface AgridConfig {
 
     /**
      * @deprecated - THIS OPTION HAS NO EFFECT, kept here for backwards compatibility reasons.
-     * Use a custom transformation or "Discard IP data" project setting instead: @see https://agrid.com/tutorials/web-redact-properties#hiding-customer-ip-address.
+     * Use a custom transformation or "Discard IP data" project setting instead: @see https://agrid.vn/tutorials/web-redact-properties#hiding-customer-ip-address.
      */
     ip: boolean
 }

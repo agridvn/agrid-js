@@ -853,8 +853,8 @@ function handleLogout() {
 - [Agrid JS Repository](https://github.com/agridvn/agrid-js)
 - [Agrid JS npm Package](https://www.npmjs.com/package/agrid-js)
 - [@agrid/react npm Package](https://www.npmjs.com/package/@agrid/react)
-- [Agrid Documentation](https://agrid.com/docs)
-- [API Reference](https://agrid.com/docs/api)
+- [Agrid Documentation](https://agrid.vn/docs)
+- [API Reference](https://agrid.vn/docs/api)
 
 ---
 
@@ -862,7 +862,7 @@ function handleLogout() {
 
 Nếu gặp vấn đề, vui lòng:
 
-1. Kiểm tra [tài liệu chính thức](https://agrid.com/docs)
+1. Kiểm tra [tài liệu chính thức](https://github.com/agridvn/agrid-js#readme)
 2. Tạo issue trên [GitHub](https://github.com/agridvn/agrid-js/issues)
 3. Liên hệ team phát triển
 

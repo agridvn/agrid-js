@@ -576,7 +576,7 @@ describe('surveys', () => {
                 surveys: [surveyWithUrl, surveyWithSelector, surveyWithUrlAndSelector],
             }
             // eslint-disable-next-line compat/compat
-            assignableWindow.location = new URL('https://agrid.com') as unknown as Location
+            assignableWindow.location = new URL('https://agrid.vn') as unknown as Location
             surveys.getActiveMatchingSurveys((data) => {
                 expect(data).toEqual([surveyWithUrl])
             })
@@ -694,7 +694,7 @@ describe('surveys', () => {
             }
 
             // eslint-disable-next-line compat/compat
-            assignableWindow.location = new URL('https://agrid.com') as unknown as Location
+            assignableWindow.location = new URL('https://agrid.vn') as unknown as Location
             surveys.getActiveMatchingSurveys((data) => {
                 // returns surveyWithIsNotUrlMatch and surveyWithUrlDoesNotContainRegex because they don't contain agrid.com
                 expect(data).toEqual([surveyWithIsNotUrlMatch, surveyWithUrlDoesNotContainRegex])

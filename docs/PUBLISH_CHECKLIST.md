@@ -261,7 +261,7 @@ Một package.json chuẩn để publish:
   "author": {
     "name": "Agrid",
     "email": "info@agrid.vn",
-    "url": "https://agrid.com"
+    "url": "https://agrid.vn"
   },
   "license": "MIT",
   "homepage": "https://github.com/agridvn/agrid-js#readme",

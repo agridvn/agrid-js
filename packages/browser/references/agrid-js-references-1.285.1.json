@@ -2995,7 +2995,7 @@
           "name": "persistence_name"
         },
         {
-          "description": "Determines how Agrid stores information about the user. See [persistence](https://agrid.com/docs/libraries/js#persistence) for details.\n'localStorage+cookie'",
+          "description": "Determines how Agrid stores information about the user. See [persistence](https://agrid.vn/docs/libraries/js#persistence) for details.\n'localStorage+cookie'",
           "type": "'localStorage' | 'cookie' | 'memory' | 'localStorage+cookie' | 'sessionStorage'",
           "name": "persistence"
         },

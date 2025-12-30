@@ -267,8 +267,8 @@ MIT — see [LICENSE](./LICENSE).
 
 ## 🔗 Links
 
-- Website: https://agrid.com
-- Documentation: https://agrid.com/docs
+- Website: https://agrid.vn
+- Documentation: https://github.com/agridvn/agrid-js#readme
 - GitHub: https://github.com/agridvn/agrid-js
 - npm: https://www.npmjs.com/package/agrid-js
 - Issues: https://github.com/agridvn/agrid-js/issues

@@ -10,9 +10,9 @@
   "author": {
     "name": "Agrid",
     "email": "info@agrid.vn",
-    "url": "https://agrid.com"
+    "url": "https://agrid.vn"
   },
-  "homepage": "https://agrid.com/docs/libraries/nextjs",
+  "homepage": "https://github.com/agridvn/agrid-js#readme",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

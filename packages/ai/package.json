@@ -97,9 +97,9 @@
   "author": {
     "name": "Agrid",
     "email": "info@agrid.vn",
-    "url": "https://agrid.com"
+    "url": "https://agrid.vn"
   },
-  "homepage": "https://agrid.com/docs/libraries/ai",
+  "homepage": "https://github.com/agridvn/agrid-js#readme",
   "bugs": {
     "url": "https://github.com/agridvn/agrid-js/issues"
   },

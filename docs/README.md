@@ -81,7 +81,7 @@ Nếu bạn cần hỗ trợ:
 ## Liên kết hữu ích
 
 - [Agrid JS Documentation](https://github.com/agridvn/agrid-js#readme)
-- [React Integration](https://agrid.com/docs/libraries/react)
-- [API Reference](https://agrid.com/docs/api)
+- [React Integration](https://agrid.vn/docs/libraries/react)
+- [API Reference](https://agrid.vn/docs/api)
 - [Publish to NPM Guide](./PUBLISH_NPM.md) - Hướng dẫn build và publish packages
 

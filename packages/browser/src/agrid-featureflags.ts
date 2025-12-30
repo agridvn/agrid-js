@@ -470,7 +470,7 @@ export class AgridFeatureFlags {
                 if (response.json && response.json.quotaLimited?.includes(QuotaLimitedResource.FeatureFlags)) {
                     // log a warning and then early return
                     logger.warn(
-                        'You have hit your feature flags quota limit, and will not be able to load feature flags until the quota is reset.  Please visit https://agrid.com/docs/billing/limits-alerts to learn more.'
+                        'You have hit your feature flags quota limit, and will not be able to load feature flags until the quota is reset.  Please visit https://agrid.vn/docs/billing/limits-alerts to learn more.'
                     )
                     return
                 }

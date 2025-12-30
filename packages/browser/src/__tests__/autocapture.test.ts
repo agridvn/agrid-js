@@ -1253,14 +1253,14 @@ describe('Autocapture system', () => {
                 composedPath: () => [button, main_el],
             })
             const autocapture_config = {
-                url_allowlist: ['https://agrid.com/test/*'],
+                url_allowlist: ['https://agrid.vn/test/*'],
             }
 
-            window!.location = new URL('https://agrid.com/test/matching') as unknown as string & Location
+            window!.location = new URL('https://agrid.vn/test/matching') as unknown as string & Location
 
             expect(shouldCaptureDomEvent(button, e, autocapture_config)).toBe(true)
 
-            window!.location = new URL('https://agrid.com/docs/not-matching') as unknown as string & Location
+            window!.location = new URL('https://agrid.vn/docs/not-matching') as unknown as string & Location
             expect(shouldCaptureDomEvent(button, e, autocapture_config)).toBe(false)
         })
 
@@ -1274,14 +1274,14 @@ describe('Autocapture system', () => {
                 composedPath: () => [button, main_el],
             })
             const autocapture_config = {
-                url_ignorelist: ['https://agrid.com/test/*'],
+                url_ignorelist: ['https://agrid.vn/test/*'],
             }
 
-            window!.location = new URL('https://agrid.com/test/matching') as unknown as string & Location
+            window!.location = new URL('https://agrid.vn/test/matching') as unknown as string & Location
 
             expect(shouldCaptureDomEvent(button, e, autocapture_config)).toBe(false)
 
-            window!.location = new URL('https://agrid.com/docs/not-matching') as unknown as string & Location
+            window!.location = new URL('https://agrid.vn/docs/not-matching') as unknown as string & Location
             expect(shouldCaptureDomEvent(button, e, autocapture_config)).toBe(true)
         })
 
@@ -1298,7 +1298,7 @@ describe('Autocapture system', () => {
                 url_allowlist: [],
             }
 
-            window!.location = new URL('https://agrid.com/test/captured') as unknown as string & Location
+            window!.location = new URL('https://agrid.vn/test/captured') as unknown as string & Location
 
             expect(shouldCaptureDomEvent(button, e, autocapture_config)).toBe(false)
         })

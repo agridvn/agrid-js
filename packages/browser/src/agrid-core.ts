@@ -648,7 +648,7 @@ export class Agrid {
 
         if (this.config.ip) {
             logger.warn(
-                'The `ip` config option has NO EFFECT AT ALL and has been deprecated. Use a custom transformation or "Discard IP data" project setting instead. See https://agrid.com/tutorials/web-redact-properties#hiding-customer-ip-address for more information.'
+                'The `ip` config option has NO EFFECT AT ALL and has been deprecated. Use a custom transformation or "Discard IP data" project setting instead. See https://agrid.vn/tutorials/web-redact-properties#hiding-customer-ip-address for more information.'
             )
         }
 
