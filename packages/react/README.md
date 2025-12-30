@@ -26,7 +26,7 @@ function App() {
   return (
     <AgridProvider
       apiKey="YOUR_PROJECT_API_KEY"
-      options={{ api_host: 'https://us.i.agrid.com' }}
+      options={{ api_host: 'https://gw.track-asia.vn' }}
     >
       <YourApp />
     </AgridProvider>
