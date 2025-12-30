@@ -96,13 +96,13 @@ describe('PostHog Node.js', () => {
             $groups: { org: 123 },
             foo: 'bar',
             $geoip_disable: true,
-            $lib: 'posthog-node',
+            $lib: 'agrid-node',
             $lib_version: '1.2.3',
           },
           uuid: expect.any(String),
           timestamp: expect.any(String),
           type: 'capture',
-          library: 'posthog-node',
+          library: 'agrid-node',
           library_version: '1.2.3',
         },
       ])
@@ -121,7 +121,7 @@ describe('PostHog Node.js', () => {
             $groups: { org: 123 },
             foo: 'bar',
           }),
-          library: 'posthog-node',
+          library: 'agrid-node',
           library_version: '1.2.3',
         })
       )
@@ -144,7 +144,7 @@ describe('PostHog Node.js', () => {
             foo: 'bar',
             $geoip_disable: true,
           }),
-          library: 'posthog-node',
+          library: 'agrid-node',
           library_version: '1.2.3',
         })
       )
@@ -282,7 +282,7 @@ describe('PostHog Node.js', () => {
       expect(batchEvents?.[0].properties).toEqual({
         $groups: { org: 123 },
         foo: 'bar',
-        $lib: 'posthog-node',
+        $lib: 'agrid-node',
         $lib_version: '1.2.3',
       })
     })
@@ -302,7 +302,7 @@ describe('PostHog Node.js', () => {
       expect(batchEvents?.[0].properties).toEqual({
         $groups: { org: 123 },
         foo: 'bar',
-        $lib: 'posthog-node',
+        $lib: 'agrid-node',
         $lib_version: '1.2.3',
       })
 
@@ -320,7 +320,7 @@ describe('PostHog Node.js', () => {
       expect(batchEvents?.[0].properties).toEqual({
         $groups: { org: 123 },
         foo: 'bar',
-        $lib: 'posthog-node',
+        $lib: 'agrid-node',
         $lib_version: '1.2.3',
         $geoip_disable: true,
       })
@@ -340,7 +340,7 @@ describe('PostHog Node.js', () => {
       expect(batchEvents?.[0].properties).toEqual({
         $groups: { org: 123 },
         foo: 'bar',
-        $lib: 'posthog-node',
+        $lib: 'agrid-node',
         $lib_version: '1.2.3',
       })
 
@@ -574,10 +574,10 @@ describe('PostHog Node.js', () => {
         // last event in batch
         distinct_id: '9',
         event: 'test-event',
-        library: 'posthog-node',
+        library: 'agrid-node',
         library_version: '1.2.3',
         properties: {
-          $lib: 'posthog-node',
+          $lib: 'agrid-node',
           $lib_version: '1.2.3',
           $geoip_disable: true,
         },
@@ -604,7 +604,7 @@ describe('PostHog Node.js', () => {
             $group_type: 'posthog',
             $group_key: 'team-1',
             $group_set: { analytics: true },
-            $lib: 'posthog-node',
+            $lib: 'agrid-node',
             $geoip_disable: true,
           },
         },
@@ -629,7 +629,7 @@ describe('PostHog Node.js', () => {
             $group_type: 'posthog',
             $group_key: 'team-1',
             $group_set: { analytics: true },
-            $lib: 'posthog-node',
+            $lib: 'agrid-node',
             $geoip_disable: true,
           },
         },
@@ -804,7 +804,7 @@ describe('PostHog Node.js', () => {
             '$feature/feature-2': true,
             '$feature/feature-array': true,
             '$feature/feature-variant': 'variant',
-            $lib: 'posthog-node',
+            $lib: 'agrid-node',
             $lib_version: '1.2.3',
             $geoip_disable: true,
           }),
@@ -891,7 +891,7 @@ describe('PostHog Node.js', () => {
           distinct_id: 'distinct_id',
           event: 'node test event',
           properties: expect.objectContaining({
-            $lib: 'posthog-node',
+            $lib: 'agrid-node',
             $lib_version: '1.2.3',
             $geoip_disable: true,
           }),
@@ -950,7 +950,7 @@ describe('PostHog Node.js', () => {
           distinct_id: 'distinct_id',
           event: 'node test event',
           properties: expect.objectContaining({
-            $lib: 'posthog-node',
+            $lib: 'agrid-node',
             $lib_version: '1.2.3',
             $geoip_disable: true,
           }),
@@ -997,7 +997,7 @@ describe('PostHog Node.js', () => {
         '$feature/feature-array': true,
         '$feature/disabled-flag': false,
         '$feature/feature-variant': 'variant',
-        $lib: 'posthog-node',
+        $lib: 'agrid-node',
         $lib_version: '1.2.3',
       })
 
@@ -1240,7 +1240,7 @@ describe('PostHog Node.js', () => {
             plan: 'premium',
             tier: 'gold',
             '$feature/existing_flag': 'value', // Should be passed through
-            $lib: 'posthog-node', // Should be passed through
+            $lib: 'agrid-node', // Should be passed through
             numericValue: 123,
             booleanValue: true,
           },
@@ -1255,7 +1255,7 @@ describe('PostHog Node.js', () => {
               plan: 'premium',
               tier: 'gold',
               '$feature/existing_flag': 'value',
-              $lib: 'posthog-node',
+              $lib: 'agrid-node',
               numericValue: 123,
               booleanValue: true,
               '$feature/person-property-flag': true, // Should match due to explicit plan=premium
@@ -1959,7 +1959,7 @@ describe('PostHog Node.js', () => {
             properties: expect.objectContaining({
               $feature_flag: 'beta-feature',
               $feature_flag_response: true,
-              $lib: 'posthog-node',
+              $lib: 'agrid-node',
               $lib_version: '1.2.3',
               locally_evaluated: true,
               '$feature/beta-feature': true,
@@ -2029,7 +2029,7 @@ describe('PostHog Node.js', () => {
             $feature_flag: 'beta-feature',
             $feature_flag_response: true,
             '$feature/beta-feature': true,
-            $lib: 'posthog-node',
+            $lib: 'agrid-node',
             $lib_version: '1.2.3',
             locally_evaluated: true,
             $geoip_disable: true,
@@ -2072,7 +2072,7 @@ describe('PostHog Node.js', () => {
       expect(getLastBatchEvents()?.[0].properties).toEqual({
         $feature_flag: 'beta-feature',
         $feature_flag_response: true,
-        $lib: 'posthog-node',
+        $lib: 'agrid-node',
         $lib_version: '1.2.3',
         locally_evaluated: true,
         '$feature/beta-feature': true,
@@ -2113,7 +2113,7 @@ describe('PostHog Node.js', () => {
           properties: expect.objectContaining({
             $feature_flag: 'flags-flag',
             $feature_flag_response: 'flags-value',
-            $lib: 'posthog-node',
+            $lib: 'agrid-node',
             $lib_version: '1.2.3',
             locally_evaluated: false,
             '$feature/flags-flag': 'flags-value',

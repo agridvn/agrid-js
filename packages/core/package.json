@@ -76,7 +76,10 @@
     "@agrid-tooling/tsconfig-base": "workspace:*",
     "@rslib/core": "catalog:",
     "@types/cross-spawn": "^6.0.6",
-    "jest": "catalog:"
+    "jest": "catalog:",
+    "babel-jest": "^29.7.0",
+    "@babel/preset-env": "7.27.2",
+    "@babel/preset-typescript": "^7.27.1"
   },
   "dependencies": {
     "cross-spawn": "^7.0.6"

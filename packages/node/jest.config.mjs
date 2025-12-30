@@ -9,4 +9,7 @@ export default {
   coverageDirectory: 'coverage',
   silent: true,
   verbose: false,
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx|mjs)$': 'babel-jest',
+  },
 }

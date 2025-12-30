@@ -45,7 +45,7 @@ import agrid from 'agrid-js'
 
 // Initialize
 agrid.init('YOUR_PROJECT_API_KEY', {
-  api_host: 'https://gw.track-asia.vn'
+  api_host: 'https://gw.agrid.vn'
 })
 
 // Track events
@@ -75,7 +75,7 @@ const flagValue = agrid.getFeatureFlag('button-color')
   !function(t,e){var o,n,p,r;e.__SV||(window.agrid=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="agrid",u.people=u.people||[],u.toString=function(t){var e="agrid";return"agrid"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getSurveys getActiveMatchingSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.agrid||[]);
 
   agrid.init('YOUR_PROJECT_API_KEY', {
-    api_host: 'https://gw.track-asia.vn'
+    api_host: 'https://gw.agrid.vn'
   })
 </script>
 ```
@@ -94,7 +94,7 @@ function App() {
   return (
     <AgridProvider
       apiKey="YOUR_PROJECT_API_KEY"
-      options={{ api_host: 'https://gw.track-asia.vn' }}
+      options={{ api_host: 'https://gw.agrid.vn' }}
     >
       <YourApp />
     </AgridProvider>
@@ -197,7 +197,7 @@ pnpm test
 
 ### Running TestCafe E2E tests with BrowserStack
 
-Testing on IE11 requires a bit more setup. TestCafe tests will use the playground application to test the locally built array.full.js bundle. It will also verify that the events emitted during the testing of playground are loaded into the Agrid app. By default it uses https://gw.track-asia.vn and the project with ID 11213. See the testcafe tests to see how to override these if needed. You'll need to set `AGRID_API_KEY` to your personal API key, and `AGRID_PROJECT_KEY` to the key for the project you are using.
+Testing on IE11 requires a bit more setup. TestCafe tests will use the playground application to test the locally built array.full.js bundle. It will also verify that the events emitted during the testing of playground are loaded into the Agrid app. By default it uses https://gw.agrid.vn and the project with ID 11213. See the testcafe tests to see how to override these if needed. You'll need to set `AGRID_API_KEY` to your personal API key, and `AGRID_PROJECT_KEY` to the key for the project you are using.
 
 You'll also need to sign up to [BrowserStack](https://www.browserstack.com/). Note that if you are using CodeSpaces, these variables will already be available in your shell env variables.
 

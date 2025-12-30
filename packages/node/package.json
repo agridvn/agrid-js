@@ -54,7 +54,10 @@
     "@types/node": "^20.0.0",
     "@agrid-tooling/tsconfig-base": "workspace:*",
     "jest": "catalog:",
-    "@rslib/core": "catalog:"
+    "@rslib/core": "catalog:",
+    "babel-jest": "^29.7.0",
+    "@babel/preset-env": "7.27.2",
+    "@babel/preset-typescript": "^7.27.1"
   },
   "keywords": [
     "posthog",

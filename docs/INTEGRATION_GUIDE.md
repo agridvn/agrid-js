@@ -63,7 +63,7 @@ Sau khi script đã được load, khởi tạo Agrid với API key của bạn:
 ```javascript
 // Khởi tạo Agrid
 agrid.init('YOUR_PROJECT_API_KEY', {
-    api_host: 'https://gw.track-asia.vn', // URL của Agrid instance
+    api_host: 'https://gw.agrid.vn', // URL của Agrid instance
     // Các tùy chọn khác
     loaded: function(agrid) {
         // Callback khi Agrid đã load xong
@@ -95,7 +95,7 @@ agrid.init('YOUR_PROJECT_API_KEY', {
     <script>
         // Khởi tạo Agrid
         agrid.init('YOUR_PROJECT_API_KEY', {
-            api_host: 'https://gw.track-asia.vn',
+            api_host: 'https://gw.agrid.vn',
             loaded: function(agrid) {
                 console.log('Agrid đã sẵn sàng!');
             }
@@ -138,7 +138,7 @@ import agrid from 'agrid-js'
 
 // Khởi tạo
 agrid.init('YOUR_PROJECT_API_KEY', {
-    api_host: 'https://gw.track-asia.vn'
+    api_host: 'https://gw.agrid.vn'
 })
 
 // Track events
@@ -183,7 +183,7 @@ function App() {
         <AgridProvider
             apiKey="YOUR_PROJECT_API_KEY"
             options={{
-                api_host: 'https://gw.track-asia.vn',
+                api_host: 'https://gw.agrid.vn',
                 capture_pageview: true,
                 capture_pageleave: true
             }}
@@ -207,7 +207,7 @@ import agrid from 'agrid-js'
 
 // Khởi tạo Agrid
 agrid.init('YOUR_PROJECT_API_KEY', {
-    api_host: 'https://gw.track-asia.vn'
+    api_host: 'https://gw.agrid.vn'
 })
 
 function App() {
@@ -409,7 +409,7 @@ function App() {
         <AgridProvider
             apiKey={process.env.REACT_APP_AGRID_API_KEY}
             options={{
-                api_host: process.env.REACT_APP_AGRID_API_HOST || 'https://gw.track-asia.vn',
+                api_host: process.env.REACT_APP_AGRID_API_HOST || 'https://gw.agrid.vn',
                 person_profiles: 'identified_only',
                 capture_pageview: true,
                 capture_pageleave: true
@@ -561,7 +561,7 @@ Bật session recording để ghi lại hành vi người dùng:
 
 ```javascript
 agrid.init('YOUR_API_KEY', {
-    api_host: 'https://gw.track-asia.vn',
+    api_host: 'https://gw.agrid.vn',
     session_recording: {
         recordCrossOriginIframes: true,
         maskAllInputs: false,
@@ -579,7 +579,7 @@ Tự động capture các sự kiện click, form submission, và pageview:
 
 ```javascript
 agrid.init('YOUR_API_KEY', {
-    api_host: 'https://gw.track-asia.vn',
+    api_host: 'https://gw.agrid.vn',
     autocapture: true, // Bật autocapture
     capture_pageview: true, // Tự động capture pageview
     capture_pageleave: true // Tự động capture khi rời trang
@@ -611,7 +611,7 @@ agrid.on('surveys', function(surveys) {
 
 ```javascript
 agrid.init('YOUR_PROJECT_API_KEY', {
-    api_host: 'https://gw.track-asia.vn',
+    api_host: 'https://gw.agrid.vn',
 
     // Tự động capture pageview
     capture_pageview: true,
@@ -657,7 +657,7 @@ Tạo file `.env`:
 
 ```env
 REACT_APP_AGRID_API_KEY=your_api_key_here
-REACT_APP_AGRID_API_HOST=https://gw.track-asia.vn
+REACT_APP_AGRID_API_HOST=https://gw.agrid.vn
 ```
 
 Sử dụng trong code:
@@ -676,7 +676,7 @@ Agrid JS có hỗ trợ TypeScript đầy đủ:
 import agrid from 'agrid-js'
 
 agrid.init('YOUR_API_KEY', {
-    api_host: 'https://gw.track-asia.vn'
+    api_host: 'https://gw.agrid.vn'
 })
 
 // TypeScript sẽ tự động gợi ý các phương thức và thuộc tính
@@ -875,8 +875,8 @@ Nếu gặp vấn đề, vui lòng:
 ```javascript
 // 1. Thêm script loader vào <head>
 // 2. Khởi tạo
-agrid.init('YOUR_API_KEY', { api_host: 'https://gw.track-asia.vn' })
-agrid.init('YOUR_API_KEY', { api_host: 'https://gw.track-asia.vn' })
+agrid.init('YOUR_API_KEY', { api_host: 'https://gw.agrid.vn' })
+agrid.init('YOUR_API_KEY', { api_host: 'https://gw.agrid.vn' })
 // 3. Track events
 agrid.capture('event_name', { property: 'value' })
 // 4. Identify users
@@ -890,7 +890,7 @@ agrid.identify('user_id', { email: 'user@example.com' })
 // npm install agrid-js @agrid/react
 
 // 2. Bọc app với AgridProvider
-<AgridProvider apiKey="YOUR_API_KEY" options={{ api_host: 'https://gw.track-asia.vn' }}>
+<AgridProvider apiKey="YOUR_API_KEY" options={{ api_host: 'https://gw.agrid.vn' }}>
     <App />
 </AgridProvider>
 
