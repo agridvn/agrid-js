@@ -112,7 +112,7 @@
             <option value="web">🌐 Web SDK (posthog-js)</option>
             <option value="python">🐍 Python SDK</option>
             <option value="node">📗 Node.js SDK</option>
-            <option value="react-native">📱 React Native SDK</option>
+
             <option value="flutter">🦋 Flutter SDK</option>
             <option value="ios">📱 iOS SDK</option>
             <option value="android">🤖 Android SDK</option>
@@ -184,23 +184,7 @@
 
         </div>
 
-        <!-- React Native SDK Tests -->
-        <div id="react-nativeTests" class="sdk-tests" style="display: none;">
-            <div class="scenario-group">
-                <div class="scenario-title">📱 React Native SDK Real Version Tests</div>
-                <div class="scenario-description">
-                    Tests with actual React Native SDK versions and GitHub release dates.
-                </div>
-                <div id="react-native-real-version-info" class="version-info">Loading React Native version data...</div>
-                <button onclick="testReactNativeCurrentVersion()">🟢 React Native Current Version</button>
-                <button onclick="testReactNativeCloseEnoughVersion()">🟡 React Native Close Enough Version</button>
-                <button onclick="testReactNativeOutdatedVersion()">🔴 React Native Outdated Version</button>
-                <button onclick="testReactNativeEdgeCase443()">🎯 React Native Edge: v4.4.3 (3 Behind, 20 Days - Should
-                    be Close Enough)</button>
-                <button onclick="testAllReactNativeRealVersions()">🧪 All React Native Real Tests (48 events)</button>
-            </div>
 
-        </div>
 
         <!-- Flutter SDK Tests -->
         <div id="flutterTests" class="sdk-tests" style="display: none;">
@@ -347,7 +331,7 @@
 
     <script>
         const API_KEY = 'YOUR_POSTHOG_API_KEY'; // Replace with your PostHog project API key (format: phc_...)
-        const HOST = 'http://localhost:8010'; // Replace with your PostHog instance URL 
+        const HOST = 'http://localhost:8010'; // Replace with your PostHog instance URL
         let currentApiKey = API_KEY;
         let distinctId = `test-time-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         let currentTest = null;
@@ -360,7 +344,7 @@
         let realVersionData = null; // For real CDN version testing
         let pythonVersionData = null; // For Python SDK testing
         let nodeVersionData = null; // For Node.js SDK testing
-        let reactNativeVersionData = null; // For React Native SDK testing
+
         let flutterVersionData = null; // For Flutter SDK testing
         let iosVersionData = null; // For iOS SDK testing
         let androidVersionData = null; // For Android SDK testing
@@ -459,7 +443,7 @@
                 web: 'Testing PostHog Web SDK (posthog-js) with real CDN versions + GitHub API release dates and mock edge cases.',
                 python: 'Testing PostHog Python SDK with simulated version events. Python events use the $lib: "posthog-python" property.',
                 node: 'Testing PostHog Node.js SDK with simulated version events. Node.js events use the $lib: "posthog-node" property.',
-                'react-native': 'Testing PostHog React Native SDK with real CHANGELOG.md versions + GitHub API release dates. React Native events use the $lib: "posthog-react-native" property.',
+
                 flutter: 'Testing PostHog Flutter SDK with real CHANGELOG.md versions + GitHub API release dates. Flutter events use the $lib: "posthog-flutter" property.',
                 ios: 'Testing PostHog iOS SDK with real CHANGELOG.md versions + GitHub API release dates. iOS events use the $lib: "posthog-ios" property.',
                 android: 'Testing PostHog Android SDK with real CHANGELOG.md versions + GitHub API release dates. Android events use the $lib: "posthog-android" property.',
@@ -478,8 +462,7 @@
                 fetchPythonVersionData();
             } else if (newSdk === 'node' && !nodeVersionData) {
                 fetchNodeVersionData();
-            } else if (newSdk === 'react-native' && !reactNativeVersionData) {
-                fetchReactNativeVersionData();
+
             } else if (newSdk === 'flutter' && !flutterVersionData) {
                 fetchFlutterVersionData();
             } else if (newSdk === 'ios' && !iosVersionData) {
@@ -1075,293 +1058,7 @@
             log('📊 Check SDK Doctor for time-based detection results', 'info');
         }
 
-        // ========== REACT NATIVE SDK TESTING FUNCTIONS ==========
 
-        // Fetch React Native SDK versions
-        async function fetchReactNativeVersionData() {
-            try {
-                log('📱 Fetching React Native SDK version data from CHANGELOG...', 'info');
-                const response = await fetch('https://raw.githubusercontent.com/PostHog/posthog-js/main/packages/react-native/CHANGELOG.md');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const text = await response.text();
-
-                // Parse React Native SDK versions - format: "## 4.5.1" (no date in header)
-                const versionRegex = /^## (\d+\.\d+\.\d+)$/gm;
-                const versions = [];
-                let match;
-
-                while ((match = versionRegex.exec(text)) !== null) {
-                    versions.push(match[1]);
-                }
-
-                if (versions.length >= 3) {
-                    reactNativeVersionData = {
-                        latest: versions[0],           // Current version
-                        closeEnough: versions[1],      // 1 release behind
-                        outdated: versions[6] || versions[versions.length - 1],  // 6+ releases behind
-                        versions: versions
-                    };
-
-                    // Simulate realistic release dates for React Native SDK
-                    const now = new Date();
-                    reactNativeVersionData.versionDates = {};
-                    reactNativeVersionData.versionDates[versions[0]] = new Date(now.getTime() - (1 * 24 * 60 * 60 * 1000)); // 1 day ago
-                    reactNativeVersionData.versionDates[versions[1]] = new Date(now.getTime() - (20 * 24 * 60 * 60 * 1000)); // 20 days ago
-                    reactNativeVersionData.versionDates[versions[2]] = new Date(now.getTime() - (2 * 60 * 60 * 1000)); // 2 hours ago (recent)
-                    reactNativeVersionData.versionDates[versions[3]] = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000)); // 7 days ago (old)
-
-                    log(`✅ Latest React Native SDK: ${reactNativeVersionData.latest}`, 'success');
-                    updateReactNativeVersionDisplay();
-                } else {
-                    throw new Error(`Insufficient React Native SDK versions found: ${versions.length}`);
-                }
-            } catch (error) {
-                console.error('Failed to fetch React Native versions:', error);
-                log(`❌ Failed to load React Native SDK versions: ${error.message}`, 'error');
-
-                log(`❌ React Native tests cannot run without real version data - no fallbacks used`, 'error');
-                throw error;
-            }
-        }
-
-        function updateReactNativeVersionDisplay() {
-            if (!reactNativeVersionData) return;
-
-            const formatDate = (date) => {
-                const hoursAgo = Math.round((Date.now() - date.getTime()) / (1000 * 60 * 60));
-                if (hoursAgo < 48) {
-                    return `${hoursAgo}h ago (RECENT - <48h)`;
-                } else {
-                    const daysAgo = Math.round(hoursAgo / 24);
-                    return `${daysAgo}d ago (OLD - >48h)`;
-                }
-            };
-
-            const versionInfoElement = document.getElementById('version-info');
-            if (versionInfoElement) {
-                versionInfoElement.innerHTML = `
-                    <strong>React Native SDK Test Versions:</strong><br>
-                    • Latest (${reactNativeVersionData.versions[0]}): Released ${formatDate(reactNativeVersionData.versionDates[reactNativeVersionData.versions[0]])}<br>
-                    • 1 behind (${reactNativeVersionData.versions[1]}): Released ${formatDate(reactNativeVersionData.versionDates[reactNativeVersionData.versions[1]])}<br>
-                    • 2 behind (${reactNativeVersionData.versions[2]}): Released ${formatDate(reactNativeVersionData.versionDates[reactNativeVersionData.versions[2]])} 🎯<br>
-                    • 3 behind (${reactNativeVersionData.versions[3]}): Released ${formatDate(reactNativeVersionData.versionDates[reactNativeVersionData.versions[3]])}
-                `;
-            }
-
-            // Update React Native real version info display (only if element exists)
-            const reactNativeRealVersionInfoElement = document.getElementById('react-native-real-version-info');
-            if (reactNativeRealVersionInfoElement) {
-                reactNativeRealVersionInfoElement.innerHTML = `
-                    <strong>React Native Real Versions:</strong><br>
-                    • Latest: v${reactNativeVersionData.latest} (Current)<br>
-                    • 1 Behind: v${reactNativeVersionData.closeEnough} (Close enough)<br>
-                    • 6+ Behind: v${reactNativeVersionData.outdated} (Outdated)
-                `;
-            }
-        }
-
-        function initPostHogForReactNative() {
-            if (window.posthog) {
-                window.posthog.reset();
-            }
-
-            // Initialize PostHog normally (we'll simulate React Native events)
-            !function (t, e) { var o, n, p, r; e.__SV || (window.posthog = e, e._i = [], e.init = function (i, s, a) { function g(t, e) { var o = e.split("."); 2 == o.length && (t = t[o[0]], e = o[1]); t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } } (p = t.createElement("script")).type = "text/javascript", p.async = !0, p.src = s.api_host + "/static/array.js", (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(p, r); var u = e; for (void 0 !== a ? u = e[a] = [] : a = "posthog", u.people = u.people || [], u.toString = function (t) { var e = "posthog"; return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e }, u.people.toString = function () { return u.toString(1) + ".people (stub)" }, o = "capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId".split(" "), n = 0; n < o.length; n++)g(u, o[n]); e._i.push([i, s, a]) }, e.__SV = 1) }(document, window.posthog || []);
-
-            posthog.init(currentApiKey, {
-                api_host: HOST,
-                debug: true,
-                capture_pageview: false,
-                disable_session_recording: true,
-                autocapture: false
-            });
-
-            posthog.identify(distinctId);
-        }
-
-        // Send React Native SDK test events
-        async function sendReactNativeTestEvent(version, scenario, eventIndex) {
-            try {
-                const releaseAge = reactNativeVersionData.versionDates[version] ?
-                    Math.round((Date.now() - reactNativeVersionData.versionDates[version].getTime()) / (1000 * 60 * 60)) : 'unknown';
-
-                const eventData = {
-                    $lib: 'posthog-react-native',
-                    $lib_version: version,
-                    test_scenario: scenario,
-                    test_event_index: eventIndex,
-                    version_release_age_hours: releaseAge,
-                    test_sdk_type: 'react-native',
-                    $current_url: window.location.href,
-                    $session_id: `react-native-test-session-${scenario}`,
-                    $device_type: 'Mobile'
-                };
-
-                console.log(`[React Native Test] Event ${eventIndex}: $lib_version = "${version}"`, eventData);
-                posthog.capture('test_react_native_time_based_detection', eventData);
-
-                log(`📤 Sent: React Native v${version} (${releaseAge}h old) - ${scenario}`, 'info');
-            } catch (error) {
-                log(`❌ Error sending React Native event: ${error.message}`, 'error');
-            }
-        }
-
-        // React Native SDK Test Functions
-        async function testReactNativeCurrentVersion() {
-            if (currentTest) {
-                alert('Please reload the page before running another test');
-                return;
-            }
-            currentTest = 'react_native_current';
-
-            await fetchReactNativeVersionData();
-            initPostHogForReactNative();
-
-            const version = reactNativeVersionData.latest;
-            for (let i = 0; i < 16; i++) {
-                await sendReactNativeTestEvent(version, 'react_native_current_version', i);
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-        }
-
-        async function testReactNativeCloseEnoughVersion() {
-            if (currentTest) {
-                alert('Please reload the page before running another test');
-                return;
-            }
-            currentTest = 'react_native_close_enough';
-
-            await fetchReactNativeVersionData();
-            initPostHogForReactNative();
-
-            const version = reactNativeVersionData.closeEnough;
-            for (let i = 0; i < 16; i++) {
-                await sendReactNativeTestEvent(version, 'react_native_close_enough_version', i);
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-        }
-
-        async function testReactNativeOutdatedVersion() {
-            if (currentTest) {
-                alert('Please reload the page before running another test');
-                return;
-            }
-            currentTest = 'react_native_outdated';
-
-            await fetchReactNativeVersionData();
-            initPostHogForReactNative();
-
-            const version = reactNativeVersionData.outdated;
-            for (let i = 0; i < 16; i++) {
-                await sendReactNativeTestEvent(version, 'react_native_outdated_version', i);
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-        }
-
-        async function testReactNativeEdgeCase443() {
-            if (currentTest) {
-                alert('Please reload the page before running another test');
-                return;
-            }
-            currentTest = 'react_native_edge_443';
-            log('🎯 Testing REACT NATIVE Edge Case: v4.4.3 (3 Behind, 20 Days)...', 'info');
-            log('⏰ This version should show "Close enough" with adjusted threshold, "Outdated" with 48h threshold', 'info');
-            initPostHogForReactNative();
-            const version = '4.4.3';
-            for (let i = 0; i < 16; i++) {
-                await sendReactNativeTestEvent(version, 'react_native_edge_443', i);
-                await new Promise(resolve => setTimeout(resolve, 200));
-            }
-            log(`✅ React Native edge case test complete: 16 events with v${version}`, 'success');
-            log(`📊 v4.4.3 released Aug 27 (20 days ago), 3 releases behind v4.5.1`, 'info');
-            log(`🔍 Expected: "Close enough" (with wide threshold) or "Outdated" (with 48h threshold)`, 'info');
-        }
-
-        async function testAllReactNativeRealVersions() {
-            if (currentTest) {
-                alert('Please reload the page before running another test');
-                return;
-            }
-            currentTest = 'all_react_native_real_versions';
-
-            log('🧪 Testing all REACT NATIVE real version scenarios...', 'info');
-
-            await testReactNativeCurrentVersion();
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            await testReactNativeCloseEnoughVersion();
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            await testReactNativeOutdatedVersion();
-
-            log('🎉 All React Native real version tests completed!', 'success');
-            log('🔍 Check SDK Doctor for React Native detection results', 'info');
-        }
-
-        // React Native Mock Edge Case Tests (placeholders - can be implemented later)
-        async function testReactNativeMockDualCheckRecent() {
-            alert('React Native mock tests coming soon...');
-        }
-
-        async function testReactNativeMockDualCheckOld() {
-            alert('React Native mock tests coming soon...');
-        }
-
-        async function testReactNativeMockExtreme() {
-            alert('React Native mock tests coming soon...');
-        }
-
-        async function testAllReactNativeMockScenarios() {
-            alert('React Native mock tests coming soon...');
-        }
-
-        // Test React Native SDK with real version 4.5.0 for time-based detection
-        async function testReactNativeRealTimeBasedDetection() {
-            if (currentTest) {
-                alert('Please reload the page before running another test');
-                return;
-            }
-            currentTest = 'react_native_real_time_based';
-
-            log('⏰ Testing REACT NATIVE Real Time-Based Detection with v4.5.0...', 'info');
-            log('📅 Real release date: Aug 27, 2025 (20 days ago)', 'info');
-            log('🎯 Expected: Should show "Close enough" with 25-day threshold, "Outdated" with 48h threshold', 'info');
-
-            initPostHogForReactNative();
-
-            // Use real React Native version 4.5.0 (released Aug 27, 2025 - 20 days ago)
-            // This is 1 release behind 4.5.1 and 20 days old - good for testing
-            const realTestVersion = '4.5.0';
-
-            for (let i = 0; i < 16; i++) {
-                try {
-                    posthog.capture('test_react_native_real_time_based_detection', {
-                        $lib: 'posthog-react-native',
-                        $lib_version: realTestVersion,
-                        test_scenario: 'react_native_real_time_based_detection',
-                        test_event_index: i,
-                        test_type: 'real_version_time_test',
-                        real_release_date: '2025-08-27T09:57:19Z',
-                        releases_behind: 1,
-                        days_since_release: 20,
-                        testing_threshold_logic: true,
-                        $current_url: window.location.href,
-                        $session_id: `react-native-real-time-test-session`,
-                        $device_type: 'Mobile'
-                    });
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                } catch (error) {
-                    log(`❌ Error sending React Native real time test event: ${error.message}`, 'error');
-                }
-            }
-
-            log(`✅ React Native Real Time Test complete! Sent 16 events with v${realTestVersion}`, 'success');
-            log('🔍 SDK Doctor will use REAL GitHub API data for this version', 'info');
-            log('📊 Check SDK Doctor for time-based detection results', 'info');
-        }
 
         // ========== FLUTTER SDK TESTING FUNCTIONS ==========
 

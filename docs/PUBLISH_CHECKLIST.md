@@ -8,7 +8,7 @@ Tài liệu này liệt kê tất cả các bước và kiểm tra cần thiết
 - ✅ `agrid-js` - Main browser SDK
 - ✅ `agrid-js-lite` - Lightweight browser SDK
 - ✅ `agrid-node` - Node.js SDK
-- ✅ `agrid-react-native` - React Native SDK
+
 - ✅ `@agrid/core` - Core functionality
 - ✅ `@agrid/react` - React components
 - ✅ `@agrid/nuxt` - Nuxt module
@@ -334,7 +334,7 @@ pnpm --filter=@agrid/nuxt build && pnpm --filter=@agrid/nuxt publish --access pu
     ├── agrid-node
     ├── agrid-js
     ├── @agrid/nextjs-config
-    └── agrid-react-native
+
 
 agrid-js (đã publish)
     └── @agrid/react

@@ -41,7 +41,7 @@ npm config set //registry.npmjs.org/:_authToken YOUR_NPM_TOKEN
 - `agrid-js`
 - `agrid-js-lite`
 - `agrid-node`
-- `agrid-react-native`
+
 - `@agrid/core`
 - `@agrid/react`
 - `@agrid/ai`

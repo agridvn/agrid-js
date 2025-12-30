@@ -2,7 +2,6 @@
 "agrid-js": major
 "agrid-js-lite": major
 "agrid-node": major
-"agrid-react-native": major
 "@agrid/core": major
 "@agrid/react": major
 "@agrid/ai": major

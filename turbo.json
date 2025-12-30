@@ -50,12 +50,6 @@
             "inputs": ["dist/**", "package.json", "scripts/**", "docs/**"],
             "outputs": ["references/**"],
             "cache": false
-        },
-        "agrid-react-native#generate-references": {
-            "dependsOn": ["build"],
-            "inputs": ["dist/**", "package.json", "scripts/**", "docs/**"],
-            "outputs": ["references/**"],
-            "cache": false
         }
     }
 }

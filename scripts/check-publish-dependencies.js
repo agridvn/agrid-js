@@ -13,7 +13,6 @@ const PACKAGES = [
   { name: 'agrid-js', path: 'packages/browser' },
   { name: 'agrid-js-lite', path: 'packages/web' },
   { name: 'agrid-node', path: 'packages/node' },
-  { name: 'agrid-react-native', path: 'packages/react-native' },
   { name: '@agrid/core', path: 'packages/core' },
   { name: '@agrid/react', path: 'packages/react' },
   { name: '@agrid/nuxt', path: 'packages/nuxt' },

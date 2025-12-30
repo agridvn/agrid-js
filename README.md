@@ -115,11 +115,8 @@ client.capture({
 - Requires `node >= 20`.
 - Use the `PostHog` client to send server-side events, feature flags, and identification.
 
-### React Native (`agrid-react-native`)
 
-- Install: `npm install @agrid/agrid-react-native`
-- Optional integrations with common RN packages (AsyncStorage, DeviceInfo, Navigation, SafeArea, etc.).
-- Supports mobile autocapture, surveys, and feature flags.
+
 
 ### Lite (`agrid-js-lite`)
 

@@ -20,7 +20,6 @@ _Please describe._
 - [ ] agrid-js (web)
 - [ ] agrid-js-lite (web lite)
 - [ ] agrid-node
-- [ ] agrid-react-native
 - [ ] @agrid/react
 - [ ] @agrid/ai
 - [ ] @agrid/nextjs-config

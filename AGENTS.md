@@ -31,7 +31,7 @@ The repository contains the following SDK packages in `./packages/`:
 | `core/`          | `@agrid/core`          | Shared core functionality used by multiple SDKs |
 | `node/`          | `agrid-node`           | Node.js backend SDK (requires Node >= 20)       |
 | `react/`         | `@agrid/react`         | React components and hooks                      |
-| `react-native/`  | `agrid-react-native`   | React Native mobile SDK                         |
+
 | `nuxt/`          | `@agrid/nuxt`          | Nuxt framework module                           |
 | `nextjs-config/` | `@agrid/nextjs-config` | Next.js configuration helper                    |
 | `ai/`            | `@agrid/ai`            | AI integrations for Node.js                     |
@@ -116,8 +116,7 @@ pnpm turbo package
 # Run unit tests for agrid-js only
 pnpm turbo --filter=agrid-js test:unit
 
-# Build agrid-react-native and its dependencies
-pnpm turbo --filter=agrid-react-native build
+
 
 # Lint a specific package
 pnpm turbo --filter=@agrid/react lint:fix

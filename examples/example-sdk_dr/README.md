@@ -4,7 +4,7 @@
 
 ### test-time-based-detection.html
 
-Tests SDK Doctor's ability to detect outdated SDK versions using time-based logic across all supported SDKs (Web, Python, Node.js, React Native, Flutter, iOS, Android, Go, PHP, Ruby, Elixir, .NET).
+Tests SDK Doctor's ability to detect outdated SDK versions using time-based logic across all supported SDKs (Web, Python, Node.js, Flutter, iOS, Android, Go, PHP, Ruby, Elixir, .NET).
 
 - Fetches current release/version info from GitHub
 - Sends events to tests "Current", "Close enough", and "Outdated" detection

@@ -17,7 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - name: agrid-react-native
           - name: agrid-node
           - name: agrid-js-lite
           - name: agrid-js

@@ -405,52 +405,45 @@ export class V7Generator {
 }
 
 /** A global flag to force use of cryptographically strong RNG. */
-// declare const UUIDV7_DENY_WEAK_RNG: boolean;
+declare const UUIDV7_DENY_WEAK_RNG: boolean;
 
 /** Returns the default random number generator available in the environment. */
 const getDefaultRandom = (): { nextUint32(): number } => {
-// fix: crypto isn't available in react-native, always use Math.random
-
-//   // detect Web Crypto API
-//   if (
-//     typeof crypto !== "undefined" &&
-//     typeof crypto.getRandomValues !== "undefined"
-//   ) {
-//     return new BufferedCryptoRandom();
-//   } else {
-//     // fall back on Math.random() unless the flag is set to true
-//     if (typeof UUIDV7_DENY_WEAK_RNG !== "undefined" && UUIDV7_DENY_WEAK_RNG) {
-//       throw new Error("no cryptographically strong RNG available");
-//     }
-//     return {
-//       nextUint32: (): number =>
-//         Math.trunc(Math.random() * 0x1_0000) * 0x1_0000 +
-//         Math.trunc(Math.random() * 0x1_0000),
-//     };
-//   }
-  return {
-    nextUint32: (): number =>
-      Math.trunc(Math.random() * 0x1_0000) * 0x1_0000 +
-      Math.trunc(Math.random() * 0x1_0000),
-  };
+  // detect Web Crypto API
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.getRandomValues !== "undefined"
+  ) {
+    return new BufferedCryptoRandom();
+  } else {
+    // fall back on Math.random() unless the flag is set to true
+    if (typeof UUIDV7_DENY_WEAK_RNG !== "undefined" && UUIDV7_DENY_WEAK_RNG) {
+      throw new Error("no cryptographically strong RNG available");
+    }
+    return {
+      nextUint32: (): number =>
+        Math.trunc(Math.random() * 0x1_0000) * 0x1_0000 +
+        Math.trunc(Math.random() * 0x1_0000),
+    };
+  }
 };
 
-// /**
-//  * Wraps `crypto.getRandomValues()` to enable buffering; this uses a small
-//  * buffer by default to avoid both unbearable throughput decline in some
-//  * environments and the waste of time and space for unused values.
-//  */
-// class BufferedCryptoRandom {
-//   private readonly buffer = new Uint32Array(8);
-//   private cursor = 0xffff;
-//   nextUint32(): number {
-//     if (this.cursor >= this.buffer.length) {
-//       crypto.getRandomValues(this.buffer);
-//       this.cursor = 0;
-//     }
-//     return this.buffer[this.cursor++];
-//   }
-// }
+/**
+ * Wraps `crypto.getRandomValues()` to enable buffering; this uses a small
+ * buffer by default to avoid both unbearable throughput decline in some
+ * environments and the waste of time and space for unused values.
+ */
+class BufferedCryptoRandom {
+  private readonly buffer = new Uint32Array(8);
+  private cursor = 0xffff;
+  nextUint32(): number {
+    if (this.cursor >= this.buffer.length) {
+      crypto.getRandomValues(this.buffer);
+      this.cursor = 0;
+    }
+    return this.buffer[this.cursor++];
+  }
+}
 
 let defaultGenerator: V7Generator | undefined;
 
