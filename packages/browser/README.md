@@ -19,7 +19,6 @@ This repository contains multiple packages for different platforms and framework
 | **Lite SDK** | [`agrid-js-lite`](https://www.npmjs.com/package/agrid-js-lite) | Lightweight browser SDK | Size-conscious applications |
 | **React SDK** | [`@agrid/react`](https://www.npmjs.com/package/@agrid/react) | React components and hooks | React applications |
 | **Node.js SDK** | [`agrid-node`](https://www.npmjs.com/package/agrid-node) | Server-side SDK | Node.js backend (Node >= 20) |
-| **React Native** | [`agrid-react-native`](https://www.npmjs.com/package/agrid-react-native) | Mobile SDK | React Native apps |
 | **Core** | [`@agrid/core`](https://www.npmjs.com/package/@agrid/core) | Shared core functionality | Internal use by other SDKs |
 | **Nuxt Module** | [`@agrid/nuxt`](https://www.npmjs.com/package/@agrid/nuxt) | Nuxt.js integration | Nuxt.js applications |
 | **Next.js Config** | [`@agrid/nextjs-config`](https://www.npmjs.com/package/@agrid/nextjs-config) | Next.js helper | Next.js applications |

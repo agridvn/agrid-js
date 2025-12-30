@@ -4,7 +4,7 @@ Shared core functionality used across Agrid SDKs.
 
 ## What It Is
 
-- Internal utilities, process helpers, types, and building blocks for `agrid-js`, `agrid-node`, `agrid-react`, `agrid-react-native`, `@agrid/nuxt`, and `@agrid/nextjs-config`.
+- Internal utilities, process helpers, types, and building blocks for `agrid-js`, `agrid-node`, `agrid-react`, `@agrid/nuxt`, and `@agrid/nextjs-config`.
 - Not typically consumed directly by application code.
 
 ## Installation

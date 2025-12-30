@@ -161,7 +161,6 @@ client.capture({
 - `agrid-js-lite` (Lite SDK) — smaller bundle, core functionality
 - `agrid-node` (Node.js SDK) — server-side analytics and flags
 - `@agrid/react` (React SDK) — provider and hooks
-- `agrid-react-native` (React Native SDK) — mobile analytics
 - `@agrid/core` (Core) — shared core functionality
 - `@agrid/nuxt` (Nuxt Module) — Nuxt 3/4 integration
 - `@agrid/nextjs-config` (NextJS Config) — NextJS configuration helper
