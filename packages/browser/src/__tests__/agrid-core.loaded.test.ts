@@ -10,7 +10,7 @@ describe('loaded() with flags', () => {
 
     const createPosthog = async (config?: Partial<AgridConfig>) => {
         const agrid = await createPosthogInstance(uuidv7(), {
-            api_host: 'https://app.agrid.com',
+            api_host: 'YOUR_INGESTION_URL',
             disable_compression: true,
             ...config,
             loaded: (ph) => {

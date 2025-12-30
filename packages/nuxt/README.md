@@ -27,7 +27,7 @@ export default defineNuxtConfig({
   },
 
   agridConfig: {
-    host: 'https://app.agrid.com',
+    host: 'YOUR_INGESTION_URL',
     publicKey: 'YOUR_PUBLIC_KEY',
     clientConfig: {}, // partial Browser SDK config
     serverConfig: {}, // Node SDK options (error tracking only)

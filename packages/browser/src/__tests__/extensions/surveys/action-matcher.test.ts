@@ -13,7 +13,7 @@ describe('action-matcher', () => {
     beforeEach(() => {
         config = {
             token: 'testtoken',
-            api_host: 'https://app.agrid.com',
+            api_host: 'YOUR_INGESTION_URL',
             persistence: 'memory',
         } as unknown as AgridConfig
 

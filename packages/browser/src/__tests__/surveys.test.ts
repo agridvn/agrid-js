@@ -184,7 +184,7 @@ describe('surveys', () => {
 
         config = {
             token: 'testtoken',
-            api_host: 'https://app.agrid.com',
+            api_host: 'YOUR_INGESTION_URL',
             persistence: 'memory',
             surveys_request_timeout_ms: SURVEYS_REQUEST_TIMEOUT_MS,
         } as unknown as AgridConfig

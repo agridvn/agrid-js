@@ -14,7 +14,7 @@ npm install @agrid/ai
 import { OpenAI } from '@agrid/ai'
 import { PostHog } from 'agrid-node'
 
-const agrid = new PostHog('YOUR_PROJECT_API_KEY', { host: 'https://app.agrid.com' })
+const agrid = new PostHog('YOUR_PROJECT_API_KEY', { host: 'YOUR_INGESTION_URL' })
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,

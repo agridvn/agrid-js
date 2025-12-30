@@ -123,7 +123,7 @@ export const safewrap = function <F extends (...args: any[]) => any = (...args: 
             return f.apply(this, args)
         } catch (e) {
             logger.critical(
-                'Implementation error. Please turn on debug mode and open a ticket on https://app.agrid.com/home#panel=support%3Asupport%3A.'
+                'Implementation error. Please turn on debug mode and open a ticket on YOUR_INGESTION_URL/home#panel=support%3Asupport%3A.'
             )
             logger.critical(e)
         }

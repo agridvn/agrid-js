@@ -18,7 +18,7 @@ pnpm add agrid-node
 import { PostHog } from 'agrid-node'
 
 const agrid = new PostHog('YOUR_PROJECT_API_KEY', {
-  host: 'https://app.agrid.com'
+  host: 'YOUR_INGESTION_URL'
 })
 
 await agrid.capture({

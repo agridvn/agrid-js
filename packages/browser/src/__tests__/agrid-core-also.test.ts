@@ -322,11 +322,11 @@ describe('agrid core', () => {
         it('sends payloads to overriden endpoint if given', () => {
             const agrid = agridWith({ ...defaultConfig, request_batching: false }, defaultOverrides)
 
-            agrid.capture('event-name', { foo: 'bar', length: 0 }, { _url: 'https://app.agrid.com/s/' })
+            agrid.capture('event-name', { foo: 'bar', length: 0 }, { _url: 'YOUR_INGESTION_URL/s/' })
 
             expect(agrid._send_request).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    url: 'https://app.agrid.com/s/',
+                    url: 'YOUR_INGESTION_URL/s/',
                 })
             )
         })
@@ -335,18 +335,18 @@ describe('agrid core', () => {
             const agrid = agridWith({ ...defaultConfig, request_batching: false }, defaultOverrides)
             agrid._onRemoteConfig({ analytics: { endpoint: '/i/v0/e/' } } as RemoteConfig)
 
-            agrid.capture('event-name', { foo: 'bar', length: 0 }, { _url: 'https://app.agrid.com/s/' })
+            agrid.capture('event-name', { foo: 'bar', length: 0 }, { _url: 'YOUR_INGESTION_URL/s/' })
 
             expect(agrid._send_request).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    url: 'https://app.agrid.com/s/',
+                    url: 'YOUR_INGESTION_URL/s/',
                 })
             )
         })
 
         it('does not allow you to set complex current url', () => {
             const agrid = agridWith(defaultConfig, defaultOverrides)
-            const captureResult = agrid.capture('event-name', { $current_url: new URL('https://app.agrid.com/s/') })
+            const captureResult = agrid.capture('event-name', { $current_url: new URL('YOUR_INGESTION_URL/s/') })
 
             expect(captureResult.properties.$current_url).toEqual('http://localhost/')
         })
@@ -445,7 +445,7 @@ describe('agrid core', () => {
 
             agrid = agridWith(
                 {
-                    api_host: 'https://app.agrid.com',
+                    api_host: 'YOUR_INGESTION_URL',
                     token: 'testtoken',
                     property_denylist: [],
                     property_blacklist: [],

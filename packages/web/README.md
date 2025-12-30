@@ -16,7 +16,7 @@ It is entirely written in Typescript and has a minimal API as follows:
 import PostHog from 'agrid-js-lite'
 
 const posthog = new PostHog('YOUR_PROJECT_API_KEY', {
-  // host: 'https://app.agrid.com'
+  // host: 'YOUR_INGESTION_URL'
 })
 
 // Capture generic events

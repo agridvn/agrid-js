@@ -70,30 +70,30 @@ describe('config', () => {
             it.each([
                 [
                     {
-                        name: 'https://app.agrid.com/api/feature_flag/',
+                        name: 'YOUR_INGESTION_URL/api/feature_flag/',
                     },
                     {
-                        name: 'https://app.agrid.com/api/feature_flag/',
+                        name: 'YOUR_INGESTION_URL/api/feature_flag/',
                     },
                     undefined,
                 ],
                 [
                     {
-                        name: 'https://app.agrid.com/s/?ip=0&ver=123',
-                    },
-                    undefined,
-                    undefined,
-                ],
-                [
-                    {
-                        name: 'https://app.agrid.com/e/?ip=0&ver=123',
+                        name: 'YOUR_INGESTION_URL/s/?ip=0&ver=123',
                     },
                     undefined,
                     undefined,
                 ],
                 [
                     {
-                        name: 'https://app.agrid.com/i/v0/e/?ip=0&ver=123',
+                        name: 'YOUR_INGESTION_URL/e/?ip=0&ver=123',
+                    },
+                    undefined,
+                    undefined,
+                ],
+                [
+                    {
+                        name: 'YOUR_INGESTION_URL/i/v0/e/?ip=0&ver=123',
                     },
                     undefined,
                     undefined,
@@ -101,7 +101,7 @@ describe('config', () => {
                 [
                     {
                         // even an imaginary future world of rust session replay capture
-                        name: 'https://app.agrid.com/i/v0/s/?ip=0&ver=123',
+                        name: 'YOUR_INGESTION_URL/i/v0/s/?ip=0&ver=123',
                     },
                     undefined,
                     undefined,
@@ -109,7 +109,7 @@ describe('config', () => {
                 [
                     {
                         // using a relative path as a reverse proxy api host
-                        name: 'https://app.agrid.com/ingest/s/?ip=0&ver=123',
+                        name: 'YOUR_INGESTION_URL/ingest/s/?ip=0&ver=123',
                     },
                     undefined,
                     '/ingest',
@@ -117,10 +117,10 @@ describe('config', () => {
                 [
                     {
                         // using a reverse proxy with a path
-                        name: 'https://app.agrid.com/ingest/s/?ip=0&ver=123',
+                        name: 'YOUR_INGESTION_URL/ingest/s/?ip=0&ver=123',
                     },
                     undefined,
-                    'https://app.agrid.com/ingest',
+                    'YOUR_INGESTION_URL/ingest',
                 ],
             ])('ignores ingestion paths', (capturedRequest, expected, apiHost?: string) => {
                 const networkOptions = buildNetworkRequestOptions(

@@ -15,7 +15,7 @@ describe('featureflags', () => {
     const config = {
         token: 'random fake token',
         persistence: 'memory',
-        api_host: 'https://app.agrid.com',
+        api_host: 'YOUR_INGESTION_URL',
     } as AgridConfig
 
     let mockWarn
@@ -2250,7 +2250,7 @@ describe('getRemoteConfigPayload', () => {
     describe('flags_api_host configuration', () => {
         it('should use flags_api_host when configured', () => {
             const apiConfig = {
-                api_host: 'https://app.agrid.com',
+                api_host: 'YOUR_INGESTION_URL',
                 flags_api_host: 'https://example.com/feature-flags',
             }
             const customInstance = {
@@ -2279,13 +2279,13 @@ describe('getRemoteConfigPayload', () => {
             const customInstance = {
                 config: {
                     token: 'test-token',
-                    api_host: 'https://app.agrid.com',
+                    api_host: 'YOUR_INGESTION_URL',
                 } as AgridConfig,
                 get_distinct_id: () => 'test-distinct-id',
                 _send_request: jest.fn(),
                 requestRouter: new RequestRouter({
                     config: {
-                        api_host: 'https://app.agrid.com',
+                        api_host: 'YOUR_INGESTION_URL',
                     },
                 } as any),
             } as unknown as Agrid

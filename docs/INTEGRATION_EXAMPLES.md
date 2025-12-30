@@ -30,7 +30,7 @@ File `app/views/layouts/application.html.erb`:
       !function(t,e){var o,n,p,r;e.__SV||(window.agrid=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="agrid",u.people=u.people||[],u.toString=function(t){var e="agrid";return"agrid"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getSurveys getActiveMatchingSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.agrid||[]);
 
       agrid.init('<%= ENV["AGRID_API_KEY"] %>', {
-        api_host: '<%= ENV["AGRID_API_HOST"] || "https://app.agrid.com" %>',
+        api_host: '<%= ENV["AGRID_API_HOST"] || "YOUR_INGESTION_URL" %>',
         loaded: function(agrid) {
           <% if user_signed_in? %>
             agrid.identify('<%= current_user.id %>', {
@@ -188,7 +188,7 @@ import posthog from 'agrid-js'
 export function initAgrid() {
     if (typeof window !== 'undefined') {
         const agridApiKey = process.env.NEXT_PUBLIC_AGRID_API_KEY
-        const agridHost = process.env.NEXT_PUBLIC_AGRID_API_HOST || 'https://app.agrid.com'
+        const agridHost = process.env.NEXT_PUBLIC_AGRID_API_HOST || 'YOUR_INGESTION_URL'
 
         if (agridApiKey && !window.agrid) {
             posthog.init(agridApiKey, {
@@ -306,7 +306,7 @@ File `.env.local`:
 
 ```env
 NEXT_PUBLIC_AGRID_API_KEY=your_api_key_here
-NEXT_PUBLIC_AGRID_API_HOST=https://app.agrid.com
+NEXT_PUBLIC_AGRID_API_HOST=YOUR_INGESTION_URL
 ```
 
 ---
@@ -328,7 +328,7 @@ import posthog from 'agrid-js'
 
 export default function ({ app }, inject) {
     const agridApiKey = process.env.AGRID_API_KEY
-    const agridHost = process.env.AGRID_API_HOST || 'https://app.agrid.com'
+    const agridHost = process.env.AGRID_API_HOST || 'YOUR_INGESTION_URL'
 
     if (agridApiKey) {
         posthog.init(agridApiKey, {
@@ -351,7 +351,7 @@ export default {
     ],
     env: {
         AGRID_API_KEY: process.env.AGRID_API_KEY,
-        AGRID_API_HOST: process.env.AGRID_API_HOST || 'https://app.agrid.com'
+        AGRID_API_HOST: process.env.AGRID_API_HOST || 'YOUR_INGESTION_URL'
     }
 }
 ```
@@ -443,7 +443,7 @@ export class AgridService {
         if (this.initialized) return
 
         const apiKey = environment.agridApiKey
-        const apiHost = environment.agridApiHost || 'https://app.agrid.com'
+        const apiHost = environment.agridApiHost || 'YOUR_INGESTION_URL'
 
         if (apiKey) {
             posthog.init(apiKey, {
@@ -481,7 +481,7 @@ File `src/environments/environment.ts`:
 export const environment = {
     production: false,
     agridApiKey: 'your_api_key_here',
-    agridApiHost: 'https://app.agrid.com'
+    agridApiHost: 'YOUR_INGESTION_URL'
 }
 ```
 

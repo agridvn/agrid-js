@@ -26,7 +26,7 @@ export class RequestRouter {
 
     get apiHost(): string {
         const host = this.instance.config.api_host.trim().replace(/\/$/, '')
-        if (host === 'https://app.agrid.com') {
+        if (host === 'YOUR_INGESTION_URL') {
             return 'https://us.i.agrid.com'
         }
         return host
@@ -50,7 +50,7 @@ export class RequestRouter {
             host = this.apiHost.replace(`.${ingestionDomain}`, '.agrid.com')
         }
 
-        if (host === 'https://app.agrid.com') {
+        if (host === 'YOUR_INGESTION_URL') {
             return 'https://us.agrid.com'
         }
 

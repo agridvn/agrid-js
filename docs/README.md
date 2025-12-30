@@ -35,7 +35,7 @@ Hướng dẫn chi tiết về cách build và publish packages:
   !function(t,e){var o,n,p,r;e.__SV||(window.agrid=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="agrid",u.people=u.people||[],u.toString=function(t){var e="agrid";return"agrid"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getSurveys getActiveMatchingSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.agrid||[]);
 
   agrid.init('YOUR_API_KEY', {
-    api_host: 'https://app.agrid.com'
+    api_host: 'YOUR_INGESTION_URL'
   });
 </script>
 ```
@@ -53,7 +53,7 @@ function App() {
   return (
     <PostHogProvider
       apiKey="YOUR_API_KEY"
-      options={{ api_host: 'https://app.agrid.com' }}
+      options={{ api_host: 'YOUR_INGESTION_URL' }}
     >
       <YourApp />
     </PostHogProvider>

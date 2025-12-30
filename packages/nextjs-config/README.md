@@ -15,7 +15,7 @@ const nextConfig = {
 export default withPostHogConfig(nextConfig, {
   personalApiKey: process.env.AGRID_PERSONAL_API_KEY!,
   envId: process.env.AGRID_ENV_ID!,
-  host: process.env.NEXT_PUBLIC_AGRID_HOST ?? 'https://app.agrid.com',
+  host: process.env.NEXT_PUBLIC_AGRID_HOST ?? 'YOUR_INGESTION_URL',
   sourcemaps: {
     enabled: true,
     project: 'my-application',
