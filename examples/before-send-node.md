@@ -15,8 +15,8 @@ Pass a `before_send` function to the PostHog constructor:
 ```javascript
 const { PostHog } = require('agrid-node')
 
-const posthog = new PostHog('YOUR_API_KEY', {
-    host: 'https://us.i.posthog.com',
+const agrid = new PostHog('YOUR_API_KEY', {
+    host: 'https://us.i.agrid.com',
 
     before_send: (event) => {
         // Modify the event
@@ -36,8 +36,8 @@ const posthog = new PostHog('YOUR_API_KEY', {
 Return `null` to drop an event completely:
 
 ```javascript
-const posthog = new PostHog('YOUR_API_KEY', {
-    host: 'https://us.i.posthog.com',
+const agrid = new PostHog('YOUR_API_KEY', {
+    host: 'https://us.i.agrid.com',
 
     before_send: (event) => {
         // Drop all events from test environments
@@ -55,8 +55,8 @@ const posthog = new PostHog('YOUR_API_KEY', {
 You can provide an array of `before_send` functions. They will be executed in order, with each function receiving the output of the previous one:
 
 ```javascript
-const posthog = new PostHog('YOUR_API_KEY', {
-    host: 'https://us.i.posthog.com',
+const agrid = new PostHog('YOUR_API_KEY', {
+    host: 'https://us.i.agrid.com',
 
     before_send: [
         // First: Add metadata

@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
-import { PostHogFeature, useActiveFeatureFlags, usePostHog } from 'posthog-js/react'
+import { AgridFeature, useActiveFeatureFlags, useAgrid } from 'agrid-js/react'
 import { useEffect, useState } from 'react'
-import { cookieConsentGiven, PERSON_PROCESSING_MODE } from '@/src/posthog'
-import { setAllPersonProfilePropertiesAsPersonPropertiesForFlags } from 'posthog-js/lib/src/customizations'
-import { STORED_PERSON_PROPERTIES_KEY } from 'posthog-js/lib/src/constants'
-import { DisplaySurveyType, Survey } from 'posthog-js'
+import { cookieConsentGiven, PERSON_PROCESSING_MODE } from '@/src/agrid'
+import { setAllPersonProfilePropertiesAsPersonPropertiesForFlags } from 'agrid-js/lib/src/customizations'
+import { STORED_PERSON_PROPERTIES_KEY } from 'agrid-js/lib/src/constants'
+import { DisplaySurveyType, Survey } from 'agrid-js'
 
 export default function Home() {
-    const posthog = usePostHog()
+    const agrid = useAgrid()
     const [isClient, setIsClient] = useState(false)
     const flags = useActiveFeatureFlags()
 
@@ -32,14 +32,14 @@ export default function Home() {
             <p className="italic my-2 text-gray-500">The current time is {time}</p>
 
             <h2>
-                Trigger posthog <span>events </span>
+                Trigger agrid <span>events </span>
             </h2>
             <div className="flex items-center gap-2 flex-wrap">
-                <button onClick={() => posthog.capture('Clicked button')}>Capture event</button>
-                <button id="subscribe-user-to-newsletter" onClick={() => posthog.capture('user_subscribed')}>
+                <button onClick={() => agrid.capture('Clicked button')}>Capture event</button>
+                <button id="subscribe-user-to-newsletter" onClick={() => agrid.capture('user_subscribed')}>
                     Subscribe to newsletter
                 </button>
-                <button onClick={() => posthog.capture('user_unsubscribed')}>Unsubscribe from newsletter</button>
+                <button onClick={() => agrid.capture('user_unsubscribed')}>Unsubscribe from newsletter</button>
                 <button data-attr="autocapture-button">Autocapture buttons</button>
                 <a className="Button" data-attr="autocapture-button" href="#">
                     <span>Autocapture a &gt; span</span>
@@ -49,9 +49,9 @@ export default function Home() {
                 </a>
                 <button
                     onClick={() => {
-                        console.log(posthog.persistence?.props[STORED_PERSON_PROPERTIES_KEY])
-                        setAllPersonProfilePropertiesAsPersonPropertiesForFlags(posthog as any)
-                        console.log(posthog.persistence?.props[STORED_PERSON_PROPERTIES_KEY])
+                        console.log(agrid.persistence?.props[STORED_PERSON_PROPERTIES_KEY])
+                        setAllPersonProfilePropertiesAsPersonPropertiesForFlags(agrid as any)
+                        console.log(agrid.persistence?.props[STORED_PERSON_PROPERTIES_KEY])
                     }}
                 >
                     SetPersonPropertiesForFlags
@@ -61,9 +61,9 @@ export default function Home() {
                     <a
                         className="Button"
                         href={
-                            window.location.host === 'www.posthog.dev:3000'
-                                ? 'https://app.posthog.dev:3000'
-                                : 'https://www.posthog.dev:3000'
+                            window.location.host === 'www.agrid.dev:3000'
+                                ? 'https://app.agrid.dev:3000'
+                                : 'https://www.agrid.dev:3000'
                         }
                     >
                         Change subdomain
@@ -74,7 +74,7 @@ export default function Home() {
 
                 <button
                     onClick={() => {
-                        posthog?.reloadFeatureFlags()
+                        agrid?.reloadFeatureFlags()
                     }}
                 >
                     Reload feature flags
@@ -82,8 +82,8 @@ export default function Home() {
 
                 <button
                     onClick={() =>
-                        posthog?.setPersonProperties({
-                            email: `user-${randomID()}@posthog.com`,
+                        agrid?.setPersonProperties({
+                            email: `user-${randomID()}@agrid.com`,
                         })
                     }
                 >
@@ -93,13 +93,13 @@ export default function Home() {
                     onClick={() => {
                         // display javascript input with survey id input
                         let survey: Survey | undefined
-                        posthog?.surveys.getSurveys((surveys: Survey[]) => {
+                        agrid?.surveys.getSurveys((surveys: Survey[]) => {
                             survey = surveys[0]
                         })
                         if (!survey) {
                             return
                         }
-                        posthog?.displaySurvey(survey.id, {
+                        agrid?.displaySurvey(survey.id, {
                             ignoreConditions: true,
                             ignoreDelay: true,
                             displayType: DisplaySurveyType.Popover,
@@ -109,7 +109,7 @@ export default function Home() {
                     Display survey
                 </button>
 
-                <button onClick={() => posthog?.reset()} id="set-user-properties">
+                <button onClick={() => agrid?.reset()} id="set-user-properties">
                     Reset
                 </button>
             </div>
@@ -117,21 +117,21 @@ export default function Home() {
             {isClient && (
                 <>
                     <div className="px-4 py-2 bg-gray-100 rounded border-2 border-gray-800 my-2">
-                        <h1>PostHog React Components</h1>
+                        <h1>Agrid React Components</h1>
                         <p>
-                            Contains some flagged components. You need to create a `beta-feature` flag in PostHog to see
+                            Contains some flagged components. You need to create a `beta-feature` flag in Agrid to see
                             them. It should have variants `test` and `control`.
                         </p>
-                        <PostHogFeature flag="beta-feature" match="test" trackInteraction trackView>
+                        <AgridFeature flag="beta-feature" match="test" trackInteraction trackView>
                             <p className="px-4 py-2 bg-gray-100 rounded border-2 border-gray-800 my-2">
                                 This is a beta feature, With the variant "test"
                             </p>
-                        </PostHogFeature>
-                        <PostHogFeature flag="beta-feature" match="control" trackInteraction trackView>
+                        </AgridFeature>
+                        <AgridFeature flag="beta-feature" match="control" trackInteraction trackView>
                             <p className="px-4 py-2 bg-gray-100 rounded border-2 border-gray-800 my-2">
                                 This is a beta feature, With the variant "control"
                             </p>
-                        </PostHogFeature>
+                        </AgridFeature>
                     </div>
                     {consentGiven !== 'granted' && (
                         <p className="border border-red-900 bg-red-200 rounded p-2">
@@ -140,16 +140,16 @@ export default function Home() {
                         </p>
                     )}
 
-                    <h2 className="mt-4">PostHog info</h2>
+                    <h2 className="mt-4">Agrid info</h2>
                     <ul className="text-xs bg-gray-100 rounded border-2 border-gray-800 p-4 space-y-2">
                         <li className="font-mono">
                             Person Mode: <b>{PERSON_PROCESSING_MODE}</b>
                         </li>
                         <li className="font-mono">
-                            DistinctID: <b>{posthog.get_distinct_id()}</b>
+                            DistinctID: <b>{agrid.get_distinct_id()}</b>
                         </li>
                         <li className="font-mono">
-                            SessionID: <b>{posthog.get_session_id()}</b>
+                            SessionID: <b>{agrid.get_session_id()}</b>
                         </li>
 
                         <li className="font-mono">
@@ -160,9 +160,9 @@ export default function Home() {
                         </li>
                     </ul>
 
-                    <h2 className="mt-4">PostHog config</h2>
+                    <h2 className="mt-4">Agrid config</h2>
                     <pre className="text-xs bg-gray-100 rounded border-2 border-gray-800 p-4">
-                        <code>{JSON.stringify(posthog.config, null, 2)}</code>
+                        <code>{JSON.stringify(agrid.config, null, 2)}</code>
                     </pre>
                 </>
             )}

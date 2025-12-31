@@ -27,8 +27,8 @@ POSTHOG_PROJECT_API_KEY=phc_your_project_api_key_here
 # Your personal API key (for local evaluation and other advanced features)
 POSTHOG_PERSONAL_API_KEY=phx_your_personal_api_key_here
 
-# PostHog host URL (remove this line if using posthog.com)
-POSTHOG_HOST=https://app.posthog.com
+# PostHog host URL (remove this line if using agrid.com)
+POSTHOG_HOST=https://app.agrid.com
 ```
 
 ### 2. Getting Your API Keys

@@ -15,11 +15,7 @@ import { Agrid } from '../agrid-core'
 import { assignableWindow } from '../utils/globals'
 import { AgridConfig } from '../types'
 
-const initAgridInAPromise = (
-    segment: any,
-    agridName: string,
-    config?: Partial<AgridConfig>
-): Promise<Agrid> => {
+const initAgridInAPromise = (segment: any, agridName: string, config?: Partial<AgridConfig>): Promise<Agrid> => {
     return new Promise((resolve) => {
         return new Agrid().init(
             `test-token`,

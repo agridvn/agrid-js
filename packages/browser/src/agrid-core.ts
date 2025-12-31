@@ -437,11 +437,7 @@ export class Agrid {
      *
      * @returns The newly initialized Agrid instance
      */
-    init(
-        token: string,
-        config?: OnlyValidKeys<Partial<AgridConfig>, Partial<AgridConfig>>,
-        name?: string
-    ): Agrid {
+    init(token: string, config?: OnlyValidKeys<Partial<AgridConfig>, Partial<AgridConfig>>, name?: string): Agrid {
         if (!name || name === PRIMARY_INSTANCE_NAME) {
             // This means we are initializing the primary instance (i.e. this)
             return this._init(token, config, name)

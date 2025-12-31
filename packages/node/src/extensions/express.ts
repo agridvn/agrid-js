@@ -1,7 +1,7 @@
 import type * as http from 'node:http'
 import { uuidv7 } from '@agrid/core'
 import ErrorTracking from './error-tracking'
-import { PostHogBackendClient } from '../client'
+import { AgridBackendClient } from '../client'
 import { ErrorTracking as CoreErrorTracking } from '@agrid/core'
 
 type ExpressMiddleware = (req: http.IncomingMessage, res: http.ServerResponse, next: () => void) => void
@@ -23,7 +23,7 @@ interface MiddlewareError extends Error {
 }
 
 export function setupExpressErrorHandler(
-  _posthog: PostHogBackendClient,
+  _agrid: AgridBackendClient,
   app: {
     use: (middleware: ExpressMiddleware | ExpressErrorMiddleware) => unknown
   }
@@ -33,7 +33,7 @@ export function setupExpressErrorHandler(
     // Given stateless nature of Node SDK we capture exceptions using personless processing
     // when no user can be determined e.g. in the case of exception autocapture
     ErrorTracking.buildEventMessage(error, hint, uuidv7(), { $process_person_profile: false }).then((msg) =>
-      _posthog.capture(msg)
+      _agrid.capture(msg)
     )
     next(error)
   })

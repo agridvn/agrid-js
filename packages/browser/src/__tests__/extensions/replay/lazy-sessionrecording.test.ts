@@ -187,24 +187,24 @@ describe('Lazy SessionRecording', () => {
     let simpleEventEmitter: SimpleEventEmitter
 
     const addRRwebToWindow = () => {
-        assignableWindow.__PosthogExtensions__.rrweb = {
+        assignableWindow.__AgridExtensions__.rrweb = {
             record: jest.fn(({ emit }) => {
                 _emit = emit
                 return () => {}
             }),
             version: 'fake',
         }
-        assignableWindow.__PosthogExtensions__.rrweb.record.takeFullSnapshot = jest.fn(() => {
+        assignableWindow.__AgridExtensions__.rrweb.record.takeFullSnapshot = jest.fn(() => {
             // we pretend to be rrweb and call emit
             _emit(createFullSnapshot())
         })
-        assignableWindow.__PosthogExtensions__.rrweb.record.addCustomEvent = _addCustomEvent
+        assignableWindow.__AgridExtensions__.rrweb.record.addCustomEvent = _addCustomEvent
 
-        assignableWindow.__PosthogExtensions__.rrwebPlugins = {
+        assignableWindow.__AgridExtensions__.rrwebPlugins = {
             getRecordConsolePlugin: jest.fn(),
         }
 
-        assignableWindow.__PosthogExtensions__.initSessionRecording = () => {
+        assignableWindow.__AgridExtensions__.initSessionRecording = () => {
             return new LazyLoadedSessionRecording(agrid)
         }
     }
@@ -226,7 +226,7 @@ describe('Lazy SessionRecording', () => {
             persistence: 'memory',
         } as unknown as AgridConfig
 
-        assignableWindow.__PosthogExtensions__ = {
+        assignableWindow.__AgridExtensions__ = {
             rrweb: undefined,
             rrwebPlugins: {
                 getRecordConsolePlugin: undefined,
@@ -281,7 +281,7 @@ describe('Lazy SessionRecording', () => {
             callback()
         })
 
-        assignableWindow.__PosthogExtensions__.loadExternalDependency = loadScriptMock
+        assignableWindow.__AgridExtensions__.loadExternalDependency = loadScriptMock
 
         // defaults
         agrid.persistence?.register({
@@ -636,7 +636,7 @@ describe('Lazy SessionRecording', () => {
                 startingTimestamp = sessionRecording['_lazyLoadedSessionRecording']['_lastActivityTimestamp']
                 expect(startingTimestamp).toBeGreaterThan(0)
 
-                expect(assignableWindow.__PosthogExtensions__.rrweb.record.takeFullSnapshot).toHaveBeenCalledTimes(0)
+                expect(assignableWindow.__AgridExtensions__.rrweb.record.takeFullSnapshot).toHaveBeenCalledTimes(0)
 
                 // the buffer starts out empty
                 expect(sessionRecording['_lazyLoadedSessionRecording']['_buffer']).toEqual({
@@ -1375,7 +1375,7 @@ describe('Lazy SessionRecording', () => {
             )
             // maskAllInputs should change from default
             // someUnregisteredProp should not be present
-            expect(assignableWindow.__PosthogExtensions__.rrweb.record).toHaveBeenCalledWith({
+            expect(assignableWindow.__AgridExtensions__.rrweb.record).toHaveBeenCalledWith({
                 emit: expect.anything(),
                 maskAllInputs: false,
                 blockClass: 'ph-no-capture',
@@ -2530,7 +2530,7 @@ describe('Lazy SessionRecording', () => {
 
             sessionRecording['_onScriptLoaded']()
 
-            expect(assignableWindow.__PosthogExtensions__.rrweb.record).toHaveBeenCalledWith(
+            expect(assignableWindow.__AgridExtensions__.rrweb.record).toHaveBeenCalledWith(
                 expect.objectContaining({
                     maskAllInputs: true,
                     maskTextSelector: '*',
@@ -2554,7 +2554,7 @@ describe('Lazy SessionRecording', () => {
                         },
                     })
                 )
-                expect(assignableWindow.__PosthogExtensions__.rrweb.record).toHaveBeenCalledWith(
+                expect(assignableWindow.__AgridExtensions__.rrweb.record).toHaveBeenCalledWith(
                     expect.objectContaining({
                         maskInputOptions: expect.objectContaining({ password: expected }),
                     })
@@ -2575,7 +2575,7 @@ describe('Lazy SessionRecording', () => {
                 })
             )
 
-            expect(assignableWindow.__PosthogExtensions__.rrwebPlugins.getRecordConsolePlugin).not.toHaveBeenCalled()
+            expect(assignableWindow.__AgridExtensions__.rrwebPlugins.getRecordConsolePlugin).not.toHaveBeenCalled()
         })
 
         it('if enabled, plugin is used', () => {
@@ -2589,7 +2589,7 @@ describe('Lazy SessionRecording', () => {
                 })
             )
 
-            expect(assignableWindow.__PosthogExtensions__.rrwebPlugins.getRecordConsolePlugin).toHaveBeenCalled()
+            expect(assignableWindow.__AgridExtensions__.rrwebPlugins.getRecordConsolePlugin).toHaveBeenCalled()
         })
     })
 
@@ -2773,7 +2773,7 @@ describe('Lazy SessionRecording', () => {
             expect(sessionRecording['_lazyLoadedSessionRecording']['_queuedRRWebEvents']).toEqual([])
 
             // fake rrweb being unavailable
-            assignableWindow.__PosthogExtensions__.rrweb.record = null
+            assignableWindow.__AgridExtensions__.rrweb.record = null
         })
 
         it('queues events', () => {
@@ -2961,7 +2961,7 @@ describe('Lazy SessionRecording', () => {
             )
 
             sessionRecording['_onScriptLoaded']()
-            expect(assignableWindow.__PosthogExtensions__.rrweb.record).toHaveBeenCalledWith(
+            expect(assignableWindow.__AgridExtensions__.rrweb.record).toHaveBeenCalledWith(
                 expect.objectContaining({
                     recordCanvas: true,
                     sampling: { canvas: 6 },
@@ -2995,7 +2995,7 @@ describe('Lazy SessionRecording', () => {
 
             sessionRecording['_onScriptLoaded']()
 
-            const mockParams = assignableWindow.__PosthogExtensions__.rrweb.record.mock.calls[0][0]
+            const mockParams = assignableWindow.__AgridExtensions__.rrweb.record.mock.calls[0][0]
             expect(mockParams).not.toHaveProperty('recordCanvas')
             expect(mockParams).not.toHaveProperty('canvasFps')
             expect(mockParams).not.toHaveProperty('canvasQuality')

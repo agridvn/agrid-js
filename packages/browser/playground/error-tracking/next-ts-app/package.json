@@ -7,10 +7,10 @@
         "build": "next build",
         "preview": "next start",
         "lint": "next lint",
-        "inject": "posthog-cli sourcemap inject --directory ./.next/static/chunks",
-        "upload": "posthog-cli sourcemap upload --directory ./.next/static/chunks",
-        "build-posthog": "cd ../../.. && NODE_ENV=dev pnpm i && pnpm run build",
-        "preinstall": "pnpm run build-posthog"
+        "inject": "agrid-cli sourcemap inject --directory ./.next/static/chunks",
+        "upload": "agrid-cli sourcemap upload --directory ./.next/static/chunks",
+        "build-agrid": "cd ../../.. && NODE_ENV=dev pnpm i && pnpm run build",
+        "preinstall": "pnpm run build-agrid"
     },
     "dependencies": {
         "next": "15.2.1",

@@ -70,7 +70,7 @@ The `.env` file should contain:
 ```env
 POSTHOG_PROJECT_API_KEY=phc_your_project_api_key_here
 POSTHOG_PERSONAL_API_KEY=phx_your_personal_api_key_here
-POSTHOG_HOST=https://app.posthog.com
+POSTHOG_HOST=https://app.agrid.com
 POSTHOG_TEST_FLAG_KEY=beta-feature
 ```
 

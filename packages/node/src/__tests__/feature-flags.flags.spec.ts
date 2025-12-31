@@ -1,36 +1,36 @@
-import { PostHog } from '@/entrypoints/index.node'
-import { PostHogOptions } from '@/types'
+import { Agrid } from '@/entrypoints/index.node'
+import { AgridOptions } from '@/types'
 import { apiImplementation, apiImplementationV4, waitForPromises } from './utils'
-import { PostHogV2FlagsResponse } from '@agrid/core'
+import { AgridV2FlagsResponse } from '@agrid/core'
 
 jest.spyOn(console, 'debug').mockImplementation()
 
 const mockedFetch = jest.spyOn(globalThis, 'fetch').mockImplementation()
 
-const posthogImmediateResolveOptions: PostHogOptions = {
+const agridImmediateResolveOptions: AgridOptions = {
   fetchRetryCount: 0,
 }
 
 describe('flags v2', () => {
   describe('getFeatureFlag v2', () => {
     it('returns undefined if the flag is not found', async () => {
-      const flagsResponse: PostHogV2FlagsResponse = {
+      const flagsResponse: AgridV2FlagsResponse = {
         flags: {},
         errorsWhileComputingFlags: false,
         requestId: '0152a345-295f-4fba-adac-2e6ea9c91082',
       }
       mockedFetch.mockImplementation(apiImplementationV4(flagsResponse))
 
-      const posthog = new PostHog('TEST_API_KEY', {
+      const agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
       let capturedMessage: any
-      posthog.on('capture', (message) => {
+      agrid.on('capture', (message) => {
         capturedMessage = message
       })
 
-      const result = await posthog.getFeatureFlag('non-existent-flag', 'some-distinct-id')
+      const result = await agrid.getFeatureFlag('non-existent-flag', 'some-distinct-id')
 
       expect(result).toBe(undefined)
       expect(mockedFetch).toHaveBeenCalledWith('http://example.com/flags/?v=2&config=true', expect.any(Object))
@@ -39,16 +39,16 @@ describe('flags v2', () => {
       expect(capturedMessage).toMatchObject({
         distinct_id: 'some-distinct-id',
         event: '$feature_flag_called',
-        library: posthog.getLibraryId(),
-        library_version: posthog.getLibraryVersion(),
+        library: agrid.getLibraryId(),
+        library_version: agrid.getLibraryVersion(),
         properties: {
           '$feature/non-existent-flag': undefined,
           $feature_flag: 'non-existent-flag',
           $feature_flag_response: undefined,
           $feature_flag_request_id: '0152a345-295f-4fba-adac-2e6ea9c91082',
           $groups: undefined,
-          $lib: posthog.getLibraryId(),
-          $lib_version: posthog.getLibraryVersion(),
+          $lib: agrid.getLibraryId(),
+          $lib_version: agrid.getLibraryVersion(),
           locally_evaluated: false,
         },
       })
@@ -79,7 +79,7 @@ describe('flags v2', () => {
     ])(
       'captures a feature flag called event with extra metadata when the flag is found',
       async ({ key, expectedResponse, expectedReason, expectedId, expectedVersion }) => {
-        const flagsResponse: PostHogV2FlagsResponse = {
+        const flagsResponse: AgridV2FlagsResponse = {
           flags: {
             'variant-flag': {
               key: 'variant-flag',
@@ -135,16 +135,16 @@ describe('flags v2', () => {
         }
         mockedFetch.mockImplementation(apiImplementationV4(flagsResponse))
 
-        const posthog = new PostHog('TEST_API_KEY', {
+        const agrid = new Agrid('TEST_API_KEY', {
           host: 'http://example.com',
-          ...posthogImmediateResolveOptions,
+          ...agridImmediateResolveOptions,
         })
         let capturedMessage: any
-        posthog.on('capture', (message) => {
+        agrid.on('capture', (message) => {
           capturedMessage = message
         })
 
-        const result = await posthog.getFeatureFlag(key, 'some-distinct-id')
+        const result = await agrid.getFeatureFlag(key, 'some-distinct-id')
 
         expect(result).toBe(expectedResponse)
         expect(mockedFetch).toHaveBeenCalledWith('http://example.com/flags/?v=2&config=true', expect.any(Object))
@@ -153,8 +153,8 @@ describe('flags v2', () => {
         expect(capturedMessage).toMatchObject({
           distinct_id: 'some-distinct-id',
           event: '$feature_flag_called',
-          library: posthog.getLibraryId(),
-          library_version: posthog.getLibraryVersion(),
+          library: agrid.getLibraryId(),
+          library_version: agrid.getLibraryVersion(),
           properties: {
             [`$feature/${key}`]: expectedResponse,
             $feature_flag: key,
@@ -164,8 +164,8 @@ describe('flags v2', () => {
             $feature_flag_reason: expectedReason,
             $feature_flag_request_id: '0152a345-295f-4fba-adac-2e6ea9c91082',
             $groups: undefined,
-            $lib: posthog.getLibraryId(),
-            $lib_version: posthog.getLibraryVersion(),
+            $lib: agrid.getLibraryId(),
+            $lib_version: agrid.getLibraryVersion(),
             locally_evaluated: false,
           },
         })
@@ -198,16 +198,16 @@ describe('flags v2', () => {
           })
         )
 
-        const posthog = new PostHog('TEST_API_KEY', {
+        const agrid = new Agrid('TEST_API_KEY', {
           host: 'http://example.com',
-          ...posthogImmediateResolveOptions,
+          ...agridImmediateResolveOptions,
         })
         let capturedMessage: any
-        posthog.on('capture', (message) => {
+        agrid.on('capture', (message) => {
           capturedMessage = message
         })
 
-        const result = await posthog.getFeatureFlagPayload('flag-with-payload', 'some-distinct-id')
+        const result = await agrid.getFeatureFlagPayload('flag-with-payload', 'some-distinct-id')
 
         expect(result).toEqual([0, 1, 2])
         expect(mockedFetch).toHaveBeenCalledWith('http://example.com/flags/?v=2&config=true', expect.any(Object))
@@ -219,7 +219,7 @@ describe('flags v2', () => {
   })
 
   describe('error handling', () => {
-    let posthog: PostHog
+    let agrid: Agrid
     describe.each([
       {
         case: 'JSON error response',
@@ -262,31 +262,31 @@ describe('flags v2', () => {
       },
     ])('when $case', ({ mock }) => {
       beforeEach(() => {
-        posthog = new PostHog('TEST_API_KEY', {
+        agrid = new Agrid('TEST_API_KEY', {
           host: 'http://example.com',
-          ...posthogImmediateResolveOptions,
+          ...agridImmediateResolveOptions,
         })
         mockedFetch.mockImplementation(mock)
       })
 
       it('getFeatureFlag returns undefined', async () => {
-        expect(await posthog.getFeatureFlag('error-flag', 'some-distinct-id')).toBe(undefined)
+        expect(await agrid.getFeatureFlag('error-flag', 'some-distinct-id')).toBe(undefined)
       })
 
       it('isFeatureEnabled returns undefined', async () => {
-        expect(await posthog.isFeatureEnabled('error-flag', 'some-distinct-id')).toBe(undefined)
+        expect(await agrid.isFeatureEnabled('error-flag', 'some-distinct-id')).toBe(undefined)
       })
 
       it('getFeatureFlagPayload returns undefined', async () => {
-        expect(await posthog.getFeatureFlagPayload('error-flag', 'some-distinct-id')).toBe(undefined)
+        expect(await agrid.getFeatureFlagPayload('error-flag', 'some-distinct-id')).toBe(undefined)
       })
 
       it('getAllFlags returns empty object', async () => {
-        expect(await posthog.getAllFlags('some-distinct-id')).toEqual({})
+        expect(await agrid.getAllFlags('some-distinct-id')).toEqual({})
       })
 
       it('getAllFlagsAndPayloads returns object with empty flags and payloads', async () => {
-        expect(await posthog.getAllFlagsAndPayloads('some-distinct-id')).toEqual({
+        expect(await agrid.getAllFlagsAndPayloads('some-distinct-id')).toEqual({
           featureFlags: {},
           featureFlagPayloads: {},
         })
@@ -294,11 +294,11 @@ describe('flags v2', () => {
 
       it('captures no events', async () => {
         let capturedMessage: any
-        posthog.on('capture', (message) => {
+        agrid.on('capture', (message) => {
           capturedMessage = message
         })
 
-        await posthog.getFeatureFlag('error-flag', 'some-distinct-id')
+        await agrid.getFeatureFlag('error-flag', 'some-distinct-id')
         await waitForPromises()
         expect(capturedMessage).toBeUndefined()
       })
@@ -311,16 +311,16 @@ describe('flags v1', () => {
     it('returns undefined if the flag is not found', async () => {
       mockedFetch.mockImplementation(apiImplementation({ decideFlags: {} }))
 
-      const posthog = new PostHog('TEST_API_KEY', {
+      const agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
       let capturedMessage: any
-      posthog.on('capture', (message) => {
+      agrid.on('capture', (message) => {
         capturedMessage = message
       })
 
-      const result = await posthog.getFeatureFlag('non-existent-flag', 'some-distinct-id')
+      const result = await agrid.getFeatureFlag('non-existent-flag', 'some-distinct-id')
 
       expect(result).toBe(undefined)
       expect(mockedFetch).toHaveBeenCalledWith('http://example.com/flags/?v=2&config=true', expect.any(Object))
@@ -329,15 +329,15 @@ describe('flags v1', () => {
       expect(capturedMessage).toMatchObject({
         distinct_id: 'some-distinct-id',
         event: '$feature_flag_called',
-        library: posthog.getLibraryId(),
-        library_version: posthog.getLibraryVersion(),
+        library: agrid.getLibraryId(),
+        library_version: agrid.getLibraryVersion(),
         properties: {
           '$feature/non-existent-flag': undefined,
           $feature_flag: 'non-existent-flag',
           $feature_flag_response: undefined,
           $groups: undefined,
-          $lib: posthog.getLibraryId(),
-          $lib_version: posthog.getLibraryVersion(),
+          $lib: agrid.getLibraryId(),
+          $lib_version: agrid.getLibraryVersion(),
           locally_evaluated: false,
         },
       })
@@ -357,16 +357,16 @@ describe('flags v1', () => {
         })
       )
 
-      const posthog = new PostHog('TEST_API_KEY', {
+      const agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
       let capturedMessage: any = undefined
-      posthog.on('capture', (message) => {
+      agrid.on('capture', (message) => {
         capturedMessage = message
       })
 
-      const result = await posthog.getFeatureFlagPayload('flag-with-payload', 'some-distinct-id')
+      const result = await agrid.getFeatureFlagPayload('flag-with-payload', 'some-distinct-id')
 
       expect(result).toEqual([0, 1, 2])
       expect(mockedFetch).toHaveBeenCalledWith('http://example.com/flags/?v=2&config=true', expect.any(Object))

@@ -1,5 +1,7 @@
 import { external, babel, resolve, commonjs, json, dts, plugins } from '@agrid-tooling/rollup-utils'
-import packageJson from './package.json' with { type: 'json' }
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+const packageJson = require('./package.json')
 
 const configs = []
 const extensions = ['.js', '.jsx', '.ts', '.tsx']
@@ -31,7 +33,7 @@ configs.push({
   plugins: [resolve({ extensions }), dts()],
 })
 
-// Add submodule builds for posthog-ai
+// Add submodule builds for agrid-ai
 const providers = ['anthropic', 'openai', 'vercel', 'langchain', 'gemini']
 
 providers.forEach((provider) => {

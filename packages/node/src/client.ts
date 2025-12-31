@@ -2,14 +2,14 @@ import { version } from './version'
 
 import {
   JsonType,
-  PostHogCoreStateless,
-  PostHogFlagsResponse,
-  PostHogFetchOptions,
-  PostHogFetchResponse,
-  PostHogFlagsAndPayloadsResponse,
-  PostHogPersistedProperty,
+  AgridCoreStateless,
+  AgridFlagsResponse,
+  AgridFetchOptions,
+  AgridFetchResponse,
+  AgridFlagsAndPayloadsResponse,
+  AgridPersistedProperty,
   Logger,
-  PostHogCaptureOptions,
+  AgridCaptureOptions,
   isPlainObject,
   isBlockedUA,
 } from '@agrid/core'
@@ -17,8 +17,8 @@ import {
   EventMessage,
   GroupIdentifyMessage,
   IdentifyMessage,
-  IPostHog,
-  PostHogOptions,
+  IAgrid,
+  AgridOptions,
   SendFeatureFlagsOptions,
 } from './types'
 import { FeatureFlagDetail, FeatureFlagValue, getFeatureFlagValue } from '@agrid/core'
@@ -28,8 +28,8 @@ import {
   InconclusiveMatchError,
 } from './extensions/feature-flags/feature-flags'
 import ErrorTracking from './extensions/error-tracking'
-import { safeSetTimeout, PostHogEventProperties } from '@agrid/core'
-import { PostHogMemoryStorage } from './storage-memory'
+import { safeSetTimeout, AgridEventProperties } from '@agrid/core'
+import { AgridMemoryStorage } from './storage-memory'
 
 // Standard local evaluation rate limit is 600 per minute (10 per second),
 // so the fastest a poller should ever be set is 100ms.
@@ -38,35 +38,35 @@ const THIRTY_SECONDS = 30 * 1000
 const MAX_CACHE_SIZE = 50 * 1000
 
 // The actual exported Nodejs API.
-export abstract class PostHogBackendClient extends PostHogCoreStateless implements IPostHog {
-  private _memoryStorage = new PostHogMemoryStorage()
+export abstract class AgridBackendClient extends AgridCoreStateless implements IAgrid {
+  private _memoryStorage = new AgridMemoryStorage()
 
   private featureFlagsPoller?: FeatureFlagsPoller
   protected errorTracking: ErrorTracking
   private maxCacheSize: number
-  public readonly options: PostHogOptions
+  public readonly options: AgridOptions
 
   distinctIdHasSentFlagCalls: Record<string, string[]>
 
   /**
-   * Initialize a new PostHog client instance.
+   * Initialize a new Agrid client instance.
    *
    * @example
    * ```ts
    * // Basic initialization
-   * const client = new PostHogBackendClient(
+   * const client = new AgridBackendClient(
    *   'your-api-key',
-   *   { host: 'https://app.posthog.com' }
+   *   { host: 'https://app.agrid.com' }
    * )
    * ```
    *
    * @example
    * ```ts
    * // With personal API key
-   * const client = new PostHogBackendClient(
+   * const client = new AgridBackendClient(
    *   'your-api-key',
    *   {
-   *     host: 'https://app.posthog.com',
+   *     host: 'https://app.agrid.com',
    *     personalApiKey: 'your-personal-api-key'
    *   }
    * )
@@ -74,10 +74,10 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
    *
    * {@label Initialization}
    *
-   * @param apiKey - Your PostHog project API key
+   * @param apiKey - Your Agrid project API key
    * @param options - Configuration options for the client
    */
-  constructor(apiKey: string, options: PostHogOptions = {}) {
+  constructor(apiKey: string, options: AgridOptions = {}) {
     super(apiKey, options)
 
     this.options = options
@@ -90,7 +90,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
     if (options.personalApiKey) {
       if (options.personalApiKey.includes('phc_')) {
         throw new Error(
-          'Your Personal API key is invalid. These keys are prefixed with "phx_" and can be created in PostHog project settings.'
+          'Your Personal API key is invalid. These keys are prefixed with "phx_" and can be created in Agrid project settings.'
         )
       }
 
@@ -141,7 +141,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
    * @param key - The property key to retrieve
    * @returns The stored property value or undefined if not found
    */
-  getPersistedProperty(key: PostHogPersistedProperty): any | undefined {
+  getPersistedProperty(key: AgridPersistedProperty): any | undefined {
     return this._memoryStorage.getProperty(key)
   }
 
@@ -165,7 +165,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
    * @param key - The property key to set
    * @param value - The value to store (null to remove)
    */
-  setPersistedProperty(key: PostHogPersistedProperty, value: any | null): void {
+  setPersistedProperty(key: AgridPersistedProperty, value: any | null): void {
     return this._memoryStorage.setProperty(key, value)
   }
 
@@ -190,7 +190,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
    * @param options - Fetch options
    * @returns Promise resolving to the fetch response
    */
-  fetch(url: string, options: PostHogFetchOptions): Promise<PostHogFetchResponse> {
+  fetch(url: string, options: AgridFetchOptions): Promise<AgridFetchResponse> {
     return this.options.fetch ? this.options.fetch(url, options) : fetch(url, options)
   }
 
@@ -201,7 +201,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
    * ```ts
    * // Get version
    * const version = client.getLibraryVersion()
-   * console.log(`Using PostHog SDK version: ${version}`)
+   * console.log(`Using Agrid SDK version: ${version}`)
    * ```
    *
    * {@label Initialization}
@@ -231,7 +231,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
   }
 
   /**
-   * Enable the PostHog client (opt-in).
+   * Enable the Agrid client (opt-in).
    *
    * @example
    * ```ts
@@ -249,7 +249,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
   }
 
   /**
-   * Disable the PostHog client (opt-out).
+   * Disable the Agrid client (opt-out).
    *
    * @example
    * ```ts
@@ -1036,7 +1036,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
       disableGeoip?: boolean
       flagKeys?: string[]
     }
-  ): Promise<PostHogFlagsAndPayloadsResponse> {
+  ): Promise<AgridFlagsAndPayloadsResponse> {
     const { groups, disableGeoip, flagKeys } = options || {}
     let { onlyEvaluateLocally, personProperties, groupProperties } = options || {}
 
@@ -1158,8 +1158,12 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
     await this.featureFlagsPoller?.loadFeatureFlags(true)
   }
 
+  shutdown(shutdownTimeoutMs?: number): Promise<void> {
+    return this._shutdown(shutdownTimeoutMs)
+  }
+
   /**
-   * Shutdown the PostHog client gracefully.
+   * Shutdown the Agrid client gracefully.
    *
    * @example
    * ```ts
@@ -1184,14 +1188,14 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
     return super._shutdown(shutdownTimeoutMs)
   }
 
-  private async _requestRemoteConfigPayload(flagKey: string): Promise<PostHogFetchResponse | undefined> {
+  private async _requestRemoteConfigPayload(flagKey: string): Promise<AgridFetchResponse | undefined> {
     if (!this.options.personalApiKey) {
       return undefined
     }
 
     const url = `${this.host}/api/projects/@current/feature_flags/${flagKey}/remote_config?token=${encodeURIComponent(this.apiKey)}`
 
-    const options: PostHogFetchOptions = {
+    const options: AgridFetchOptions = {
       method: 'GET',
       headers: {
         ...this.getCustomHeaders(),
@@ -1257,7 +1261,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
     groups?: Record<string, string | number>,
     disableGeoip?: boolean,
     sendFeatureFlagsOptions?: SendFeatureFlagsOptions
-  ): Promise<PostHogFlagsResponse['featureFlags'] | undefined> {
+  ): Promise<AgridFlagsResponse['featureFlags'] | undefined> {
     // Use properties directly from options if they exist
     const finalPersonProperties = sendFeatureFlagsOptions?.personProperties || {}
     const finalGroupProperties = sendFeatureFlagsOptions?.groupProperties || {}
@@ -1373,7 +1377,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
    * @param additionalProperties - Optional additional properties to include
    */
   captureException(error: unknown, distinctId?: string, additionalProperties?: Record<string | number, any>): void {
-    const syntheticException = new Error('PostHog syntheticException')
+    const syntheticException = new Error('Agrid syntheticException')
     this.addPendingPromise(
       ErrorTracking.buildEventMessage(error, { syntheticException }, distinctId, additionalProperties).then((msg) =>
         this.capture(msg)
@@ -1421,7 +1425,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
     distinctId?: string,
     additionalProperties?: Record<string | number, any>
   ): Promise<void> {
-    const syntheticException = new Error('PostHog syntheticException')
+    const syntheticException = new Error('Agrid syntheticException')
     this.addPendingPromise(
       ErrorTracking.buildEventMessage(error, { syntheticException }, distinctId, additionalProperties).then((msg) =>
         this.captureImmediate(msg)
@@ -1432,8 +1436,8 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
   public async prepareEventMessage(props: EventMessage): Promise<{
     distinctId: string
     event: string
-    properties: PostHogEventProperties
-    options: PostHogCaptureOptions
+    properties: AgridEventProperties
+    options: AgridCaptureOptions
   }> {
     const { distinctId, event, properties, groups, sendFeatureFlags, timestamp, disableGeoip, uuid }: EventMessage =
       props
@@ -1496,7 +1500,7 @@ export abstract class PostHogBackendClient extends PostHogCoreStateless implemen
           ...additionalProperties,
           ...(eventMessage.properties || {}),
           $groups: eventMessage.groups || groups,
-        } as PostHogEventProperties
+        } as AgridEventProperties
         return props
       })
 

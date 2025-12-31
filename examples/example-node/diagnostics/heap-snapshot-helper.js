@@ -42,7 +42,7 @@ loadEnvFile()
 const CONFIG = {
     PROJECT_API_KEY: process.env.POSTHOG_PROJECT_API_KEY || '',
     PERSONAL_API_KEY: process.env.POSTHOG_PERSONAL_API_KEY || '',
-    HOST: process.env.POSTHOG_HOST || 'https://app.posthog.com',
+    HOST: process.env.POSTHOG_HOST || 'https://app.agrid.com',
     FLAG_KEY: process.env.POSTHOG_TEST_FLAG_KEY || 'beta-feature',
 }
 
@@ -268,7 +268,7 @@ async function quickMemoryLeakRepro() {
     console.log('🚀 Quick Memory Leak Reproduction')
     console.log('This will reproduce the memory leak in a simplified way for analysis')
 
-    const posthog = new PostHog(CONFIG.PROJECT_API_KEY, {
+    const agrid = new PostHog(CONFIG.PROJECT_API_KEY, {
         personalApiKey: CONFIG.PERSONAL_API_KEY,
         host: CONFIG.HOST,
         maxCacheSize: 1000,

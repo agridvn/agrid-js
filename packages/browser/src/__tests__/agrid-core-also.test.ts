@@ -346,7 +346,9 @@ describe('agrid core', () => {
 
         it('does not allow you to set complex current url', () => {
             const agrid = agridWith(defaultConfig, defaultOverrides)
-            const captureResult = agrid.capture('event-name', { $current_url: new URL('YOUR_INGESTION_URL/s/') })
+            const captureResult = agrid.capture('event-name', {
+                $current_url: new URL('https://us.i.agrid.com/s/'),
+            })
 
             expect(captureResult.properties.$current_url).toEqual('http://localhost/')
         })
@@ -1327,9 +1329,7 @@ describe('agrid core', () => {
         })
 
         it('returns the replay URL', () => {
-            expect(instance.get_session_replay_url()).toEqual(
-                `https://us.agrid.com/project/${token}/replay/sessionId`
-            )
+            expect(instance.get_session_replay_url()).toEqual(`https://us.agrid.com/project/${token}/replay/sessionId`)
         })
 
         it('returns the replay URL including timestamp', () => {

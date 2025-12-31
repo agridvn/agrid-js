@@ -145,7 +145,7 @@
 
 ### Patch Changes
 
-- [#2474](https://github.com/PostHog/agrid-js/pull/2474) [`5c89f78`](https://github.com/PostHog/agrid-js/commit/5c89f7828a39963b0fee23d0d9b8381bd87b0bf4) Thanks [@oliverb123](https://github.com/oliverb123)! - Bumps to depending on latest posthog-cli version, includes critical fix for sourcemap processing bug
+- [#2474](https://github.com/agridvn/agrid-js/pull/2474) [`5c89f78`](https://github.com/agridvn/agrid-js/commit/5c89f7828a39963b0fee23d0d9b8381bd87b0bf4) Thanks [@oliverb123](https://github.com/oliverb123)! - Bumps to depending on latest agrid-cli version, includes critical fix for sourcemap processing bug
 
 ## 0.0.18
 
@@ -264,4 +264,4 @@
 
 ### Patch Changes
 
-- [#2372](https://github.com/PostHog/agrid-js/pull/2372) [`30ac39d`](https://github.com/PostHog/agrid-js/commit/30ac39d39b6cbcd6d07975537a47b98855c744c7) Thanks [@ablaszkiewicz](https://github.com/ablaszkiewicz)! - add posthog nuxt package
+- [#2372](https://github.com/agridvn/agrid-js/pull/2372) [`30ac39d`](https://github.com/agridvn/agrid-js/commit/30ac39d39b6cbcd6d07975537a47b98855c744c7) Thanks [@ablaszkiewicz](https://github.com/ablaszkiewicz)! - add agrid nuxt package

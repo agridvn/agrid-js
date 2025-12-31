@@ -1,8 +1,8 @@
-import { usePostHog } from 'posthog-js/react'
+import { useAgrid } from 'agrid-js/react'
 import { useEffect, useState } from 'react'
 
 export default function Home() {
-    const posthog = usePostHog()
+    const agrid = useAgrid()
 
     const [otherHost, setOtherHost] = useState('')
 
@@ -25,7 +25,7 @@ export default function Home() {
                     src={`http://${otherHost}:3000/`}
                     style={{ width: '100%', height: '500px' }}
                     onLoad={() => {
-                        posthog.capture('iframe loaded')
+                        agrid.capture('iframe loaded')
                     }}
                 />
             )}

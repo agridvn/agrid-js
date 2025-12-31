@@ -1,12 +1,13 @@
+/* eslint-disable agrid-js/no-direct-array-check, agrid-js/no-direct-undefined-check, agrid-js/no-direct-function-check, agrid-js/no-direct-number-check, agrid-js/no-direct-null-check */
 import AnthropicOriginal, { APIPromise } from '@anthropic-ai/sdk'
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 import {
   formatResponseAnthropic,
   mergeSystemPrompt,
   MonitoringParams,
-  sendEventToPosthog,
+  sendEventToAgrid,
   extractAvailableToolCalls,
-  extractPosthogParams,
+  extractAgridParams,
 } from '../utils'
 import type { FormattedContentItem, FormattedTextContent, FormattedFunctionCall, FormattedMessage } from '../types'
 
@@ -27,27 +28,27 @@ interface ToolInProgress {
 
 interface MonitoringAnthropicConfig {
   apiKey: string
-  posthog: PostHog
+  agrid: Agrid
   baseURL?: string
 }
 
-export class PostHogAnthropic extends AnthropicOriginal {
-  private readonly phClient: PostHog
+export class AgridAnthropic extends AnthropicOriginal {
+  private readonly phClient: Agrid
   public messages: WrappedMessages
 
   constructor(config: MonitoringAnthropicConfig) {
-    const { posthog, ...anthropicConfig } = config
+    const { agrid, ...anthropicConfig } = config
     super(anthropicConfig)
-    this.phClient = posthog
+    this.phClient = agrid
     this.messages = new WrappedMessages(this, this.phClient)
   }
 }
 
 export class WrappedMessages extends AnthropicOriginal.Messages {
-  private readonly phClient: PostHog
+  private readonly phClient: Agrid
   private readonly baseURL: string
 
-  constructor(parentClient: PostHogAnthropic, phClient: PostHog) {
+  constructor(parentClient: AgridAnthropic, phClient: Agrid) {
     super(parentClient)
     this.phClient = phClient
     this.baseURL = parentClient.baseURL
@@ -66,7 +67,7 @@ export class WrappedMessages extends AnthropicOriginal.Messages {
     body: MessageCreateParams & MonitoringParams,
     options?: RequestOptions
   ): APIPromise<Message> | APIPromise<Stream<RawMessageStreamEvent>> {
-    const { providerParams: anthropicParams, posthogParams } = extractPosthogParams(body)
+    const { providerParams: anthropicParams, agridParams } = extractAgridParams(body)
     const startTime = Date.now()
 
     const parentPromise = super.create(anthropicParams, options)
@@ -210,9 +211,9 @@ export class WrappedMessages extends AnthropicOriginal.Messages {
                       },
                     ]
 
-              await sendEventToPosthog({
+              await sendEventToAgrid({
                 client: this.phClient,
-                ...posthogParams,
+                ...agridParams,
                 model: anthropicParams.model,
                 provider: 'anthropic',
                 input: sanitizeAnthropic(mergeSystemPrompt(anthropicParams, 'anthropic')),
@@ -226,9 +227,9 @@ export class WrappedMessages extends AnthropicOriginal.Messages {
               })
             } catch (error: any) {
               // error handling
-              await sendEventToPosthog({
+              await sendEventToAgrid({
                 client: this.phClient,
-                ...posthogParams,
+                ...agridParams,
                 model: anthropicParams.model,
                 provider: 'anthropic',
                 input: sanitizeAnthropic(mergeSystemPrompt(anthropicParams, 'anthropic')),
@@ -260,9 +261,9 @@ export class WrappedMessages extends AnthropicOriginal.Messages {
 
             const availableTools = extractAvailableToolCalls('anthropic', anthropicParams)
 
-            await sendEventToPosthog({
+            await sendEventToAgrid({
               client: this.phClient,
-              ...posthogParams,
+              ...agridParams,
               model: anthropicParams.model,
               provider: 'anthropic',
               input: sanitizeAnthropic(mergeSystemPrompt(anthropicParams, 'anthropic')),
@@ -284,9 +285,9 @@ export class WrappedMessages extends AnthropicOriginal.Messages {
           return result
         },
         async (error: any) => {
-          await sendEventToPosthog({
+          await sendEventToAgrid({
             client: this.phClient,
-            ...posthogParams,
+            ...agridParams,
             model: anthropicParams.model,
             provider: 'anthropic',
             input: sanitizeAnthropic(mergeSystemPrompt(anthropicParams, 'anthropic')),
@@ -311,6 +312,6 @@ export class WrappedMessages extends AnthropicOriginal.Messages {
   }
 }
 
-export default PostHogAnthropic
+export default AgridAnthropic
 
-export { PostHogAnthropic as Anthropic }
+export { AgridAnthropic as Anthropic }

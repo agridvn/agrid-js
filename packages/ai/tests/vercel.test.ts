@@ -1,14 +1,14 @@
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 import { withTracing } from '../src/index'
 import { generateText, wrapLanguageModel } from 'ai'
 import type { LanguageModelV2, LanguageModelV2CallOptions, LanguageModelV2StreamPart } from '@ai-sdk/provider'
 import { flushPromises } from './test-utils'
 import { version } from '../package.json'
 
-// Mock PostHog
-jest.mock('posthog-node', () => {
+// Mock Agrid
+jest.mock('agrid-node', () => {
   return {
-    PostHog: jest.fn().mockImplementation(() => {
+    Agrid: jest.fn().mockImplementation(() => {
       return {
         capture: jest.fn(),
         captureImmediate: jest.fn(),
@@ -91,23 +91,23 @@ const createMockModel = (modelId: string): LanguageModelV2 => {
 }
 
 describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
-  let mockPostHogClient: PostHog
+  let mockAgridClient: Agrid
 
   beforeEach(async () => {
     jest.clearAllMocks()
-    mockPostHogClient = new (PostHog as any)()
+    mockAgridClient = new (Agrid as any)()
   })
 
   describe('generateText with withTracing (real usage)', () => {
     it('should wrap a model and track simple prompt generation', async () => {
       const baseModel = createMockModel('gpt-4')
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test123',
-        posthogProperties: {
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test123',
+        agridProperties: {
           test: 'test',
         },
-        posthogGroups: {
+        agridGroups: {
           company: 'test-company',
         },
       })
@@ -124,12 +124,12 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
         totalTokens: 12,
       })
 
-      // Verify PostHog was called
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      // Verify Agrid was called
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       // Verify $ai_lib and $ai_lib_version
-      expect(captureCall[0].properties['$ai_lib']).toBe('posthog-ai')
+      expect(captureCall[0].properties['$ai_lib']).toBe('agrid-ai')
       expect(captureCall[0].properties['$ai_lib_version']).toBe(version)
 
       // Verify $ai_framework for Vercel
@@ -169,9 +169,9 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
 
     it('should handle multiple sequential calls', async () => {
       const baseModel = createMockModel('gpt-4.1')
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test123',
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test123',
       })
 
       const { text: text1 } = await generateText({
@@ -193,27 +193,27 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       expect(text2).toBe('21')
       expect(text3).toBe('25')
 
-      // Verify PostHog was called 3 times
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(3)
+      // Verify Agrid was called 3 times
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(3)
 
       // Verify each call had the correct trace ID and library properties
-      const calls = (mockPostHogClient.capture as jest.Mock).mock.calls
+      const calls = (mockAgridClient.capture as jest.Mock).mock.calls
       calls.forEach((call) => {
         expect(call[0].properties.$ai_trace_id).toBe('test123')
-        expect(call[0].properties['$ai_lib']).toBe('posthog-ai')
+        expect(call[0].properties['$ai_lib']).toBe('agrid-ai')
         expect(call[0].properties['$ai_lib_version']).toBe(version)
       })
     })
 
-    it('should track PostHog events with properties and groups', async () => {
+    it('should track Agrid events with properties and groups', async () => {
       const baseModel = createMockModel('gpt-4')
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test123',
-        posthogProperties: {
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test123',
+        agridProperties: {
           test: 'test',
         },
-        posthogGroups: {
+        agridGroups: {
           company: 'test-vercel',
         },
       })
@@ -225,12 +225,12 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
 
       expect(result.text).toBe('19')
 
-      // Check that PostHog capture was called
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      // Check that Agrid capture was called
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       // Verify $ai_lib and $ai_lib_version
-      expect(captureCall[0].properties['$ai_lib']).toBe('posthog-ai')
+      expect(captureCall[0].properties['$ai_lib']).toBe('agrid-ai')
       expect(captureCall[0].properties['$ai_lib_version']).toBe(version)
 
       expect(captureCall[0]).toEqual({
@@ -270,9 +270,9 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       // Override doGenerate to throw an error
       baseModel.doGenerate = jest.fn().mockRejectedValue(new Error('API Error'))
 
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test-error',
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test-error',
       })
 
       await expect(
@@ -283,11 +283,11 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       ).rejects.toThrow('API Error')
 
       // Verify error was tracked
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       // Verify $ai_lib and $ai_lib_version
-      expect(captureCall[0].properties['$ai_lib']).toBe('posthog-ai')
+      expect(captureCall[0].properties['$ai_lib']).toBe('agrid-ai')
       expect(captureCall[0].properties['$ai_lib_version']).toBe(version)
 
       expect(captureCall[0].properties).toEqual(
@@ -303,11 +303,11 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       )
     })
 
-    it('should track tools in PostHog event when tools are provided', async () => {
+    it('should track tools in Agrid event when tools are provided', async () => {
       const baseModel = createMockModel('gpt-4')
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test-tools',
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test-tools',
       })
 
       // Mock doGenerate to handle tools
@@ -375,12 +375,12 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
 
       expect(result.text).toBe('I will use the weather tool')
 
-      // Verify PostHog was called with tools
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      // Verify Agrid was called with tools
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       // Verify $ai_lib and $ai_lib_version
-      expect(captureCall[0].properties['$ai_lib']).toBe('posthog-ai')
+      expect(captureCall[0].properties['$ai_lib']).toBe('agrid-ai')
       expect(captureCall[0].properties['$ai_lib_version']).toBe(version)
 
       expect(captureCall[0].properties).toEqual(
@@ -440,9 +440,9 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       ]
 
       const baseModel = createMockStreamingModel(streamParts)
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test-stream-tool',
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test-stream-tool',
       })
 
       // Process the stream - need to mock doStream on the wrapped model
@@ -468,9 +468,9 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       // Wait for any async operations to complete
       await flushPromises()
 
-      // Verify PostHog was called
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      // Verify Agrid was called
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       expect(captureCall[0].properties.$ai_output_choices).toEqual([
         {
@@ -510,9 +510,9 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       ]
 
       const baseModel = createMockStreamingModel(streamParts)
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test-multi-tools',
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test-multi-tools',
       })
 
       // Process the stream - need to mock doStream on the wrapped model
@@ -536,8 +536,8 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
 
       await flushPromises()
 
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       expect(captureCall[0].properties.$ai_output_choices).toEqual([
         {
@@ -583,9 +583,9 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       ]
 
       const baseModel = createMockStreamingModel(streamParts)
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test-direct-tool',
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test-direct-tool',
       })
 
       // Process the stream - need to mock doStream on the wrapped model
@@ -609,8 +609,8 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
 
       await flushPromises()
 
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       expect(captureCall[0].properties.$ai_output_choices).toEqual([
         {
@@ -651,9 +651,9 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       ]
 
       const baseModel = createMockStreamingModel(streamParts)
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test-mixed-content',
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test-mixed-content',
       })
 
       // Process the stream - need to mock doStream on the wrapped model
@@ -679,8 +679,8 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
 
       await flushPromises()
 
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       expect(captureCall[0].properties.$ai_output_choices).toEqual([
         {
@@ -725,9 +725,9 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       ]
 
       const baseModel = createMockStreamingModel(streamParts)
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test-empty-tools',
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test-empty-tools',
       })
 
       // Process the stream - need to mock doStream on the wrapped model
@@ -751,8 +751,8 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
 
       await flushPromises()
 
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       // Should only include valid tool calls (tc-1 with empty_tool name)
       expect(captureCall[0].properties.$ai_output_choices).toEqual([
@@ -792,9 +792,9 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
       ]
 
       const baseModel = createMockStreamingModel(streamParts)
-      const model = withTracing(baseModel, mockPostHogClient, {
-        posthogDistinctId: 'test-user',
-        posthogTraceId: 'test-tools-only',
+      const model = withTracing(baseModel, mockAgridClient, {
+        agridDistinctId: 'test-user',
+        agridTraceId: 'test-tools-only',
       })
 
       // Process the stream - need to mock doStream on the wrapped model
@@ -818,8 +818,8 @@ describe('Vercel AI SDK v5 Middleware - End User Usage', () => {
 
       await flushPromises()
 
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-      const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+      const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
       expect(captureCall[0].properties.$ai_output_choices).toEqual([
         {

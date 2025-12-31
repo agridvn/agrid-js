@@ -11,7 +11,7 @@ importers:
       next:
         specifier: 15.2.1
         version: 15.2.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      posthog-js:
+      agrid-js:
         specifier: file:../../..
         version: file:../../..
       react:
@@ -285,7 +285,7 @@ packages:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js@file:../../..:
+  agrid-js@file:../../..:
     resolution: {directory: ../../.., type: directory}
     peerDependencies:
       '@rrweb/types': 2.0.0-alpha.17
@@ -559,7 +559,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-js@file:../../..:
+  agrid-js@file:../../..:
     dependencies:
       core-js: 3.41.0
       fflate: 0.4.8

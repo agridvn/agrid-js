@@ -1,6 +1,6 @@
-## PostHog Nuxt demo project
+## Agrid Nuxt demo project
 
-First, add your PostHog API key and instance address in `nuxt.config.ts`.
+First, add your Agrid API key and instance address in `nuxt.config.ts`.
 
 Run `npm install` to install the relevant packages.
 

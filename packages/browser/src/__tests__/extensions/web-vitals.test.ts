@@ -32,7 +32,7 @@ jest.mock('../../utils/globals', () => {
         ...original,
         assignableWindow: {
             ...original.assignableWindow,
-            __PosthogExtensions__: {},
+            __AgridExtensions__: {},
         },
         get location() {
             return mockLocation()
@@ -124,8 +124,8 @@ describe('web vitals', () => {
 
                 loadScriptMock.mockImplementation((_ph, _path, callback) => {
                     // we need a set of fake web vitals handlers, so we can manually trigger the events
-                    assignableWindow.__PosthogExtensions__ = {}
-                    assignableWindow.__PosthogExtensions__.postHogWebVitalsCallbacks = {
+                    assignableWindow.__AgridExtensions__ = {}
+                    assignableWindow.__AgridExtensions__.postHogWebVitalsCallbacks = {
                         onLCP: (cb: any) => {
                             onLCPCallback = cb
                         },
@@ -142,8 +142,8 @@ describe('web vitals', () => {
                     callback()
                 })
 
-                assignableWindow.__PosthogExtensions__ = {}
-                assignableWindow.__PosthogExtensions__.loadExternalDependency = loadScriptMock
+                assignableWindow.__AgridExtensions__ = {}
+                assignableWindow.__AgridExtensions__.loadExternalDependency = loadScriptMock
 
                 // need to force this to get the web vitals script loaded
                 agrid.webVitalsAutocapture!.onRemoteConfig({
@@ -230,8 +230,8 @@ describe('web vitals', () => {
     describe('afterFlagsResponse()', () => {
         beforeEach(async () => {
             // we need a set of fake web vitals handlers, so we can manually trigger the events
-            assignableWindow.__PosthogExtensions__ = {}
-            assignableWindow.__PosthogExtensions__.postHogWebVitalsCallbacks = {
+            assignableWindow.__AgridExtensions__ = {}
+            assignableWindow.__AgridExtensions__.postHogWebVitalsCallbacks = {
                 onLCP: (cb: any) => {
                     onLCPCallback = cb
                 },
@@ -440,8 +440,8 @@ describe('web vitals', () => {
 
                 loadScriptMock.mockImplementation((_ph, _path, callback) => {
                     // we need a set of fake web vitals handlers, so we can manually trigger the events
-                    assignableWindow.__PosthogExtensions__ = {}
-                    assignableWindow.__PosthogExtensions__.postHogWebVitalsCallbacks = {
+                    assignableWindow.__AgridExtensions__ = {}
+                    assignableWindow.__AgridExtensions__.postHogWebVitalsCallbacks = {
                         onLCP: (cb: any) => {
                             onLCPCallback = cb
                         },
@@ -458,8 +458,8 @@ describe('web vitals', () => {
                     callback()
                 })
 
-                assignableWindow.__PosthogExtensions__ = {}
-                assignableWindow.__PosthogExtensions__.loadExternalDependency = loadScriptMock
+                assignableWindow.__AgridExtensions__ = {}
+                assignableWindow.__AgridExtensions__.loadExternalDependency = loadScriptMock
 
                 // need to force this to get the web vitals script loaded
                 agrid.webVitalsAutocapture!.onRemoteConfig({

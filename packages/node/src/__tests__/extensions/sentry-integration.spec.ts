@@ -1,5 +1,5 @@
-import { PostHog } from '@/entrypoints/index.node'
-import { PostHogSentryIntegration } from '@/extensions/sentry-integration'
+import { Agrid } from '@/entrypoints/index.node'
+import { AgridSentryIntegration } from '@/extensions/sentry-integration'
 import { waitForPromises } from '../utils'
 
 jest.mock('../../version', () => ({ version: '1.2.3' }))
@@ -37,7 +37,7 @@ const createMockSentryException = (): any => ({
   timestamp: 1704203482.356,
   environment: 'production',
   level: 'error',
-  tags: { posthog_distinct_id: 'EXAMPLE_APP_GLOBAL' },
+  tags: { agrid_distinct_id: 'EXAMPLE_APP_GLOBAL' },
   breadcrumbs: [
     {
       timestamp: 1704203481.422,
@@ -50,7 +50,7 @@ const createMockSentryException = (): any => ({
       category: 'console',
       level: 'log',
       message:
-        "PostHog Debug error [ClientError: Your personalApiKey is invalid. Are you sure you're not using your Project API key? More information: https://posthog.com/docs/api/overview]",
+        "Agrid Debug error [ClientError: Your personalApiKey is invalid. Are you sure you're not using your Project API key? More information: https://agrid.com/docs/api/overview]",
     },
   ],
   sdkProcessingMetadata: {
@@ -58,20 +58,20 @@ const createMockSentryException = (): any => ({
   },
 })
 
-describe('PostHogSentryIntegration', () => {
-  let posthog: PostHog
-  let posthogSentry: PostHogSentryIntegration
+describe('AgridSentryIntegration', () => {
+  let agrid: Agrid
+  let agridSentry: AgridSentryIntegration
 
   jest.useFakeTimers()
 
   beforeEach(() => {
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       fetchRetryCount: 0,
       disableCompression: true,
     })
 
-    posthogSentry = new PostHogSentryIntegration(posthog)
+    agridSentry = new AgridSentryIntegration(agrid)
 
     mockedFetch.mockResolvedValue({
       status: 200,
@@ -85,10 +85,10 @@ describe('PostHogSentryIntegration', () => {
 
   afterEach(async () => {
     // ensure clean shutdown & no test interdependencies
-    await posthog.shutdown()
+    await agrid.shutdown()
   })
 
-  it('should forward sentry exceptions to posthog', async () => {
+  it('should forward sentry exceptions to agrid', async () => {
     expect(mockedFetch).toHaveBeenCalledTimes(0)
 
     const mockSentry = {
@@ -97,11 +97,12 @@ describe('PostHogSentryIntegration', () => {
           projectId: 123,
         }),
       }),
+      getIntegration: () => true,
     }
 
     let processorFunction: any
 
-    posthogSentry.setupOnce(
+    agridSentry.setupOnce(
       (fn) => (processorFunction = fn),
       () => mockSentry
     )
@@ -143,8 +144,8 @@ describe('PostHogSentryIntegration', () => {
           $sentry_exception_message: 'example error',
           $sentry_exception_type: 'Error',
           $sentry_tags: {
-            posthog_distinct_id: 'EXAMPLE_APP_GLOBAL',
-            'PostHog Person URL': 'http://example.com/project/TEST_API_KEY/person/EXAMPLE_APP_GLOBAL',
+            agrid_distinct_id: 'EXAMPLE_APP_GLOBAL',
+            'Agrid Person URL': 'http://example.com/project/TEST_API_KEY/person/EXAMPLE_APP_GLOBAL',
           },
           $lib: 'agrid-node',
           $lib_version: '1.2.3',

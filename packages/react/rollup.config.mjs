@@ -21,7 +21,7 @@ const plugins = [
  * Configuration for the ESM build
  */
 const buildEsm = {
-    external: ['posthog-js', 'react'],
+    external: ['agrid-js', 'react'],
     input: [
         // Split modules so they can be tree-shaken
         'src/index.ts',
@@ -38,24 +38,24 @@ const buildEsm = {
  * Configuration for the UMD build
  */
 const buildUmd = {
-    external: ['posthog-js', 'react'],
+    external: ['agrid-js', 'react'],
     input: './src/index.ts',
     output: {
         file: 'dist/umd/index.js',
-        name: 'PosthogReact',
+        name: 'AgridReact',
         format: 'umd',
         sourcemap: true,
         esModule: false,
         globals: {
             react: 'React',
-            'posthog-js': 'posthog',
+            'agrid-js': 'agrid',
         },
     },
     plugins,
 }
 
 const buildTypes = {
-    external: ['posthog-js', 'react'],
+    external: ['agrid-js', 'react'],
     input: './src/index.ts',
     output: {
         file: 'dist/types/index.d.ts',

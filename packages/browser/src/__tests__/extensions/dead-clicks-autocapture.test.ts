@@ -10,12 +10,12 @@ describe('DeadClicksAutocapture', () => {
 
     beforeEach(() => {
         mockStart = jest.fn()
-        assignableWindow.__PosthogExtensions__ = assignableWindow.__PosthogExtensions__ || {}
-        assignableWindow.__PosthogExtensions__.initDeadClicksAutocapture = () => ({
+        assignableWindow.__AgridExtensions__ = assignableWindow.__AgridExtensions__ || {}
+        assignableWindow.__AgridExtensions__.initDeadClicksAutocapture = () => ({
             start: mockStart,
             stop: jest.fn(),
         })
-        assignableWindow.__PosthogExtensions__.loadExternalDependency = jest
+        assignableWindow.__AgridExtensions__.loadExternalDependency = jest
             .fn()
             .mockImplementation(() => (_ph: Agrid, _name: string, cb: (err?: Error) => void) => {
                 cb()
@@ -45,9 +45,9 @@ describe('DeadClicksAutocapture', () => {
     })
 
     it('should call loadExternalDependency if script is not already loaded', async () => {
-        assignableWindow.__PosthogExtensions__.initDeadClicksAutocapture = undefined
+        assignableWindow.__AgridExtensions__.initDeadClicksAutocapture = undefined
 
-        const mockLoader = assignableWindow.__PosthogExtensions__.loadExternalDependency as jest.Mock
+        const mockLoader = assignableWindow.__AgridExtensions__.loadExternalDependency as jest.Mock
         mockLoader.mockClear()
 
         const instance = await createPosthogInstance(uuidv7(), { capture_dead_clicks: true })

@@ -1,4 +1,5 @@
-import { expect, test } from './utils/posthog-playwright-test-base'
+/* eslint-disable agrid-js/no-direct-null-check */
+import { expect, test } from './utils/agrid-playwright-test-base'
 import { start } from './utils/setup'
 import { Request } from '@playwright/test'
 
@@ -39,7 +40,7 @@ test.describe('retry queue', () => {
 
         // Capture a custom event which will initially fail
         await page.evaluate(() => {
-            window.posthog.capture('test-retry-event', { test: 'data' })
+            window.agrid.capture('test-retry-event', { test: 'data' })
         })
 
         // Wait for the initial request and the retries
@@ -104,7 +105,7 @@ test.describe('retry queue', () => {
 
         // Capture a custom event which will fail
         await page.evaluate(() => {
-            window.posthog.capture('test-max-retries-event', { test: 'data' })
+            window.agrid.capture('test-max-retries-event', { test: 'data' })
         })
 
         // Wait for several retries
@@ -158,7 +159,7 @@ test.describe('retry queue', () => {
 
         // Capture an event that will fail
         await page.evaluate(() => {
-            window.posthog.capture('test-offline-event', { test: 'data' })
+            window.agrid.capture('test-offline-event', { test: 'data' })
         })
 
         // Wait for initial request to be queued and sent

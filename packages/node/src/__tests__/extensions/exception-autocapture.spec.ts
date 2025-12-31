@@ -1,5 +1,5 @@
 import ErrorTracking from '@/extensions/error-tracking'
-import { PostHog } from '@/entrypoints/index.node'
+import { Agrid } from '@/entrypoints/index.node'
 import { addUncaughtExceptionListener, addUnhandledRejectionListener } from '@/extensions/error-tracking/autocapture'
 import { Worker } from 'worker_threads'
 import type { ErrorTracking as CoreErrorTracking } from '@agrid/core'
@@ -114,7 +114,7 @@ describe('exception autocapture', () => {
       properties: { $exception_list: [{ type: 'Error' }] },
     })
 
-    const ph = new PostHog('TEST_API_KEY', {
+    const ph = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       fetchRetryCount: 0,
       disableCompression: true,

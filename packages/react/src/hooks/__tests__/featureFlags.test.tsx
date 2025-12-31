@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { renderHook } from '@testing-library/react-hooks'
-import { PostHogProvider, PostHog } from '../../context'
+import { AgridProvider, Agrid } from '../../context'
 import { useFeatureFlagPayload, useFeatureFlagVariantKey, useFeatureFlagEnabled, useActiveFeatureFlags } from '../index'
 
 jest.useFakeTimers()
@@ -23,11 +23,11 @@ const FEATURE_FLAG_PAYLOADS: Record<string, any> = {
 }
 
 describe('useFeatureFlagPayload hook', () => {
-    let posthog: PostHog
+    let agrid: Agrid
     let renderProvider: React.FC<{ children: React.ReactNode }>
 
     beforeEach(() => {
-        posthog = {
+        agrid = {
             isFeatureEnabled: (flag: string) => !!FEATURE_FLAG_STATUS[flag],
             getFeatureFlag: (flag: string) => FEATURE_FLAG_STATUS[flag],
             getFeatureFlagPayload: (flag: string) => FEATURE_FLAG_PAYLOADS[flag],
@@ -44,11 +44,11 @@ describe('useFeatureFlagPayload hook', () => {
             featureFlags: {
                 getFlags: () => ACTIVE_FEATURE_FLAGS,
                 hasLoadedFlags: true,
-            } as unknown as PostHog['featureFlags'],
-        } as unknown as PostHog
+            } as unknown as Agrid['featureFlags'],
+        } as unknown as Agrid
 
         // eslint-disable-next-line react/display-name
-        renderProvider = ({ children }) => <PostHogProvider client={posthog}>{children}</PostHogProvider>
+        renderProvider = ({ children }) => <AgridProvider client={agrid}>{children}</AgridProvider>
     })
 
     it.each([

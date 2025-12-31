@@ -15,9 +15,9 @@ pnpm add agrid-node
 ## Quick Start
 
 ```ts
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 
-const agrid = new PostHog('YOUR_PROJECT_API_KEY', {
+const agrid = new Agrid('YOUR_PROJECT_API_KEY', {
   host: 'YOUR_INGESTION_URL'
 })
 

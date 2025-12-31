@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import posthog from 'agrid-js'
+import agrid from 'agrid-js'
 
 export default function Home() {
     return (
@@ -10,7 +10,7 @@ export default function Home() {
                 <Link href="./error?messsage=Rendering%20Error">
                     <button>Generate rendering error</button>
                 </Link>
-                <button onClick={() => posthog.captureException(new Error('Programming error'))}>Send error</button>
+                <button onClick={() => agrid.captureException(new Error('Programming error'))}>Send error</button>
             </main>
         </div>
     )

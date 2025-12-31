@@ -1,9 +1,10 @@
+/* eslint-disable agrid-js/no-direct-array-check, agrid-js/no-direct-undefined-check, agrid-js/no-direct-function-check, agrid-js/no-direct-number-check, agrid-js/no-direct-null-check */
 import { OpenAI as OpenAIOrignal, ClientOptions } from 'openai'
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 import {
   formatResponseOpenAI,
   MonitoringParams,
-  sendEventToPosthog,
+  sendEventToAgrid,
   extractAvailableToolCalls,
   withPrivacyMode,
   AIEvent,
@@ -16,7 +17,7 @@ import type { ParsedResponse } from 'openai/resources/responses/responses'
 import type { ResponseCreateParamsWithTools, ExtractParsedContentFromParams } from 'openai/lib/ResponsesParser'
 import type { FormattedMessage, FormattedContent, FormattedFunctionCall } from '../types'
 import { sanitizeOpenAI } from '../sanitization'
-import { extractPosthogParams } from '../utils'
+import { extractAgridParams } from '../utils'
 
 const Chat = OpenAIOrignal.Chat
 const Completions = Chat.Completions
@@ -36,22 +37,22 @@ type EmbeddingCreateParams = OpenAIOrignal.EmbeddingCreateParams
 
 interface MonitoringOpenAIConfig extends ClientOptions {
   apiKey: string
-  posthog: PostHog
+  agrid: Agrid
   baseURL?: string
 }
 
 type RequestOptions = Record<string, unknown>
 
-export class PostHogOpenAI extends OpenAIOrignal {
-  private readonly phClient: PostHog
+export class AgridOpenAI extends OpenAIOrignal {
+  private readonly phClient: Agrid
   public chat: WrappedChat
   public responses: WrappedResponses
   public embeddings: WrappedEmbeddings
 
   constructor(config: MonitoringOpenAIConfig) {
-    const { posthog, ...openAIConfig } = config
+    const { agrid, ...openAIConfig } = config
     super(openAIConfig)
-    this.phClient = posthog
+    this.phClient = agrid
     this.chat = new WrappedChat(this, this.phClient)
     this.responses = new WrappedResponses(this, this.phClient)
     this.embeddings = new WrappedEmbeddings(this, this.phClient)
@@ -59,7 +60,7 @@ export class PostHogOpenAI extends OpenAIOrignal {
 }
 
 export class WrappedChat extends Chat {
-  constructor(parentClient: PostHogOpenAI, phClient: PostHog) {
+  constructor(parentClient: AgridOpenAI, phClient: Agrid) {
     super(parentClient)
     this.completions = new WrappedCompletions(parentClient, phClient)
   }
@@ -68,10 +69,10 @@ export class WrappedChat extends Chat {
 }
 
 export class WrappedCompletions extends Completions {
-  private readonly phClient: PostHog
+  private readonly phClient: Agrid
   private readonly baseURL: string
 
-  constructor(client: OpenAIOrignal, phClient: PostHog) {
+  constructor(client: OpenAIOrignal, phClient: Agrid) {
     super(client)
     this.phClient = phClient
     this.baseURL = client.baseURL
@@ -100,7 +101,7 @@ export class WrappedCompletions extends Completions {
     body: ChatCompletionCreateParamsBase & MonitoringParams,
     options?: RequestOptions
   ): APIPromise<ChatCompletion | Stream<ChatCompletionChunk>> {
-    const { providerParams: openAIParams, posthogParams } = extractPosthogParams(body)
+    const { providerParams: openAIParams, agridParams } = extractAgridParams(body)
     const startTime = Date.now()
 
     const parentPromise = super.create(openAIParams, options)
@@ -231,9 +232,9 @@ export class WrappedCompletions extends Completions {
 
               const latency = (Date.now() - startTime) / 1000
               const availableTools = extractAvailableToolCalls('openai', openAIParams)
-              await sendEventToPosthog({
+              await sendEventToAgrid({
                 client: this.phClient,
-                ...posthogParams,
+                ...agridParams,
                 model: openAIParams.model,
                 provider: 'openai',
                 input: sanitizeOpenAI(openAIParams.messages),
@@ -257,9 +258,9 @@ export class WrappedCompletions extends Completions {
                   ? ((error as { status?: number }).status ?? 500)
                   : 500
 
-              await sendEventToPosthog({
+              await sendEventToAgrid({
                 client: this.phClient,
-                ...posthogParams,
+                ...agridParams,
                 model: openAIParams.model,
                 provider: 'openai',
                 input: sanitizeOpenAI(openAIParams.messages),
@@ -287,9 +288,9 @@ export class WrappedCompletions extends Completions {
             const latency = (Date.now() - startTime) / 1000
             const availableTools = extractAvailableToolCalls('openai', openAIParams)
             const formattedOutput = formatResponseOpenAI(result)
-            await sendEventToPosthog({
+            await sendEventToAgrid({
               client: this.phClient,
-              ...posthogParams,
+              ...agridParams,
               model: openAIParams.model,
               provider: 'openai',
               input: sanitizeOpenAI(openAIParams.messages),
@@ -316,9 +317,9 @@ export class WrappedCompletions extends Completions {
               ? ((error as { status?: number }).status ?? 500)
               : 500
 
-          await sendEventToPosthog({
+          await sendEventToAgrid({
             client: this.phClient,
-            ...posthogParams,
+            ...agridParams,
             model: String(openAIParams.model ?? ''),
             provider: 'openai',
             input: sanitizeOpenAI(openAIParams.messages),
@@ -344,10 +345,10 @@ export class WrappedCompletions extends Completions {
 }
 
 export class WrappedResponses extends Responses {
-  private readonly phClient: PostHog
+  private readonly phClient: Agrid
   private readonly baseURL: string
 
-  constructor(client: OpenAIOrignal, phClient: PostHog) {
+  constructor(client: OpenAIOrignal, phClient: Agrid) {
     super(client)
     this.phClient = phClient
     this.baseURL = client.baseURL
@@ -376,7 +377,7 @@ export class WrappedResponses extends Responses {
     body: ResponsesCreateParamsBase & MonitoringParams,
     options?: RequestOptions
   ): APIPromise<OpenAIOrignal.Responses.Response | Stream<OpenAIOrignal.Responses.ResponseStreamEvent>> {
-    const { providerParams: openAIParams, posthogParams } = extractPosthogParams(body)
+    const { providerParams: openAIParams, agridParams } = extractAgridParams(body)
     const startTime = Date.now()
 
     const parentPromise = super.create(openAIParams, options)
@@ -429,9 +430,9 @@ export class WrappedResponses extends Responses {
 
               const latency = (Date.now() - startTime) / 1000
               const availableTools = extractAvailableToolCalls('openai', openAIParams)
-              await sendEventToPosthog({
+              await sendEventToAgrid({
                 client: this.phClient,
-                ...posthogParams,
+                ...agridParams,
                 //@ts-expect-error
                 model: openAIParams.model,
                 provider: 'openai',
@@ -456,9 +457,9 @@ export class WrappedResponses extends Responses {
                   ? ((error as { status?: number }).status ?? 500)
                   : 500
 
-              await sendEventToPosthog({
+              await sendEventToAgrid({
                 client: this.phClient,
-                ...posthogParams,
+                ...agridParams,
                 //@ts-expect-error
                 model: openAIParams.model,
                 provider: 'openai',
@@ -486,9 +487,9 @@ export class WrappedResponses extends Responses {
             const latency = (Date.now() - startTime) / 1000
             const availableTools = extractAvailableToolCalls('openai', openAIParams)
             const formattedOutput = formatResponseOpenAI({ output: result.output })
-            await sendEventToPosthog({
+            await sendEventToAgrid({
               client: this.phClient,
-              ...posthogParams,
+              ...agridParams,
               //@ts-expect-error
               model: openAIParams.model,
               provider: 'openai',
@@ -516,9 +517,9 @@ export class WrappedResponses extends Responses {
               ? ((error as { status?: number }).status ?? 500)
               : 500
 
-          await sendEventToPosthog({
+          await sendEventToAgrid({
             client: this.phClient,
-            ...posthogParams,
+            ...agridParams,
             model: String(openAIParams.model ?? ''),
             provider: 'openai',
             input: formatOpenAIResponsesInput(openAIParams.input, openAIParams.instructions),
@@ -546,7 +547,7 @@ export class WrappedResponses extends Responses {
     body: Params & MonitoringParams,
     options?: RequestOptions
   ): APIPromise<ParsedResponse<ParsedT>> {
-    const { providerParams: openAIParams, posthogParams } = extractPosthogParams(body)
+    const { providerParams: openAIParams, agridParams } = extractAgridParams(body)
     const startTime = Date.now()
 
     const originalCreate = super.create.bind(this)
@@ -560,9 +561,9 @@ export class WrappedResponses extends Responses {
       const wrappedPromise = parentPromise.then(
         async (result) => {
           const latency = (Date.now() - startTime) / 1000
-          await sendEventToPosthog({
+          await sendEventToAgrid({
             client: this.phClient,
-            ...posthogParams,
+            ...agridParams,
             model: String(openAIParams.model ?? ''),
             provider: 'openai',
             input: formatOpenAIResponsesInput(openAIParams.input, openAIParams.instructions),
@@ -586,9 +587,9 @@ export class WrappedResponses extends Responses {
               ? ((error as { status?: number }).status ?? 500)
               : 500
 
-          await sendEventToPosthog({
+          await sendEventToAgrid({
             client: this.phClient,
-            ...posthogParams,
+            ...agridParams,
             model: String(openAIParams.model ?? ''),
             provider: 'openai',
             input: formatOpenAIResponsesInput(openAIParams.input, openAIParams.instructions),
@@ -617,10 +618,10 @@ export class WrappedResponses extends Responses {
 }
 
 export class WrappedEmbeddings extends Embeddings {
-  private readonly phClient: PostHog
+  private readonly phClient: Agrid
   private readonly baseURL: string
 
-  constructor(client: OpenAIOrignal, phClient: PostHog) {
+  constructor(client: OpenAIOrignal, phClient: Agrid) {
     super(client)
     this.phClient = phClient
     this.baseURL = client.baseURL
@@ -630,7 +631,7 @@ export class WrappedEmbeddings extends Embeddings {
     body: EmbeddingCreateParams & MonitoringParams,
     options?: RequestOptions
   ): APIPromise<CreateEmbeddingResponse> {
-    const { providerParams: openAIParams, posthogParams } = extractPosthogParams(body)
+    const { providerParams: openAIParams, agridParams } = extractAgridParams(body)
     const startTime = Date.now()
 
     const parentPromise = super.create(openAIParams, options)
@@ -638,13 +639,13 @@ export class WrappedEmbeddings extends Embeddings {
     const wrappedPromise = parentPromise.then(
       async (result) => {
         const latency = (Date.now() - startTime) / 1000
-        await sendEventToPosthog({
+        await sendEventToAgrid({
           client: this.phClient,
-          ...posthogParams,
+          ...agridParams,
           eventType: AIEvent.Embedding,
           model: openAIParams.model,
           provider: 'openai',
-          input: withPrivacyMode(this.phClient, posthogParams.privacyMode, openAIParams.input),
+          input: withPrivacyMode(this.phClient, agridParams.privacyMode, openAIParams.input),
           output: null, // Embeddings don't have output content
           latency,
           baseURL: this.baseURL,
@@ -660,13 +661,13 @@ export class WrappedEmbeddings extends Embeddings {
         const httpStatus =
           error && typeof error === 'object' && 'status' in error ? ((error as { status?: number }).status ?? 500) : 500
 
-        await sendEventToPosthog({
+        await sendEventToAgrid({
           client: this.phClient,
           eventType: AIEvent.Embedding,
-          ...posthogParams,
+          ...agridParams,
           model: openAIParams.model,
           provider: 'openai',
-          input: withPrivacyMode(this.phClient, posthogParams.privacyMode, openAIParams.input),
+          input: withPrivacyMode(this.phClient, agridParams.privacyMode, openAIParams.input),
           output: null, // Embeddings don't have output content
           latency: 0,
           baseURL: this.baseURL,
@@ -686,6 +687,6 @@ export class WrappedEmbeddings extends Embeddings {
   }
 }
 
-export default PostHogOpenAI
+export default AgridOpenAI
 
-export { PostHogOpenAI as OpenAI }
+export { AgridOpenAI as OpenAI }

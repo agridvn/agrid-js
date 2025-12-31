@@ -8,7 +8,7 @@ importers:
 
   .:
     dependencies:
-      posthog-js:
+      agrid-js:
         specifier: link:../../..
         version: link:../../..
       react:

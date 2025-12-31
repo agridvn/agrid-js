@@ -1,24 +1,24 @@
 'use client'
 
-import posthogJs, { PostHog } from 'agrid-js'
-import { PostHogErrorBoundary } from 'posthog-js/react'
+import agridJs, { Agrid } from 'agrid-js'
+import { AgridErrorBoundary } from 'agrid-js/react'
 import { useEffect, useState } from 'react'
 
 export default function LocalProvider({ debug, children }: { debug: boolean; children: React.ReactNode }) {
-    const [client, setClient] = useState<PostHog | undefined>()
+    const [client, setClient] = useState<Agrid | undefined>()
 
     useEffect(() => {
-        const posthog = posthogJs.init(process.env.NEXT_PUBLIC_POSTHOG_KEY || '', {
-            api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+        const agrid = agridJs.init(process.env.NEXT_PUBLIC_AGRID_KEY || '', {
+            api_host: process.env.NEXT_PUBLIC_AGRID_HOST,
         })
         if (debug) {
-            posthog.debug()
+            agrid.debug()
         }
-        setClient(posthog)
+        setClient(agrid)
     }, [setClient])
 
     return (
-        <PostHogErrorBoundary
+        <AgridErrorBoundary
             client={client}
             fallback={<div>An error occurred while rendering the page and exception was captured</div>}
             additionalProperties={{
@@ -26,6 +26,6 @@ export default function LocalProvider({ debug, children }: { debug: boolean; chi
             }}
         >
             {children}
-        </PostHogErrorBoundary>
+        </AgridErrorBoundary>
     )
 }

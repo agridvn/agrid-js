@@ -72,20 +72,20 @@ describe('SessionRecording', () => {
     let simpleEventEmitter: SimpleEventEmitter
 
     const addRRwebToWindow = () => {
-        assignableWindow.__PosthogExtensions__.rrweb = {
+        assignableWindow.__AgridExtensions__.rrweb = {
             record: jest.fn(({ emit }) => {
                 _emit = emit
                 return () => {}
             }),
             version: 'fake',
         }
-        assignableWindow.__PosthogExtensions__.rrweb.record.takeFullSnapshot = jest.fn(() => {
+        assignableWindow.__AgridExtensions__.rrweb.record.takeFullSnapshot = jest.fn(() => {
             // we pretend to be rrweb and call emit
             _emit(createFullSnapshot())
         })
-        assignableWindow.__PosthogExtensions__.rrweb.record.addCustomEvent = _addCustomEvent
+        assignableWindow.__AgridExtensions__.rrweb.record.addCustomEvent = _addCustomEvent
 
-        assignableWindow.__PosthogExtensions__.rrwebPlugins = {
+        assignableWindow.__AgridExtensions__.rrwebPlugins = {
             getRecordConsolePlugin: jest.fn(),
         }
     }
@@ -106,7 +106,7 @@ describe('SessionRecording', () => {
             persistence: 'memory',
         } as unknown as AgridConfig
 
-        assignableWindow.__PosthogExtensions__ = {
+        assignableWindow.__AgridExtensions__ = {
             rrweb: undefined,
             rrwebPlugins: {
                 getRecordConsolePlugin: undefined,
@@ -158,9 +158,9 @@ describe('SessionRecording', () => {
             callback()
         })
 
-        assignableWindow.__PosthogExtensions__.loadExternalDependency = loadScriptMock
+        assignableWindow.__AgridExtensions__.loadExternalDependency = loadScriptMock
 
-        assignableWindow.__PosthogExtensions__.initSessionRecording = () => {
+        assignableWindow.__AgridExtensions__.initSessionRecording = () => {
             return new LazyLoadedSessionRecording(agrid)
         }
 

@@ -1,6 +1,6 @@
-# PostHog JS Custom ESLint rules 
+# Agrid JS Custom ESLint rules 
 
-This package contains custom ESLint rules for PostHog's JS codebase.
+This package contains custom ESLint rules for Agrid's JS codebase.
 
 For example, we have a number of functions that check types like `isNull` or `isBoolean`. 
 In most projects these don't help very much but since agrid-js is bundled and included in many different projects,

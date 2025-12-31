@@ -1,8 +1,8 @@
-## PostHog demo project
+## Agrid demo project
 
 ### Testing local changes to packages
 
-This is a simple project used to test local changes to the PostHog JS SDK packages.
+This is a simple project used to test local changes to the Agrid JS SDK packages.
 
 #### Quick Start (Recommended)
 
@@ -16,7 +16,7 @@ cd playground/nextjs
 With environment variables:
 
 ```bash
-NEXT_PUBLIC_POSTHOG_KEY='<your-local-api-key>' NEXT_PUBLIC_POSTHOG_HOST='http://localhost:8010' ./bin/localdev.sh
+NEXT_PUBLIC_AGRID_KEY='<your-local-api-key>' NEXT_PUBLIC_AGRID_HOST='http://localhost:8010' ./bin/localdev.sh
 ```
 
 This script will:
@@ -26,7 +26,7 @@ This script will:
 3. Install dependencies in the playground
 4. Start the dev server
 
-Open [http://localhost:3000?\_\_posthog_debug=true](http://localhost:3000?__posthog_debug=true) to see debug logs.
+Open [http://localhost:3000?\_\_agrid_debug=true](http://localhost:3000?__agrid_debug=true) to see debug logs.
 
 #### Manual Setup
 
@@ -44,7 +44,7 @@ pnpm package
 
 ```bash
 pnpm install
-NEXT_PUBLIC_POSTHOG_KEY='<your-local-api-key>' NEXT_PUBLIC_POSTHOG_HOST='http://localhost:8010' pnpm dev
+NEXT_PUBLIC_AGRID_KEY='<your-local-api-key>' NEXT_PUBLIC_AGRID_HOST='http://localhost:8010' pnpm dev
 ```
 
 #### How it works
@@ -60,8 +60,8 @@ with Chrome:
 Add the following to your /etc/host file:
 
 ```
-127.0.0.1 www.posthog.dev
-127.0.0.1 app.posthog.dev
+127.0.0.1 www.agrid.dev
+127.0.0.1 app.agrid.dev
 ```
 
 To restart your DNS server on MacOS, run:
@@ -73,11 +73,11 @@ sudo killall -HUP mDNSResponder
 Run this modified command to start the server. It will ask you to for sudo permissions to create a self-signed cert for https.
 
 ```bash
-NEXT_PUBLIC_POSTHOG_KEY='<your-local-api-key>' NEXT_PUBLIC_POSTHOG_HOST='http://localhost:8000' pnpm dev-crossdomain
+NEXT_PUBLIC_AGRID_KEY='<your-local-api-key>' NEXT_PUBLIC_AGRID_HOST='http://localhost:8000' pnpm dev-crossdomain
 ```
 
 You can now open the subdomains we added to the host file, but you will likely see a warning about unsafe certificates. To get around this, in Chrome you can type `thisisunsafe` to bypass the warning.
 The subdomains are:
 
-- [https://www.posthog.dev:3000](https://www.posthog.dev:3000)
-- [https://app.posthog.dev:3000](https://app.posthog.dev:3000)
+- [https://www.agrid.dev:3000](https://www.agrid.dev:3000)
+- [https://app.agrid.dev:3000](https://app.agrid.dev:3000)

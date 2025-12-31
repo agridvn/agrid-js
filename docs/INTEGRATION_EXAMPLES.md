@@ -183,7 +183,7 @@ npm install agrid-js @agrid/react
 File `lib/agrid.js`:
 
 ```javascript
-import posthog from 'agrid-js'
+import agrid from 'agrid-js'
 
 export function initAgrid() {
     if (typeof window !== 'undefined') {
@@ -191,17 +191,17 @@ export function initAgrid() {
         const agridHost = process.env.NEXT_PUBLIC_AGRID_API_HOST || 'YOUR_INGESTION_URL'
 
         if (agridApiKey && !window.agrid) {
-            posthog.init(agridApiKey, {
+            agrid.init(agridApiKey, {
                 api_host: agridHost,
-                loaded: (posthog) => {
+                loaded: (agrid) => {
                     if (process.env.NODE_ENV === 'development') {
-                        console.log('Agrid loaded', posthog)
+                        console.log('Agrid loaded', agrid)
                     }
                 }
             })
         }
     }
-    return posthog
+    return agrid
 }
 ```
 
@@ -212,7 +212,7 @@ File `components/AgridProvider.jsx`:
 ```jsx
 'use client'
 
-import { PostHogProvider } from '@agrid/react'
+import { AgridProvider } from '@agrid/react'
 import { useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { initAgrid } from '@/lib/agrid'
@@ -220,28 +220,28 @@ import { initAgrid } from '@/lib/agrid'
 export function AgridProvider({ children }) {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const posthog = initAgrid()
+    const agrid = initAgrid()
 
     useEffect(() => {
-        if (pathname && posthog) {
+        if (pathname && agrid) {
             let url = window.origin + pathname
             if (searchParams && searchParams.toString()) {
                 url = url + `?${searchParams.toString()}`
             }
-            posthog.capture('$pageview', {
+            agrid.capture('$pageview', {
                 $current_url: url
             })
         }
-    }, [pathname, searchParams, posthog])
+    }, [pathname, searchParams, agrid])
 
-    if (!posthog) {
+    if (!agrid) {
         return <>{children}</>
     }
 
     return (
-        <PostHogProvider client={posthog}>
+        <AgridProvider client={agrid}>
             {children}
-        </PostHogProvider>
+        </AgridProvider>
     )
 }
 ```
@@ -273,20 +273,20 @@ File `app/products/[id]/page.jsx`:
 ```jsx
 'use client'
 
-import { usePostHog } from '@agrid/react'
+import { useAgrid } from '@agrid/react'
 import { useEffect } from 'react'
 
 export default function ProductPage({ params }) {
-    const posthog = usePostHog()
+    const agrid = useAgrid()
 
     useEffect(() => {
-        posthog?.capture('product_viewed', {
+        agrid?.capture('product_viewed', {
             product_id: params.id
         })
-    }, [params.id, posthog])
+    }, [params.id, agrid])
 
     const handleAddToCart = () => {
-        posthog?.capture('product_added_to_cart', {
+        agrid?.capture('product_added_to_cart', {
             product_id: params.id
         })
     }
@@ -324,19 +324,19 @@ npm install agrid-js
 File `plugins/agrid.js`:
 
 ```javascript
-import posthog from 'agrid-js'
+import agrid from 'agrid-js'
 
 export default function ({ app }, inject) {
     const agridApiKey = process.env.AGRID_API_KEY
     const agridHost = process.env.AGRID_API_HOST || 'YOUR_INGESTION_URL'
 
     if (agridApiKey) {
-        posthog.init(agridApiKey, {
+        agrid.init(agridApiKey, {
             api_host: agridHost
         })
     }
 
-    inject('agrid', posthog)
+    inject('agrid', agrid)
 }
 ```
 
@@ -427,7 +427,7 @@ File `src/app/services/agrid.service.ts`:
 
 ```typescript
 import { Injectable } from '@angular/core'
-import posthog from 'agrid-js'
+import agrid from 'agrid-js'
 
 @Injectable({
     providedIn: 'root'
@@ -446,7 +446,7 @@ export class AgridService {
         const apiHost = environment.agridApiHost || 'YOUR_INGESTION_URL'
 
         if (apiKey) {
-            posthog.init(apiKey, {
+            agrid.init(apiKey, {
                 api_host: apiHost
             })
             this.initialized = true
@@ -455,19 +455,19 @@ export class AgridService {
 
     capture(eventName: string, properties?: any) {
         if (this.initialized) {
-            posthog.capture(eventName, properties)
+            agrid.capture(eventName, properties)
         }
     }
 
     identify(userId: string, properties?: any) {
         if (this.initialized) {
-            posthog.identify(userId, properties)
+            agrid.identify(userId, properties)
         }
     }
 
     reset() {
         if (this.initialized) {
-            posthog.reset()
+            agrid.reset()
         }
     }
 }

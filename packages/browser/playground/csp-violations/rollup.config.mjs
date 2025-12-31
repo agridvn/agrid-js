@@ -7,7 +7,7 @@ const prod = process.env.NODE_ENV === 'production'
 
 export default {
     input: {
-        posthog: 'src/posthog.js',
+        agrid: 'src/agrid.js',
         main: 'src/main.js',
     },
     output: {
@@ -17,9 +17,9 @@ export default {
     plugins: [
         replace({
             preventAssignment: true,
-            'process.env.POSTHOG_TOKEN': JSON.stringify(process.env.POSTHOG_TOKEN),
-            'process.env.POSTHOG_API_HOST': JSON.stringify(process.env.POSTHOG_API_HOST),
-            'process.env.POSTHOG_UI_HOST': JSON.stringify(process.env.POSTHOG_UI_HOST),
+            'process.env.AGRID_TOKEN': JSON.stringify(process.env.AGRID_TOKEN),
+            'process.env.AGRID_API_HOST': JSON.stringify(process.env.AGRID_API_HOST),
+            'process.env.AGRID_UI_HOST': JSON.stringify(process.env.AGRID_UI_HOST),
         }),
         resolve(),
         commonjs(),

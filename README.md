@@ -56,16 +56,18 @@ npm install agrid-js @agrid/react
 ```
 
 ```jsx
-import { PostHogProvider } from '@agrid/react'
+import { AgridProvider } from '@agrid/react'
 
 function App() {
   return (
-    <PostHogProvider
+    <AgridProvider
       apiKey="YOUR_PROJECT_API_KEY"
-      options={{ api_host: 'YOUR_INGESTION_URL' }}
+      options={{
+        host: "https://app.agrid.vn",
+      }}
     >
-      <YourApp />
-    </PostHogProvider>
+      <MyComponent />
+    </AgridProvider>
   )
 }
 ```
@@ -77,10 +79,10 @@ npm install agrid-node
 ```
 
 ```javascript
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 
-const client = new PostHog('YOUR_PROJECT_API_KEY', {
-  host: 'YOUR_INGESTION_URL'
+const client = new Agrid('YOUR_PROJECT_API_KEY', {
+  host: 'https://app.agrid.vn'
 })
 
 client.capture({
@@ -106,14 +108,14 @@ client.capture({
 ### React (`@agrid/react`)
 
 - Install: `npm install agrid-js @agrid/react`
-- Wrap your app with `PostHogProvider` and use hooks `usePostHog`, `useFeatureFlagEnabled`.
+- Wrap your app with `AgridProvider` and use hooks `useAgrid`, `useFeatureFlagEnabled`.
 - Requires `react >= 16.8.0` and a compatible `agrid-js` per peer dependencies.
 
 ### Node.js (`agrid-node`)
 
 - Install: `npm install agrid-node`
 - Requires `node >= 20`.
-- Use the `PostHog` client to send server-side events, feature flags, and identification.
+- Use the `Agrid` client to send server-side events, feature flags, and identification.
 
 
 
@@ -209,14 +211,14 @@ if (buttonColor === 'blue') {
 ### React Hooks
 
 ```jsx
-import { usePostHog, useFeatureFlagEnabled } from '@agrid/react'
+import { useAgrid, useFeatureFlagEnabled } from '@agrid/react'
 
 function MyComponent() {
-  const posthog = usePostHog()
+  const agrid = useAgrid()
   const isNewFeatureEnabled = useFeatureFlagEnabled('new-feature')
 
   const handleClick = () => {
-    posthog?.capture('button_clicked')
+    agrid?.capture('button_clicked')
   }
 
   return (

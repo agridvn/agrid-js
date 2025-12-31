@@ -1,19 +1,18 @@
-// PostHog Node.js library example
-//
-// This script demonstrates various PostHog Node.js SDK capabilities including:
+// Agrid Node.js library example
+// This script demonstrates various Agrid Node.js SDK capabilities including:
 // - Basic event capture and user identification
 // - Feature flag local evaluation
 // - Feature flag payloads
 // - Flag dependencies evaluation
 //
 // Setup:
-// 1. Copy .env.example to .env and fill in your PostHog credentials
+// 1. Copy .env.example to .env and fill in your Agrid credentials
 // 2. Run this script and choose from the interactive menu
 
 /* eslint-disable no-console */
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-import { PostHog } from 'posthog-node'
+import { Agrid } from 'agrid-node'
 
 // Helper function to satisfy ESLint rule
 const isUndefined = (x: unknown): x is undefined => x === void 0
@@ -25,7 +24,7 @@ import wtf from 'wtfnode'
 function loadEnvFile(): void {
     /**
      * Load environment variables from .env file if it exists.
-     * This matches the behavior of the PostHog Python SDK example.
+     * This matches the behavior of the Agrid Python SDK example.
      */
     const envPath = join(__dirname, '.env')
     if (existsSync(envPath)) {
@@ -47,40 +46,40 @@ function loadEnvFile(): void {
 loadEnvFile()
 
 const {
-    PH_API_KEY = process.env.POSTHOG_PROJECT_API_KEY || '',
-    PH_HOST = process.env.POSTHOG_HOST || 'https://app.posthog.com',
-    PH_PERSONAL_API_KEY = process.env.POSTHOG_PERSONAL_API_KEY || '',
+    AGRID_PROJECT_API_KEY = process.env.AGRID_PROJECT_API_KEY || '',
+    AGRID_HOST = process.env.AGRID_HOST || 'https://app.agrid.vn',
+    AGRID_PERSONAL_API_KEY = process.env.AGRID_PERSONAL_API_KEY || '',
 } = process.env
 
 // Check if credentials are provided
-if (!PH_API_KEY || !PH_PERSONAL_API_KEY) {
-    console.log('❌ Missing PostHog credentials!')
-    console.log('   Please set POSTHOG_PROJECT_API_KEY and POSTHOG_PERSONAL_API_KEY environment variables')
+if (!AGRID_PROJECT_API_KEY || !AGRID_PERSONAL_API_KEY) {
+    console.log('❌ Missing Agrid credentials!')
+    console.log('   Please set AGRID_PROJECT_API_KEY and AGRID_PERSONAL_API_KEY environment variables')
     console.log('   or copy .env.example to .env and fill in your values')
     process.exit(1)
 }
 
-const posthog = new PostHog(PH_API_KEY, {
-    host: PH_HOST,
-    personalApiKey: PH_PERSONAL_API_KEY,
+const agrid = new Agrid(AGRID_PROJECT_API_KEY, {
+    host: AGRID_HOST,
+    personalApiKey: AGRID_PERSONAL_API_KEY,
     featureFlagsPollingInterval: 10000,
 })
 
 // Enable debug mode to see what's happening with flag evaluation
-// posthog.debug(true)  // Disabled to reduce noise
+// agrid.debug(true)  // Disabled to reduce noise
 
 async function testAuthentication(): Promise<void> {
     // Test authentication before proceeding
-    console.log('🔑 Testing PostHog authentication...')
+    console.log('🔑 Testing Agrid authentication...')
 
     try {
-        const isReady = await posthog.waitForLocalEvaluationReady(15000)
+        const isReady = await agrid.waitForLocalEvaluationReady(15000)
         if (isReady) {
             console.log('✅ Authentication successful!')
             console.log('✅ Local evaluation ready - flags can be evaluated locally')
-            console.log(`   Project API Key: ${PH_API_KEY.substring(0, 9)}...`)
+            console.log(`   Project API Key: ${AGRID_PROJECT_API_KEY.substring(0, 9)}...`)
             console.log('   Personal API Key: [REDACTED]')
-            console.log(`   Host: ${PH_HOST}\n`)
+            console.log(`   Host: ${AGRID_HOST}\n`)
         } else {
             console.log('⚠️  Local evaluation not ready within 15 seconds')
             console.log('   This might indicate credential issues or network problems')
@@ -91,9 +90,9 @@ async function testAuthentication(): Promise<void> {
         console.log('❌ Authentication test failed!')
         console.log(`   Error: ${error}`)
         console.log('\n   Please check your credentials:')
-        console.log('   - POSTHOG_PROJECT_API_KEY: Project API key from PostHog settings')
-        console.log('   - POSTHOG_PERSONAL_API_KEY: Personal API key (required for local evaluation)')
-        console.log('   - POSTHOG_HOST: Your PostHog instance URL')
+        console.log('   - AGRID_PROJECT_API_KEY: Project API key from Agrid settings')
+        console.log('   - AGRID_PERSONAL_API_KEY: Personal API key (required for local evaluation)')
+        console.log('   - AGRID_HOST: Your Agrid instance URL')
         process.exit(1)
     }
 }
@@ -105,7 +104,7 @@ async function identifyAndCaptureExamples(): Promise<void> {
 
     // Capture basic events
     console.log('📊 Capturing events...')
-    posthog.capture({
+    agrid.capture({
         distinctId: 'demo_user',
         event: 'demo_event',
         properties: { property1: 'value', property2: 'value' },
@@ -113,7 +112,7 @@ async function identifyAndCaptureExamples(): Promise<void> {
     })
 
     // Capture with groups
-    posthog.capture({
+    agrid.capture({
         distinctId: 'demo_user',
         event: 'demo_event_with_groups',
         properties: { property1: 'value', property2: 'value' },
@@ -122,14 +121,14 @@ async function identifyAndCaptureExamples(): Promise<void> {
 
     // Identify user
     console.log('👤 Identifying user...')
-    posthog.identify({
+    agrid.identify({
         distinctId: 'demo_user',
         properties: { email: 'demo@example.com', plan: 'premium' },
     })
 
     // Group identify
     console.log('🏢 Identifying group...')
-    posthog.groupIdentify({
+    agrid.groupIdentify({
         groupType: 'company',
         groupKey: 'id:5',
         properties: { employees: 11, tier: 'enterprise' },
@@ -137,7 +136,7 @@ async function identifyAndCaptureExamples(): Promise<void> {
 
     // Alias
     console.log('🔗 Creating alias...')
-    posthog.alias({
+    agrid.alias({
         distinctId: 'demo_user',
         alias: 'new_demo_user',
     })
@@ -152,37 +151,37 @@ async function featureFlagExamples(): Promise<void> {
 
     console.log('🏁 Testing basic feature flags...')
 
-    const basicFlag1 = await posthog.isFeatureEnabled('beta-feature', 'demo_user')
+    const basicFlag1 = await agrid.isFeatureEnabled('beta-feature', 'demo_user')
     console.log(`beta-feature for 'demo_user': ${basicFlag1}`)
 
-    const basicFlag2 = await posthog.isFeatureEnabled('beta-feature', 'other_user')
+    const basicFlag2 = await agrid.isFeatureEnabled('beta-feature', 'other_user')
     console.log(`beta-feature for 'other_user': ${basicFlag2}`)
 
-    const groupFlag = await posthog.isFeatureEnabled('beta-feature-groups', 'demo_user', {
+    const groupFlag = await agrid.isFeatureEnabled('beta-feature-groups', 'demo_user', {
         groups: { company: 'id:5' },
     })
     console.log(`beta-feature with groups: ${groupFlag}`)
 
     console.log('\n🌍 Testing location-based flags...')
-    const sydneyFlag = await posthog.isFeatureEnabled('test-flag', 'random_id_12345', {
+    const sydneyFlag = await agrid.isFeatureEnabled('test-flag', 'random_id_12345', {
         personProperties: { $geoip_city_name: 'Sydney' },
     })
     console.log(`Sydney user: ${sydneyFlag}`)
 
-    const sydneyFlagLocal = await posthog.isFeatureEnabled('test-flag', 'distinct_id_random_22', {
+    const sydneyFlagLocal = await agrid.isFeatureEnabled('test-flag', 'distinct_id_random_22', {
         personProperties: { $geoip_city_name: 'Sydney' },
         onlyEvaluateLocally: true,
     })
     console.log(`Sydney user (local only): ${sydneyFlagLocal}`)
 
     console.log('\n📋 Getting all flags...')
-    const allFlags = await posthog.getAllFlags('distinct_id_random_22')
+    const allFlags = await agrid.getAllFlags('distinct_id_random_22')
     console.log(`All flags count: ${Object.keys(allFlags).length}`)
 
-    const allFlagsLocal = await posthog.getAllFlags('distinct_id_random_22', { onlyEvaluateLocally: true })
+    const allFlagsLocal = await agrid.getAllFlags('distinct_id_random_22', { onlyEvaluateLocally: true })
     console.log(`All flags (local) count: ${Object.keys(allFlagsLocal).length}`)
 
-    const allFlagsWithProps = await posthog.getAllFlags('distinct_id_random_22', {
+    const allFlagsWithProps = await agrid.getAllFlags('distinct_id_random_22', {
         personProperties: { $geoip_city_name: 'Sydney' },
         onlyEvaluateLocally: true,
     })
@@ -199,21 +198,21 @@ async function payloadExamples(): Promise<void> {
     console.log('📦 Testing feature flag payloads...')
 
     try {
-        const payload = await posthog.getFeatureFlagPayload('beta-feature', 'demo_user')
+        const payload = await agrid.getFeatureFlagPayload('beta-feature', 'demo_user')
         console.log(`beta-feature payload: ${JSON.stringify(payload)}`)
     } catch (error) {
         console.log(`beta-feature payload: Error - ${error}`)
     }
 
     try {
-        const allPayloads = await posthog.getAllFlagsAndPayloads('demo_user')
+        const allPayloads = await agrid.getAllFlagsAndPayloads('demo_user')
         console.log(`All flags and payloads count: ${Object.keys(allPayloads).length}`)
     } catch (error) {
         console.log(`All payloads: Error - ${error}`)
     }
 
     try {
-        const remoteConfig = await posthog.getRemoteConfigPayload('encrypted_payload_flag_key')
+        const remoteConfig = await agrid.getRemoteConfigPayload('encrypted_payload_flag_key')
         console.log(`Remote config payload: ${JSON.stringify(remoteConfig)}`)
     } catch (error) {
         console.log(`Remote config payload: Error - ${error}`)
@@ -229,7 +228,7 @@ async function flagDependenciesExamples(): Promise<void> {
     console.log('🔗 Testing flag dependencies with local evaluation...')
     console.log('   Flag structure: "test-flag-dependency" depends on "beta-feature" being enabled')
     console.log('')
-    console.log("📋 Required setup (if flags don't exist in your PostHog instance):")
+    console.log("📋 Required setup (if flags don't exist in your Agrid instance):")
     console.log('   1. Create feature flag "beta-feature":')
     console.log('      - Condition: email contains "@example.com"')
     console.log('      - Rollout: 100%')
@@ -239,7 +238,7 @@ async function flagDependenciesExamples(): Promise<void> {
     console.log('')
 
     // Check if local evaluation is ready before testing
-    const isLocallyReady = await posthog.waitForLocalEvaluationReady(1000) // Quick check
+    const isLocallyReady = await agrid.waitForLocalEvaluationReady(1000) // Quick check
     console.log(`🔍 Local evaluation ready: ${isLocallyReady ? '✅ YES' : '❌ NO'}`)
 
     if (!isLocallyReady) {
@@ -248,7 +247,7 @@ async function flagDependenciesExamples(): Promise<void> {
 
     // Check what flags are available locally (with proper person properties)
     console.log('\n🏁 Checking available flags for local evaluation...')
-    const allLocalFlags = await posthog.getAllFlags('test_user', {
+    const allLocalFlags = await agrid.getAllFlags('test_user', {
         onlyEvaluateLocally: true,
         personProperties: { email: 'user@example.com' },
     })
@@ -268,7 +267,7 @@ async function flagDependenciesExamples(): Promise<void> {
     // Check if test-flag-dependency contains properties with type="flag"
     console.log('\n🔍 Debugging test-flag-dependency structure...')
     try {
-        const directResult = await posthog.isFeatureEnabled('test-flag-dependency', 'debug_user', {
+        const directResult = await agrid.isFeatureEnabled('test-flag-dependency', 'debug_user', {
             personProperties: { email: 'user@example.com' },
             onlyEvaluateLocally: true,
         })
@@ -281,11 +280,11 @@ async function flagDependenciesExamples(): Promise<void> {
 
     // First let's confirm beta-feature works locally (this is our dependency flag)
     console.log('   Step 1: Testing beta-feature (dependency flag)...')
-    const betaResult1 = await posthog.isFeatureEnabled('beta-feature', 'example_user', {
+    const betaResult1 = await agrid.isFeatureEnabled('beta-feature', 'example_user', {
         personProperties: { email: 'user@example.com' },
         onlyEvaluateLocally: true,
     })
-    const betaResult2 = await posthog.isFeatureEnabled('beta-feature', 'regular_user', {
+    const betaResult2 = await agrid.isFeatureEnabled('beta-feature', 'regular_user', {
         personProperties: { email: 'user@other.com' },
         onlyEvaluateLocally: true,
     })
@@ -297,18 +296,18 @@ async function flagDependenciesExamples(): Promise<void> {
 
     // Now test the dependent flag
     console.log('   Step 2: Testing test-flag-dependency (dependent flag)...')
-    const dependentResult1 = await posthog.isFeatureEnabled('test-flag-dependency', 'example_user', {
+    const dependentResult1 = await agrid.isFeatureEnabled('test-flag-dependency', 'example_user', {
         personProperties: { email: 'user@example.com' },
         onlyEvaluateLocally: true,
     })
-    const dependentResult2 = await posthog.isFeatureEnabled('test-flag-dependency', 'regular_user', {
+    const dependentResult2 = await agrid.isFeatureEnabled('test-flag-dependency', 'regular_user', {
         personProperties: { email: 'user@other.com' },
         onlyEvaluateLocally: true,
     })
     console.log(`     @example.com user: ${dependentResult1} (${typeof dependentResult1})`)
     console.log(`     Regular user: ${dependentResult2} (${typeof dependentResult2})`)
 
-    const dependentResult3 = await posthog.getFeatureFlag('multivariate-root-flag', 'regular_user', {
+    const dependentResult3 = await agrid.getFeatureFlag('multivariate-root-flag', 'regular_user', {
         personProperties: { email: 'pineapple@example.com' },
         onlyEvaluateLocally: true,
     })
@@ -320,7 +319,7 @@ async function flagDependenciesExamples(): Promise<void> {
         console.log("✅ 'multivariate-root-flag' with email pineapple@example.com succeeded")
     }
 
-    const dependentResult4 = await posthog.getFeatureFlag('multivariate-root-flag', 'regular_user', {
+    const dependentResult4 = await agrid.getFeatureFlag('multivariate-root-flag', 'regular_user', {
         personProperties: { email: 'mango@example.com' },
         onlyEvaluateLocally: true,
     })
@@ -363,7 +362,7 @@ async function flagDependenciesExamples(): Promise<void> {
 
     // These calls should use cached results for faster evaluation
     for (let i = 0; i < 5; i++) {
-        await posthog.getAllFlags('cache_test_user', {
+        await agrid.getAllFlags('cache_test_user', {
             personProperties: { email: 'user@example.com' },
             onlyEvaluateLocally: true,
         })
@@ -380,23 +379,23 @@ async function runAllExamples(): Promise<void> {
 
     console.log(`\n${'🔸'.repeat(20)} IDENTIFY AND CAPTURE ${'🔸'.repeat(20)}`)
     console.log('📊 Capturing events...')
-    posthog.capture({
+    agrid.capture({
         distinctId: 'all_examples_user',
         event: 'demo_event',
         properties: { property1: 'value', property2: 'value' },
         sendFeatureFlags: true,
     })
     console.log('👤 Identifying user...')
-    posthog.identify({
+    agrid.identify({
         distinctId: 'all_examples_user',
         properties: { email: 'demo@example.com', demo_run: 'all_examples' },
     })
 
     console.log(`\n${'🔸'.repeat(20)} FEATURE FLAGS ${'🔸'.repeat(20)}`)
     console.log('🏁 Testing basic feature flags...')
-    const betaFlag = await posthog.isFeatureEnabled('beta-feature', 'all_examples_user')
+    const betaFlag = await agrid.isFeatureEnabled('beta-feature', 'all_examples_user')
     console.log(`beta-feature: ${betaFlag}`)
-    const sydneyFlag = await posthog.isFeatureEnabled('test-flag', 'all_examples_user', {
+    const sydneyFlag = await agrid.isFeatureEnabled('test-flag', 'all_examples_user', {
         personProperties: { $geoip_city_name: 'Sydney' },
     })
     console.log(`Sydney user: ${sydneyFlag}`)
@@ -404,7 +403,7 @@ async function runAllExamples(): Promise<void> {
     console.log(`\n${'🔸'.repeat(20)} PAYLOADS ${'🔸'.repeat(20)}`)
     console.log('📦 Testing payloads...')
     try {
-        const payload = await posthog.getFeatureFlagPayload('beta-feature', 'all_examples_user')
+        const payload = await agrid.getFeatureFlagPayload('beta-feature', 'all_examples_user')
         console.log(`Payload: ${JSON.stringify(payload)}`)
     } catch (error) {
         console.log(`Payload: Error - ${error}`)
@@ -412,11 +411,11 @@ async function runAllExamples(): Promise<void> {
 
     console.log(`\n${'🔸'.repeat(20)} FLAG DEPENDENCIES ${'🔸'.repeat(20)}`)
     console.log('🔗 Testing flag dependencies...')
-    const result1 = await posthog.isFeatureEnabled('test-flag-dependency', 'demo_user', {
+    const result1 = await agrid.isFeatureEnabled('test-flag-dependency', 'demo_user', {
         personProperties: { email: 'user@example.com' },
         onlyEvaluateLocally: true,
     })
-    const result2 = await posthog.isFeatureEnabled('test-flag-dependency', 'demo_user2', {
+    const result2 = await agrid.isFeatureEnabled('test-flag-dependency', 'demo_user2', {
         personProperties: { email: 'user@other.com' },
         onlyEvaluateLocally: true,
     })
@@ -446,7 +445,7 @@ async function main(): Promise<void> {
 
     const rl = createInterface()
 
-    console.log('🚀 PostHog Node.js SDK Demo - Choose an example to run:\n')
+    console.log('🚀 Agrid Node.js SDK Demo - Choose an example to run:\n')
     console.log('1. Identify and capture examples')
     console.log('2. Feature flag local evaluation examples')
     console.log('3. Feature flag payload examples')
@@ -485,7 +484,7 @@ async function main(): Promise<void> {
     console.log('='.repeat(60))
 
     rl.close()
-    await posthog.shutdown()
+    await agrid.shutdown()
     wtf.dump()
 }
 

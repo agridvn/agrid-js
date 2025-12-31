@@ -1,5 +1,5 @@
 import type { PostHogConfig } from 'agrid-js'
-import { PostHogProvider } from 'posthog-js/react'
+import { AgridProvider } from 'agrid-js/react'
 
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 import type { Route } from './+types/root'
@@ -38,8 +38,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
     )
 }
 
-const posthogKey: string = import.meta.env.VITE_PUBLIC_POSTHOG_KEY!
-const posthogOptions: Partial<PostHogConfig> = {
+const agridKey: string = import.meta.env.VITE_PUBLIC_POSTHOG_KEY!
+const agridOptions: Partial<PostHogConfig> = {
     api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
     capture_pageview: 'history_change',
     capture_pageleave: true,
@@ -48,9 +48,9 @@ const posthogOptions: Partial<PostHogConfig> = {
 
 export default function App() {
     return (
-        <PostHogProvider apiKey={posthogKey} options={posthogOptions}>
+        <AgridProvider apiKey={posthogKey} options={posthogOptions}>
             <AppInner />
-        </PostHogProvider>
+        </AgridProvider>
     )
 }
 

@@ -1,4 +1,4 @@
-import { expect, test, WindowWithPostHog } from './utils/posthog-playwright-test-base'
+import { expect, test, WindowWithAgrid } from './utils/agrid-playwright-test-base'
 import { start } from './utils/setup'
 import { BeforeSendFn } from '@/types'
 
@@ -20,19 +20,21 @@ test.describe('before_send', () => {
         await start(startOptions, page, context)
 
         await page.evaluate(() => {
-            const posthog = (window as WindowWithPostHog).posthog
-            if (!posthog) {
-                throw new Error('PostHog is not initialized')
+            const agrid = (window as WindowWithAgrid).agrid
+            if (!agrid) {
+                throw new Error('Agrid is not initialized')
             }
             let counter = 0
             // box the original before_send function
-            const og: BeforeSendFn[] = Array.isArray(posthog.config.before_send)
-                ? posthog.config.before_send
-                : posthog.config.before_send !== undefined
-                  ? [posthog.config.before_send]
+            // eslint-disable-next-line
+            const og: BeforeSendFn[] = Array.isArray(agrid.config.before_send)
+                ? agrid.config.before_send
+                : // eslint-disable-next-line
+                  agrid.config.before_send !== undefined
+                  ? [agrid.config.before_send]
                   : []
 
-            posthog.config.before_send = [
+            agrid.config.before_send = [
                 (cr) => {
                     if (!cr) {
                         return null

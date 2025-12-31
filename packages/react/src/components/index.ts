@@ -1,7 +1,3 @@
-export * from './PostHogFeature'
-export * from './PostHogCaptureOnViewed'
-export {
-    PostHogErrorBoundary,
-    PostHogErrorBoundaryProps,
-    PostHogErrorBoundaryFallbackProps,
-} from './PostHogErrorBoundary'
+export * from './AgridFeature'
+export * from './AgridCaptureOnViewed'
+export { AgridErrorBoundary, AgridErrorBoundaryProps, AgridErrorBoundaryFallbackProps } from './AgridErrorBoundary'

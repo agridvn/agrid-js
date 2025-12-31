@@ -1,5 +1,6 @@
-import { PostHog } from 'agrid-node'
-import PostHogAnthropic from '../src/anthropic'
+/* eslint-disable agrid-js/no-direct-array-check, agrid-js/no-direct-undefined-check, agrid-js/no-direct-function-check, agrid-js/no-direct-number-check, agrid-js/no-direct-null-check */
+import { Agrid } from 'agrid-node'
+import AgridAnthropic from '../src/anthropic'
 import AnthropicOriginal from '@anthropic-ai/sdk'
 import { version } from '../package.json'
 
@@ -64,13 +65,13 @@ interface MockAsyncIterator<T> {
   [Symbol.asyncIterator](): AsyncIterator<T>
 }
 
-jest.mock('posthog-node', () => {
+jest.mock('agrid-node', () => {
   return {
-    PostHog: jest.fn().mockImplementation(() => {
+    Agrid: jest.fn().mockImplementation(() => {
       return {
         capture: jest.fn(),
         captureImmediate: jest.fn(),
-        privacy_mode: false, // Note: This is the correct property name per PostHog Node SDK
+        privacy_mode: false, // Note: This is the correct property name per Agrid Node SDK
       }
     }),
   }
@@ -225,11 +226,11 @@ const createMockStreamChunks = (options: MockAnthropicResponseOptions = {}): Moc
 }
 
 /**
- * Asserts that PostHog capture was called with expected parameters
- * @param mockClient - The mocked PostHog client
+ * Asserts that Agrid capture was called with expected parameters
+ * @param mockClient - The mocked Agrid client
  * @param expectations - Object containing expected values for the capture call
  */
-const assertPostHogCapture = (mockClient: PostHog, expectations: CaptureExpectations): void => {
+const assertAgridCapture = (mockClient: Agrid, expectations: CaptureExpectations): void => {
   const captureMock = mockClient.capture as jest.Mock
   expect(captureMock).toHaveBeenCalledTimes(1)
 
@@ -290,13 +291,13 @@ const assertPostHogCapture = (mockClient: PostHog, expectations: CaptureExpectat
   expect(typeof properties['$ai_latency']).toBe('number')
 
   // Always check $ai_lib and $ai_lib_version
-  expect(properties['$ai_lib']).toBe('posthog-ai')
+  expect(properties['$ai_lib']).toBe('agrid-ai')
   expect(properties['$ai_lib_version']).toBe(version)
 }
 
-describe('PostHogAnthropic', () => {
-  let mockPostHogClient: PostHog
-  let client: PostHogAnthropic
+describe('AgridAnthropic', () => {
+  let mockAgridClient: Agrid
+  let client: AgridAnthropic
   let mockResponse: AnthropicOriginal.Messages.Message
   let mockStreamChunks: MockStreamChunk[]
 
@@ -325,10 +326,10 @@ describe('PostHogAnthropic', () => {
     jest.clearAllMocks()
 
     // Reset the default mocks
-    mockPostHogClient = new (PostHog as any)()
-    client = new PostHogAnthropic({
+    mockAgridClient = new (Agrid as any)()
+    client = new AgridAnthropic({
       apiKey: process.env.ANTHROPIC_API_KEY || '',
-      posthog: mockPostHogClient as any,
+      agrid: mockAgridClient as any,
     })
 
     // Set up default mock response
@@ -366,13 +367,13 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Hello Claude' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
-        posthogProperties: { custom_prop: 'test_value' },
+        agridDistinctId: 'test-user-123',
+        agridProperties: { custom_prop: 'test_value' },
       })
 
       expect(response).toEqual(mockResponse)
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         distinctId: 'test-user-123',
         event: '$ai_generation',
         provider: 'anthropic',
@@ -396,10 +397,10 @@ describe('PostHogAnthropic', () => {
         system: 'You are a helpful assistant.',
         messages: [{ role: 'user', content: 'Who are you?' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { properties } = captureArgs[0]
 
@@ -421,10 +422,10 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages,
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { properties } = captureArgs[0]
 
@@ -439,7 +440,7 @@ describe('PostHogAnthropic', () => {
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
         stream: true,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
       // Consume the stream
@@ -451,7 +452,7 @@ describe('PostHogAnthropic', () => {
       // Allow async capture to complete
       await waitForAsyncCapture()
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         distinctId: 'test-user-123',
         event: '$ai_generation',
         provider: 'anthropic',
@@ -494,7 +495,7 @@ describe('PostHogAnthropic', () => {
         ] as AnthropicOriginal.Tool[],
         max_tokens: 100,
         stream: true,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
       // Consume the stream
@@ -505,7 +506,7 @@ describe('PostHogAnthropic', () => {
       // Allow async capture to complete
       await waitForAsyncCapture()
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { properties } = captureArgs[0]
 
@@ -538,14 +539,14 @@ describe('PostHogAnthropic', () => {
           {
             id: 'tool_456',
             name: 'search',
-            input: { query: 'PostHog features' },
+            input: { query: 'Agrid features' },
           },
         ],
       })
 
       await client.messages.create({
         model: 'claude-3-opus-20240229',
-        messages: [{ role: 'user', content: 'Tell me about PostHog' }],
+        messages: [{ role: 'user', content: 'Tell me about Agrid' }],
         tools: [
           {
             name: 'search',
@@ -559,10 +560,10 @@ describe('PostHogAnthropic', () => {
           },
         ] as AnthropicOriginal.Tool[],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { properties } = captureArgs[0]
 
@@ -577,7 +578,7 @@ describe('PostHogAnthropic', () => {
               id: 'tool_456',
               function: {
                 name: 'search',
-                arguments: { query: 'PostHog features' },
+                arguments: { query: 'Agrid features' },
               },
             },
           ],
@@ -618,10 +619,10 @@ describe('PostHogAnthropic', () => {
           },
         ] as AnthropicOriginal.Tool[],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { properties } = captureArgs[0]
 
@@ -637,11 +638,11 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Sensitive information' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
-        posthogPrivacyMode: true,
+        agridDistinctId: 'test-user-123',
+        agridPrivacyMode: true,
       })
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         hasInput: false,
         hasOutput: false,
       })
@@ -649,17 +650,17 @@ describe('PostHogAnthropic', () => {
 
     conditionalTest('should respect global privacy mode', async () => {
       // Set global privacy mode
-      ;(mockPostHogClient as any).privacy_mode = true
+      ;(mockAgridClient as any).privacy_mode = true
 
       await client.messages.create({
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Sensitive information' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
-        posthogPrivacyMode: false, // Try to override, but global should take precedence
+        agridDistinctId: 'test-user-123',
+        agridPrivacyMode: false, // Try to override, but global should take precedence
       })
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         hasInput: false,
         hasOutput: false,
       })
@@ -680,10 +681,10 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         inputTokens: 50,
         outputTokens: 25,
       })
@@ -704,10 +705,10 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         inputTokens: 100,
         outputTokens: 30,
         cacheCreationInputTokens: 20,
@@ -731,7 +732,7 @@ describe('PostHogAnthropic', () => {
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
         stream: true,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
       // Consume the stream
@@ -742,7 +743,7 @@ describe('PostHogAnthropic', () => {
       // Allow async capture to complete
       await waitForAsyncCapture()
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         inputTokens: 75,
         outputTokens: 40,
         cacheCreationInputTokens: 10,
@@ -764,17 +765,17 @@ describe('PostHogAnthropic', () => {
           model: 'claude-3-opus-20240229',
           messages: [{ role: 'user', content: 'Hello' }],
           max_tokens: 100,
-          posthogDistinctId: 'test-user-123',
+          agridDistinctId: 'test-user-123',
         })
       ).rejects.toThrow('API Error')
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         httpStatus: 429,
         inputTokens: 0,
         outputTokens: 0,
       })
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { properties } = captureArgs[0]
 
@@ -811,7 +812,7 @@ describe('PostHogAnthropic', () => {
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
         stream: true,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
       // Try to consume the stream (it should throw)
@@ -824,7 +825,7 @@ describe('PostHogAnthropic', () => {
       // Allow async error capture to complete
       await new Promise(process.nextTick)
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         httpStatus: 500,
         inputTokens: 0,
         outputTokens: 0,
@@ -838,11 +839,11 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
-        posthogGroups: { company: 'acme-corp', team: 'engineering' },
+        agridDistinctId: 'test-user-123',
+        agridGroups: { company: 'acme-corp', team: 'engineering' },
       })
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         groups: { company: 'acme-corp', team: 'engineering' },
       })
     })
@@ -852,13 +853,13 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
-        posthogCaptureImmediate: true,
+        agridDistinctId: 'test-user-123',
+        agridCaptureImmediate: true,
       })
 
-      const captureImmediateMock = mockPostHogClient.captureImmediate as jest.Mock
+      const captureImmediateMock = mockAgridClient.captureImmediate as jest.Mock
       expect(captureImmediateMock).toHaveBeenCalledTimes(1)
-      expect(mockPostHogClient.capture).toHaveBeenCalledTimes(0)
+      expect(mockAgridClient.capture).toHaveBeenCalledTimes(0)
     })
 
     conditionalTest('should track model parameters', async () => {
@@ -868,10 +869,10 @@ describe('PostHogAnthropic', () => {
         max_tokens: 100,
         temperature: 0.7,
         top_p: 0.9,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { properties } = captureArgs[0]
 
@@ -887,10 +888,10 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
-        posthogTraceId: 'trace-789',
+        agridTraceId: 'trace-789',
       })
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { distinctId, properties } = captureArgs[0]
 
@@ -903,11 +904,11 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
-        posthogDistinctId: 'user-456',
-        posthogTraceId: 'trace-789',
+        agridDistinctId: 'user-456',
+        agridTraceId: 'trace-789',
       })
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { distinctId, properties } = captureArgs[0]
 
@@ -919,7 +920,7 @@ describe('PostHogAnthropic', () => {
   describe('Web Search Tracking', () => {
     conditionalTest('should track web search count in non-streaming mode', async () => {
       mockResponse = createMockResponse({
-        content: 'Based on my search, PostHog is a product analytics platform.',
+        content: 'Based on my search, Agrid is a product analytics platform.',
         usage: {
           input_tokens: 50,
           output_tokens: 30,
@@ -931,12 +932,12 @@ describe('PostHogAnthropic', () => {
 
       await client.messages.create({
         model: 'claude-3-opus-20240229',
-        messages: [{ role: 'user', content: 'What is PostHog?' }],
+        messages: [{ role: 'user', content: 'What is Agrid?' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         distinctId: 'test-user-123',
         event: '$ai_generation',
         provider: 'anthropic',
@@ -967,7 +968,7 @@ describe('PostHogAnthropic', () => {
         messages: [{ role: 'user', content: 'Search for information about AI' }],
         max_tokens: 100,
         stream: true,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
       // Consume the stream
@@ -978,7 +979,7 @@ describe('PostHogAnthropic', () => {
       // Allow async capture to complete
       await waitForAsyncCapture()
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         distinctId: 'test-user-123',
         event: '$ai_generation',
         provider: 'anthropic',
@@ -1005,10 +1006,10 @@ describe('PostHogAnthropic', () => {
         model: 'claude-3-opus-20240229',
         messages: [{ role: 'user', content: 'Hello' }],
         max_tokens: 100,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
-      const captureMock = mockPostHogClient.capture as jest.Mock
+      const captureMock = mockAgridClient.capture as jest.Mock
       const [captureArgs] = captureMock.mock.calls
       const { properties } = captureArgs[0]
 
@@ -1069,7 +1070,7 @@ describe('PostHogAnthropic', () => {
         messages: [{ role: 'user', content: 'Search query' }],
         max_tokens: 100,
         stream: true,
-        posthogDistinctId: 'test-user-123',
+        agridDistinctId: 'test-user-123',
       })
 
       // Consume the stream
@@ -1080,7 +1081,7 @@ describe('PostHogAnthropic', () => {
       // Allow async capture to complete
       await waitForAsyncCapture()
 
-      assertPostHogCapture(mockPostHogClient, {
+      assertAgridCapture(mockAgridClient, {
         webSearchCount: 4,
       })
     })

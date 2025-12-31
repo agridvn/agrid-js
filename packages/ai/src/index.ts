@@ -1,13 +1,13 @@
-import PostHogOpenAI from './openai'
-import PostHogAzureOpenAI from './openai/azure'
+import AgridOpenAI from './openai'
+import AgridAzureOpenAI from './openai/azure'
 import { wrapVercelLanguageModel } from './vercel/middleware'
-import PostHogAnthropic from './anthropic'
-import PostHogGoogleGenAI from './gemini'
+import AgridAnthropic from './anthropic'
+import AgridGoogleGenAI from './gemini'
 import { LangChainCallbackHandler } from './langchain/callbacks'
 
-export { PostHogOpenAI as OpenAI }
-export { PostHogAzureOpenAI as AzureOpenAI }
-export { PostHogAnthropic as Anthropic }
-export { PostHogGoogleGenAI as GoogleGenAI }
+export { AgridOpenAI as OpenAI }
+export { AgridAzureOpenAI as AzureOpenAI }
+export { AgridAnthropic as Anthropic }
+export { AgridGoogleGenAI as GoogleGenAI }
 export { wrapVercelLanguageModel as withTracing }
 export { LangChainCallbackHandler }

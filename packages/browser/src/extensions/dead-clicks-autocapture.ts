@@ -72,10 +72,7 @@ export class DeadClicksAutocapture {
             return
         }
 
-        if (
-            !this._lazyLoadedDeadClicksAutocapture &&
-            assignableWindow.__AgridExtensions__?.initDeadClicksAutocapture
-        ) {
+        if (!this._lazyLoadedDeadClicksAutocapture && assignableWindow.__AgridExtensions__?.initDeadClicksAutocapture) {
             const config = isObject(this.instance.config.capture_dead_clicks)
                 ? this.instance.config.capture_dead_clicks
                 : {}

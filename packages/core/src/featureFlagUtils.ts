@@ -2,19 +2,19 @@ import {
   FeatureFlagDetail,
   FeatureFlagValue,
   JsonType,
-  PostHogFlagsResponse,
-  PostHogV1FlagsResponse,
-  PostHogV2FlagsResponse,
-  PostHogFlagsAndPayloadsResponse,
+  AgridFlagsResponse,
+  AgridV1FlagsResponse,
+  AgridV2FlagsResponse,
+  AgridFlagsAndPayloadsResponse,
   PartialWithRequired,
-  PostHogFeatureFlagsResponse,
+  AgridFeatureFlagsResponse,
 } from './types'
 
 export const normalizeFlagsResponse = (
   flagsResponse:
-    | PartialWithRequired<PostHogV2FlagsResponse, 'flags'>
-    | PartialWithRequired<PostHogV1FlagsResponse, 'featureFlags' | 'featureFlagPayloads'>
-): PostHogFeatureFlagsResponse => {
+    | PartialWithRequired<AgridV2FlagsResponse, 'flags'>
+    | PartialWithRequired<AgridV1FlagsResponse, 'featureFlags' | 'featureFlagPayloads'>
+): AgridFeatureFlagsResponse => {
   if ('flags' in flagsResponse) {
     // Convert v2 format to v1 format
     const featureFlags = getFlagValuesFromFlags(flagsResponse.flags)
@@ -72,7 +72,7 @@ function getFlagDetailFromFlagAndPayload(
  * @param flags - The flags
  * @returns The flag values
  */
-export const getFlagValuesFromFlags = (flags: PostHogFlagsResponse['flags']): PostHogFlagsResponse['featureFlags'] => {
+export const getFlagValuesFromFlags = (flags: AgridFlagsResponse['flags']): AgridFlagsResponse['featureFlags'] => {
   return Object.fromEntries(
     Object.entries(flags ?? {})
       .map(([key, detail]) => [key, getFeatureFlagValue(detail)])
@@ -85,9 +85,7 @@ export const getFlagValuesFromFlags = (flags: PostHogFlagsResponse['flags']): Po
  * @param flags - The flags
  * @returns The payloads
  */
-export const getPayloadsFromFlags = (
-  flags: PostHogFlagsResponse['flags']
-): PostHogFlagsResponse['featureFlagPayloads'] => {
+export const getPayloadsFromFlags = (flags: AgridFlagsResponse['flags']): AgridFlagsResponse['featureFlagPayloads'] => {
   const safeFlags = flags ?? {}
   return Object.fromEntries(
     Object.keys(safeFlags)
@@ -108,8 +106,8 @@ export const getPayloadsFromFlags = (
  * @returns The flag details
  */
 export const getFlagDetailsFromFlagsAndPayloads = (
-  flagsResponse: PostHogFeatureFlagsResponse
-): PostHogFlagsResponse['flags'] => {
+  flagsResponse: AgridFeatureFlagsResponse
+): AgridFlagsResponse['flags'] => {
   const flags = flagsResponse.featureFlags ?? {}
   const payloads = flagsResponse.featureFlagPayloads ?? {}
   return Object.fromEntries(
@@ -158,21 +156,21 @@ export const parsePayload = (response: any): any => {
  * @returns The normalized flag details
  */
 export const createFlagsResponseFromFlagsAndPayloads = (
-  featureFlags: PostHogV1FlagsResponse['featureFlags'],
-  featureFlagPayloads: PostHogV1FlagsResponse['featureFlagPayloads']
-): PostHogFeatureFlagsResponse => {
+  featureFlags: AgridV1FlagsResponse['featureFlags'],
+  featureFlagPayloads: AgridV1FlagsResponse['featureFlagPayloads']
+): AgridFeatureFlagsResponse => {
   // If a feature flag payload key is not in the feature flags, we treat it as true feature flag.
   const allKeys = [...new Set([...Object.keys(featureFlags ?? {}), ...Object.keys(featureFlagPayloads ?? {})])]
   const enabledFlags = allKeys
     .filter((flag) => !!featureFlags[flag] || !!featureFlagPayloads[flag])
     .reduce((res: Record<string, FeatureFlagValue>, key) => ((res[key] = featureFlags[key] ?? true), res), {})
 
-  const flagDetails: PostHogFlagsAndPayloadsResponse = {
+  const flagDetails: AgridFlagsAndPayloadsResponse = {
     featureFlags: enabledFlags,
     featureFlagPayloads: featureFlagPayloads ?? {},
   }
 
-  return normalizeFlagsResponse(flagDetails as PostHogV1FlagsResponse)
+  return normalizeFlagsResponse(flagDetails as AgridV1FlagsResponse)
 }
 
 export const updateFlagValue = (flag: FeatureFlagDetail, value: FeatureFlagValue): FeatureFlagDetail => {

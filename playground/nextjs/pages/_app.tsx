@@ -6,9 +6,9 @@ import { useEffect } from 'react'
 import { CookieBanner } from '@/src/CookieBanner'
 import { PageHeader } from '@/src/Header'
 import { useUser } from '@/src/auth'
-import { posthog, posthogHelpers } from '@/src/posthog'
+import { agrid, agridHelpers } from '@/src/agrid'
 import Head from 'next/head'
-import { PostHogProvider } from 'posthog-js/react'
+import { AgridProvider } from 'agrid-js/react'
 
 const CDP_DOMAINS = ['https://*.redditstatic.com', 'https://*.reddit.com'].join(' ')
 const CHAT_DOMAINS = [
@@ -24,9 +24,9 @@ export default function App({ Component, pageProps }: AppProps) {
     const user = useUser()
     useEffect(() => {
         // Use a type assertion to add the property to the window object
-        ;(window as any).POSTHOG_DEBUG = true
+        ;(window as any).AGRID_DEBUG = true
         if (user) {
-            posthogHelpers.setUser(user)
+            agridHelpers.setUser(user)
         }
     }, [user])
 
@@ -39,26 +39,26 @@ export default function App({ Component, pageProps }: AppProps) {
 
     const localhostDomain = process.env.NEXT_PUBLIC_CROSSDOMAIN
         ? 'https://localhost:8000'
-        : process.env.NEXT_PUBLIC_POSTHOG_HOST
+        : process.env.NEXT_PUBLIC_AGRID_HOST
 
     return (
-        <PostHogProvider client={posthog}>
+        <AgridProvider client={agrid}>
             <Head>
-                <title>PostHog</title>
+                <title>Agrid</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 {/* CSP - useful for testing our documented recommendations. NOTE: Unsafe is only needed for nextjs pre-loading */}
                 <meta
                     httpEquiv="Content-Security-Policy"
                     content={`
                     default-src 'self';
-                    connect-src 'self' ${localhostDomain} https://*.posthog.com https://lottie.host ${CDP_DOMAINS} ${CHAT_DOMAINS};
-                    script-src 'self' 'unsafe-eval' 'unsafe-inline' ${localhostDomain} https://*.posthog.com ${CDP_DOMAINS} ${CHAT_DOMAINS};
-                    style-src 'self' 'unsafe-inline' ${localhostDomain} https://*.posthog.com ${CHAT_DOMAINS};
-                    img-src 'self' data: blob: ${localhostDomain} https://*.posthog.com https://lottie.host https://cataas.com ${CDP_DOMAINS} ${CHAT_DOMAINS};
+                    connect-src 'self' ${localhostDomain} https://*.agrid.vn https://lottie.host ${CDP_DOMAINS} ${CHAT_DOMAINS};
+                    script-src 'self' 'unsafe-eval' 'unsafe-inline' ${localhostDomain} https://*.agrid.vn ${CDP_DOMAINS} ${CHAT_DOMAINS};
+                    style-src 'self' 'unsafe-inline' ${localhostDomain} https://*.agrid.vn ${CHAT_DOMAINS};
+                    img-src 'self' data: blob: ${localhostDomain} https://*.agrid.vn https://lottie.host https://cataas.com ${CDP_DOMAINS} ${CHAT_DOMAINS};
                     worker-src 'self' blob: ${CHAT_DOMAINS};
-                    font-src 'self' ${localhostDomain} https://*.posthog.com ${CHAT_DOMAINS};
-                    media-src 'self' ${localhostDomain} https://*.posthog.com ${CHAT_DOMAINS};
-                    frame-src 'self' ${localhostDomain} https://*.posthog.com ${CHAT_DOMAINS};
+                    font-src 'self' ${localhostDomain} https://*.agrid.vn ${CHAT_DOMAINS};
+                    media-src 'self' ${localhostDomain} https://*.agrid.vn ${CHAT_DOMAINS};
+                    frame-src 'self' ${localhostDomain} https://*.agrid.vn ${CHAT_DOMAINS};
                 `}
                 />
             </Head>
@@ -68,6 +68,6 @@ export default function App({ Component, pageProps }: AppProps) {
                 <Component {...pageProps} />
                 <CookieBanner />
             </main>
-        </PostHogProvider>
+        </AgridProvider>
     )
 }

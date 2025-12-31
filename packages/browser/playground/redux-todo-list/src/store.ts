@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { posthogReduxLogger } from 'posthog-js/lib/src/customizations'
+import { posthogReduxLogger } from 'agrid-js/lib/src/customizations'
 
 // Types
 export interface Todo {
@@ -319,7 +319,7 @@ export const todoReducer = (state: TodoState = initialState, action: TodoAction)
 }
 
 // Create PostHog Redux logger middleware
-const posthogMiddleware = posthogReduxLogger<TodoState>({
+const agridMiddleware = posthogReduxLogger<TodoState>({
     // Example: optionally mask sensitive data from actions
     // maskReduxAction: (action) => {
     //     // Return null to skip logging this action entirely

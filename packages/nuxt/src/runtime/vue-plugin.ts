@@ -1,41 +1,43 @@
 import { defineNuxtPlugin, useRuntimeConfig } from '#app'
 
-import posthog from 'agrid-js'
-import type { PostHogClientConfig, PostHogCommon } from '../module'
+import agrid from 'agrid-js'
+import type { AgridClientConfig, AgridCommon } from '../module'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default defineNuxtPlugin((nuxtApp: any) => {
   const runtimeConfig = useRuntimeConfig()
-  const posthogCommon = runtimeConfig.public.posthog as PostHogCommon
-  const posthogClientConfig = runtimeConfig.public.posthogClientConfig as PostHogClientConfig
+  const agridCommon = runtimeConfig.public.agrid as AgridCommon
+  const agridClientConfig = runtimeConfig.public.agridClientConfig as AgridClientConfig
 
   // prevent nitro from trying to load this
-  if (typeof window === 'undefined' || posthog.__loaded) {
+  if (typeof window === 'undefined' || agrid.__loaded) {
     return
   }
 
-  posthog.init(posthogCommon.publicKey, {
-    api_host: posthogCommon.host,
-    ...posthogClientConfig,
+  agrid.init(agridCommon.publicKey, {
+    api_host: agridCommon.host,
+    ...agridClientConfig,
   })
 
-  if (posthogCommon.debug) {
-    posthog.debug(true)
+  if (agridCommon.debug) {
+    agrid.debug(true)
   }
 
-  if (autocaptureEnabled(posthogClientConfig)) {
+  if (autocaptureEnabled(agridClientConfig)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     nuxtApp.hook('vue:error', (error: any, info: any) => {
-      posthog.captureException(error, { info })
+      agrid.captureException(error, { info })
     })
   }
 
   return {
     provide: {
-      posthog: () => posthog,
+      agrid: () => agrid,
     },
   }
 })
 
-function autocaptureEnabled(config: PostHogClientConfig): boolean {
+function autocaptureEnabled(config: AgridClientConfig): boolean {
   if (!config) return false
   if (typeof config.capture_exceptions === 'boolean') return config.capture_exceptions
   if (typeof config.capture_exceptions === 'object') return config.capture_exceptions.capture_unhandled_errors === true

@@ -1,5 +1,7 @@
 import { external, plugins, resolve, dts } from '@agrid-tooling/rollup-utils'
-import packageJson from './package.json' with { type: 'json' }
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+const packageJson = require('./package.json')
 
 const configs = []
 const extensions = ['.ts', '.tsx', '.js', '.jsx']
@@ -19,10 +21,10 @@ configs.push({
       format: `es`,
     },
   ],
+  
   external: external(packageJson),
   plugins: plugins(extensions),
 })
-
 configs.push({
   input: `./src/index.ts`,
   output: [{ file: packageJson.types, format: 'es' }],

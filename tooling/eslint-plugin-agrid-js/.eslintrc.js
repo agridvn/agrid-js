@@ -9,8 +9,8 @@ module.exports = {
         'prettier/prettier': 'error',
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/no-require-imports': 'off',
-        'posthog-js/no-direct-null-check': 'off',
-        'posthog-js/no-direct-boolean-check': 'off',
+        'agrid-js/no-direct-null-check': 'off',
+        'agrid-js/no-direct-boolean-check': 'off',
     },
     env: {
         node: true,

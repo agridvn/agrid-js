@@ -740,11 +740,7 @@ describe('person processing', () => {
         it('should remember that a user set the mode to always on a previous visit', async () => {
             // arrange
             const persistenceName = uuidv7()
-            const { agrid: agrid1, beforeSendMock: beforeSendMock1 } = await setup(
-                'always',
-                undefined,
-                persistenceName
-            )
+            const { agrid: agrid1, beforeSendMock: beforeSendMock1 } = await setup('always', undefined, persistenceName)
             agrid1.capture('custom event 1')
             const { agrid: agrid2, beforeSendMock: beforeSendMock2 } = await setup(
                 'identified_only',
@@ -771,11 +767,7 @@ describe('person processing', () => {
                 persistenceName
             )
             agrid1.capture('custom event 1')
-            const { agrid: agrid2, beforeSendMock: beforeSendMock2 } = await setup(
-                'always',
-                undefined,
-                persistenceName
-            )
+            const { agrid: agrid2, beforeSendMock: beforeSendMock2 } = await setup('always', undefined, persistenceName)
 
             // act
             agrid2.capture('custom event 2')

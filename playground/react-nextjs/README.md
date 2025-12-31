@@ -1,38 +1,22 @@
-# PostHog React Playground
+# Agrid React Playground
 
-This is a Next.js playground application that demonstrates the `@agrid/react` SDK.
+This is a playground for testing the Agrid React SDK (`@agrid/react`) in a Next.js App Router environment.
 
 ## Features
 
-- **Cat Gallery**: A grid of cat images from [cataas.com](https://cataas.com)
-- **Event Display**: Real-time display of PostHog events in the top-right corner
+- **Event Display**: Real-time display of Agrid events in the top-right corner
+- **Feature Flags**: Testing feature flags and overrides
+- **Identify/Reset**: Testing user identification and reset
 
-## Running the Playground
+## Setup
 
-**Important**: This playground is excluded from the main workspace, so you need to install dependencies separately.
+1. Copy `.env.local.example` to `.env.local`
+2. Set your Agrid API key and host
+3. Run `pnpm install`
+4. Run `pnpm dev`
 
-1. Navigate to this directory:
+## How it works
 
-    ```bash
-    cd playground/react-nextjs
-    ```
-
-2. Install dependencies:
-
-    ```bash
-    pnpm install
-    ```
-
-3. Run the development server:
-
-    ```bash
-    pnpm dev
-    ```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-5. Scroll down to see the cat gallery come into view and watch the `$element_viewed` event appear in the event display
-
-## How It Works
-
-- The `EventDisplay` component intercepts PostHog events and displays them in real-time
+- The `AgridProvider` is initialized in `app/providers.tsx`
+- The `EventDisplay` component intercepts Agrid events and displays them in real-time
+- Pages demonstrate usage of `useAgrid`, `useFeatureFlagEnabled`, etc.

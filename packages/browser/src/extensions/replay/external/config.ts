@@ -111,11 +111,23 @@ const ignoreAgridPaths = (
     const url = convertToURL(data.name)
 
     // we need to account for api host config as e.g. pathname could be /ingest/s/ and we want to ignore that
-    let replaceValue = apiHostConfig.indexOf('http') === 0 ? convertToURL(apiHostConfig)?.pathname : apiHostConfig
-    if (replaceValue === '/') {
-        replaceValue = ''
+    // derive the path portion of api_host even when api_host is not a full URL
+    let apiHostPathname = convertToURL(apiHostConfig)?.pathname || ''
+    if (!apiHostPathname || apiHostPathname === '/') {
+        const firstSlash = apiHostConfig.indexOf('/')
+        apiHostPathname = firstSlash >= 0 ? apiHostConfig.slice(firstSlash) : ''
     }
-    const pathname = url?.pathname.replace(replaceValue || '', '')
+    if (apiHostPathname === '/') {
+        apiHostPathname = ''
+    }
+    let pathname = (url?.pathname || '').replace(apiHostPathname, '')
+    if (pathname.startsWith('/')) {
+        const parts = pathname.split('/')
+        const first = parts[1]
+        if (first && !['s', 'e', 'i', 'ingest', 'api'].includes(first)) {
+            pathname = '/' + parts.slice(2).join('/')
+        }
+    }
 
     if (url && pathname && AGRID_PATHS_TO_IGNORE.some((path) => pathname.indexOf(path) === 0)) {
         return undefined

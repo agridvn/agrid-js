@@ -1,23 +1,26 @@
+import type { AgridCommon, AgridClientConfig, AgridServerConfig } from './module'
+
 // Type declarations for Nuxt auto-imports
 declare module '#imports' {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export function defineNuxtPlugin(plugin: (nuxtApp: any) => any): any
   export function useRuntimeConfig(): {
     public: {
-      posthog: any
-      posthogClientConfig: any
+      agrid: AgridCommon
+      agridClientConfig: AgridClientConfig
     }
-    posthogServerConfig: any
+    agridServerConfig: AgridServerConfig
   }
 }
 
 declare module '#app' {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export function defineNuxtPlugin(plugin: (nuxtApp: any) => any): any
   export function useRuntimeConfig(): {
     public: {
-      posthog: any
-      posthogClientConfig: any
+      agrid: AgridCommon
+      agridClientConfig: AgridClientConfig
     }
-    posthogServerConfig: any
+    agridServerConfig: AgridServerConfig
   }
 }
-

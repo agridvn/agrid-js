@@ -132,10 +132,10 @@ describe('agrid-surveys', () => {
             // Create surveys instance
             surveys = new AgridSurveys(mockAgrid as Agrid)
 
-            // Mock window.__PosthogExtensions__
+            // Mock window.__AgridExtensions__
             mockGenerateSurveys = jest.fn()
             mockLoadExternalDependency = jest.fn()
-            assignableWindow.__PosthogExtensions__ = {
+            assignableWindow.__AgridExtensions__ = {
                 generateSurveys: mockGenerateSurveys,
                 loadExternalDependency: mockLoadExternalDependency,
             }
@@ -145,7 +145,7 @@ describe('agrid-surveys', () => {
 
         afterEach(() => {
             // Clean up
-            delete assignableWindow.__PosthogExtensions__
+            delete assignableWindow.__AgridExtensions__
             localStorage.clear()
         })
 
@@ -171,12 +171,7 @@ describe('agrid-surveys', () => {
         describe('checkSurveyEligibility', () => {
             beforeEach(() => {
                 // mock getSurveys response
-                mockAgrid.get_property.mockReturnValue([
-                    survey,
-                    repeatableSurvey,
-                    surveyWithWaitPeriod,
-                    externalSurvey,
-                ])
+                mockAgrid.get_property.mockReturnValue([survey, repeatableSurvey, surveyWithWaitPeriod, externalSurvey])
                 surveys['_surveyManager'] = new SurveyManager(mockAgrid as Agrid)
             })
 
@@ -427,7 +422,7 @@ describe('agrid-surveys', () => {
             })
 
             it('should not initialize if Agrid Extensions are not found', () => {
-                delete assignableWindow.__PosthogExtensions__
+                delete assignableWindow.__AgridExtensions__
                 surveys.loadIfEnabled()
 
                 expect(mockGenerateSurveys).not.toHaveBeenCalled()
@@ -466,7 +461,7 @@ describe('agrid-surveys', () => {
                 // Set flags server response but no generateSurveys
                 surveys['_isSurveysEnabled'] = true
                 mockGenerateSurveys = undefined
-                assignableWindow.__PosthogExtensions__.generateSurveys = undefined
+                assignableWindow.__AgridExtensions__.generateSurveys = undefined
 
                 mockLoadExternalDependency.mockImplementation((_instance, _type, callback) => {
                     callback(new Error('Failed to load'))

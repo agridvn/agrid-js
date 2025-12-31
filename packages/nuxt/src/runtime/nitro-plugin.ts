@@ -1,26 +1,26 @@
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 import { uuidv7 } from '@agrid/core/vendor/uuidv7'
 import { defineNitroPlugin } from 'nitropack/runtime'
 import { useRuntimeConfig } from '#imports'
-import type { PostHogCommon, PostHogServerConfig } from '../module'
+import type { AgridCommon, AgridServerConfig } from '../module'
 import type { JsonType } from '@agrid/core'
 
 export default defineNitroPlugin((nitroApp) => {
   const runtimeConfig = useRuntimeConfig()
-  const posthogCommon = runtimeConfig.public.posthog as PostHogCommon
-  const posthogServerConfig = runtimeConfig.posthogServerConfig as PostHogServerConfig
-  const debug = posthogCommon.debug as boolean
+  const agridCommon = runtimeConfig.public.agrid as AgridCommon
+  const agridServerConfig = runtimeConfig.agridServerConfig as AgridServerConfig
+  const debug = agridCommon.debug as boolean
 
-  const client = new PostHog(posthogCommon.publicKey, {
-    host: posthogCommon.host,
-    ...posthogServerConfig,
+  const client = new Agrid(agridCommon.publicKey, {
+    host: agridCommon.host,
+    ...agridServerConfig,
   })
 
   if (debug) {
     client.debug(true)
   }
 
-  if (posthogServerConfig.enableExceptionAutocapture) {
+  if (agridServerConfig.enableExceptionAutocapture) {
     nitroApp.hooks.hook('error', (error, { event }) => {
       const props: JsonType = {
         $process_person_profile: false,

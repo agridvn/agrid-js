@@ -1,3 +1,4 @@
+/* eslint-disable agrid-js/no-direct-array-check, agrid-js/no-direct-undefined-check, agrid-js/no-direct-function-check, agrid-js/no-direct-number-check, agrid-js/no-direct-null-check */
 import {
   GoogleGenAI,
   GenerateContentResponse as GeminiResponse,
@@ -5,13 +6,13 @@ import {
   Part,
   GenerateContentResponseUsageMetadata,
 } from '@google/genai'
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 import {
   MonitoringParams,
-  sendEventToPosthog,
+  sendEventToAgrid,
   extractAvailableToolCalls,
   formatResponseGemini,
-  extractPosthogParams,
+  extractAgridParams,
   toContentString,
 } from '../utils'
 import { sanitizeGemini } from '../sanitization'
@@ -24,33 +25,33 @@ interface MonitoringGeminiConfig {
   project?: string
   location?: string
   apiVersion?: string
-  posthog: PostHog
+  agrid: Agrid
 }
 
-export class PostHogGoogleGenAI {
-  private readonly phClient: PostHog
+export class AgridGoogleGenAI {
+  private readonly phClient: Agrid
   private readonly client: GoogleGenAI
   public models: WrappedModels
 
   constructor(config: MonitoringGeminiConfig) {
-    const { posthog, ...geminiConfig } = config
-    this.phClient = posthog
+    const { agrid, ...geminiConfig } = config
+    this.phClient = agrid
     this.client = new GoogleGenAI(geminiConfig)
     this.models = new WrappedModels(this.client, this.phClient)
   }
 }
 
 export class WrappedModels {
-  private readonly phClient: PostHog
+  private readonly phClient: Agrid
   private readonly client: GoogleGenAI
 
-  constructor(client: GoogleGenAI, phClient: PostHog) {
+  constructor(client: GoogleGenAI, phClient: Agrid) {
     this.client = client
     this.phClient = phClient
   }
 
   public async generateContent(params: GenerateContentParameters & MonitoringParams): Promise<GeminiResponse> {
-    const { providerParams: geminiParams, posthogParams } = extractPosthogParams(params)
+    const { providerParams: geminiParams, agridParams } = extractAgridParams(params)
     const startTime = Date.now()
 
     try {
@@ -60,12 +61,12 @@ export class WrappedModels {
       const availableTools = extractAvailableToolCalls('gemini', geminiParams)
 
       const metadata = response.usageMetadata
-      await sendEventToPosthog({
+      await sendEventToAgrid({
         client: this.phClient,
-        ...posthogParams,
+        ...agridParams,
         model: geminiParams.model,
         provider: 'gemini',
-        input: this.formatInputForPostHog(geminiParams),
+        input: this.formatInputForAgrid(geminiParams),
         output: formatResponseGemini(response),
         latency,
         baseURL: 'https://generativelanguage.googleapis.com',
@@ -86,12 +87,12 @@ export class WrappedModels {
       return response
     } catch (error: unknown) {
       const latency = (Date.now() - startTime) / 1000
-      await sendEventToPosthog({
+      await sendEventToAgrid({
         client: this.phClient,
-        ...posthogParams,
+        ...agridParams,
         model: geminiParams.model,
         provider: 'gemini',
-        input: this.formatInputForPostHog(geminiParams),
+        input: this.formatInputForAgrid(geminiParams),
         output: [],
         latency,
         baseURL: 'https://generativelanguage.googleapis.com',
@@ -111,7 +112,7 @@ export class WrappedModels {
   public async *generateContentStream(
     params: GenerateContentParameters & MonitoringParams
   ): AsyncGenerator<GeminiResponse, void, unknown> {
-    const { providerParams: geminiParams, posthogParams } = extractPosthogParams(params)
+    const { providerParams: geminiParams, agridParams } = extractAgridParams(params)
     const startTime = Date.now()
     const accumulatedContent: FormattedContent = []
     let usage: TokenUsage = {
@@ -193,12 +194,12 @@ export class WrappedModels {
       // Format output similar to formatResponseGemini
       const output = accumulatedContent.length > 0 ? [{ role: 'assistant', content: accumulatedContent }] : []
 
-      await sendEventToPosthog({
+      await sendEventToAgrid({
         client: this.phClient,
-        ...posthogParams,
+        ...agridParams,
         model: geminiParams.model,
         provider: 'gemini',
-        input: this.formatInputForPostHog(geminiParams),
+        input: this.formatInputForAgrid(geminiParams),
         output,
         latency,
         baseURL: 'https://generativelanguage.googleapis.com',
@@ -212,12 +213,12 @@ export class WrappedModels {
       })
     } catch (error: unknown) {
       const latency = (Date.now() - startTime) / 1000
-      await sendEventToPosthog({
+      await sendEventToAgrid({
         client: this.phClient,
-        ...posthogParams,
+        ...agridParams,
         model: geminiParams.model,
         provider: 'gemini',
-        input: this.formatInputForPostHog(geminiParams),
+        input: this.formatInputForAgrid(geminiParams),
         output: [],
         latency,
         baseURL: 'https://generativelanguage.googleapis.com',
@@ -326,7 +327,7 @@ export class WrappedModels {
     return null
   }
 
-  private formatInputForPostHog(params: GenerateContentParameters): FormattedMessage[] {
+  private formatInputForAgrid(params: GenerateContentParameters): FormattedMessage[] {
     const sanitized = sanitizeGemini(params.contents)
     const messages = this.formatInput(sanitized)
 
@@ -422,5 +423,5 @@ function calculateGoogleWebSearchCount(response: unknown): number {
   return hasGrounding ? 1 : 0
 }
 
-export default PostHogGoogleGenAI
-export { PostHogGoogleGenAI as Gemini }
+export default AgridGoogleGenAI
+export { AgridGoogleGenAI as Gemini }

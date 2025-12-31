@@ -1,22 +1,22 @@
 {
-    "name": "posthog-vscode-playground",
-    "displayName": "PostHog VS Code Playground",
-    "description": "A playground for testing PostHog integration in a VS Code extension.",
+    "name": "agrid-vscode-playground",
+    "displayName": "Agrid VS Code Playground",
+    "description": "A playground for testing Agrid integration in a VS Code extension.",
     "version": "0.0.1",
-    "publisher": "posthog",
+    "publisher": "agrid",
     "engines": {
         "vscode": "^1.74.0"
     },
     "activationEvents": [
-        "onCommand:posthog.start"
+        "onCommand:agrid.start"
     ],
     "main": "./src/extension.js",
     "contributes": {
         "commands": [
             {
-                "command": "posthog.start",
-                "title": "Start PostHog Playground",
-                "category": "PostHog"
+                "command": "agrid.start",
+                "title": "Start Agrid Playground",
+                "category": "Agrid"
             }
         ]
     },

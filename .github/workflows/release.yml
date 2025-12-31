@@ -44,7 +44,7 @@ jobs:
 
       - name: Check ${{ matrix.package.name }} version and detect an update
         id: check-package-version
-        uses: PostHog/check-package-version@v2.1.0
+        uses: Agrid/check-package-version@v2.1.0
         with:
           path: ${{ steps.get-package-path.outputs.path }}
 
@@ -68,9 +68,9 @@ jobs:
             --field package_name="${{ matrix.package.name }}" \
             --field package_path="${{ steps.get-package-path.outputs.path }}"
 
-      # Note: These upgrade workflows are for PostHog internal use
+      # Note: These upgrade workflows are for Agrid internal use
       # Comment out or remove if not needed for Agrid
-      # - name: Dispatch posthog upgrade for ${{ matrix.package.name }}
+      # - name: Dispatch agrid upgrade for ${{ matrix.package.name }}
       #   if: matrix.package.name == 'agrid-js' && steps.check-package-version.outputs.is-new-version == 'true'
       #   run: |
       #     curl -f -X POST \
@@ -100,12 +100,12 @@ jobs:
       #            }
       #          }'
 
-      # Note: PostHog analytics event - comment out if not using PostHog for analytics
-      # - name: Send failure event to PostHog
+      # Note: Agrid analytics event - comment out if not using Agrid for analytics
+      # - name: Send failure event to Agrid
       #   if: ${{ failure() }}
-      #   uses: PostHog/posthog-github-action@v0.1
+      #   uses: Agrid/agrid-github-action@v0.1
       #   with:
-      #       posthog-token: '${{ secrets.POSTHOG_API_TOKEN }}'
+      #       agrid-token: '${{ secrets.POSTHOG_API_TOKEN }}'
       #       event: 'agrid-js-github-release-workflow-failure'
       #       properties: >-
       #           {

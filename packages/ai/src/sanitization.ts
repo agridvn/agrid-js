@@ -1,3 +1,4 @@
+/* eslint-disable agrid-js/no-direct-array-check, agrid-js/no-direct-undefined-check, agrid-js/no-direct-function-check, agrid-js/no-direct-number-check, agrid-js/no-direct-null-check */
 import { isString, isObject } from './typeGuards'
 
 const REDACTED_IMAGE_PLACEHOLDER = '[base64 image redacted]'

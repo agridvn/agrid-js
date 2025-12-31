@@ -1,6 +1,6 @@
 import { defineNuxtModule, addPlugin, createResolver, addServerPlugin } from '@nuxt/kit'
-import type { PostHogConfig } from 'agrid-js'
-import type { PostHogOptions } from 'agrid-node'
+import type { AgridConfig } from 'agrid-js'
+import type { AgridOptions } from 'agrid-node'
 import { resolveBinaryPath, spawnLocal } from '@agrid/core/process'
 import { fileURLToPath } from 'node:url'
 import { dirname } from 'node:path'
@@ -25,19 +25,19 @@ export interface ModuleOptions {
   publicKey: string
   debug?: boolean
   cliBinaryPath?: string
-  clientConfig?: PostHogClientConfig
-  serverConfig?: PostHogServerConfig
+  clientConfig?: AgridClientConfig
+  serverConfig?: AgridServerConfig
   sourcemaps: SourcemapsConfig | undefined
 }
 
-export interface PostHogCommon {
+export interface AgridCommon {
   publicKey: string
   host: string
   debug?: boolean
 }
 
-export type PostHogServerConfig = PostHogOptions
-export type PostHogClientConfig = Partial<PostHogConfig>
+export type AgridServerConfig = AgridOptions
+export type AgridClientConfig = Partial<AgridConfig>
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -48,7 +48,7 @@ export default defineNuxtModule<ModuleOptions>({
     },
   },
   defaults: () => ({
-    host: 'https://us.i.posthog.com',
+    host: 'https://app.agrid.vn',
     debug: false,
     clientConfig: {},
     serverConfig: {},
@@ -60,16 +60,16 @@ export default defineNuxtModule<ModuleOptions>({
     addServerPlugin(resolver.resolve('./runtime/nitro-plugin'))
 
     Object.assign(nuxt.options.runtimeConfig.public, {
-      posthog: {
+      agrid: {
         publicKey: options.publicKey,
         host: options.host,
         debug: options.debug,
       },
-      posthogClientConfig: options.clientConfig,
+      agridClientConfig: options.clientConfig,
     })
 
     Object.assign(nuxt.options.runtimeConfig, {
-      posthogServerConfig: options.serverConfig,
+      agridServerConfig: options.serverConfig,
     })
 
     if (!options.sourcemaps?.enabled || nuxt.options.dev) {
@@ -106,20 +106,20 @@ export default defineNuxtModule<ModuleOptions>({
 
     let isBuildProcess = false
 
-    const posthogCliRunner = () => {
+    const agridCliRunner = () => {
       const cliBinaryPath =
         options.cliBinaryPath ||
-        resolveBinaryPath('posthog-cli', {
+        resolveBinaryPath('agrid-cli', {
           path: process.env.PATH ?? '',
           cwd: resolvedDirname,
         })
       const logLevel = sourcemapsConfig.logLevel || 'info'
       const cliEnv = {
         ...process.env,
-        RUST_LOG: `posthog_cli=${logLevel}`,
-        POSTHOG_CLI_HOST: options.host,
-        POSTHOG_CLI_ENV_ID: sourcemapsConfig.envId,
-        POSTHOG_CLI_TOKEN: sourcemapsConfig.personalApiKey,
+        RUST_LOG: `agrid_cli=${logLevel}`,
+        AGRID_CLI_HOST: options.host,
+        AGRID_CLI_ENV_ID: sourcemapsConfig.envId,
+        AGRID_CLI_TOKEN: sourcemapsConfig.personalApiKey,
       }
       return (args: string[]) => {
         return spawnLocal(cliBinaryPath, args, {
@@ -130,14 +130,14 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
-    const cliRunner = posthogCliRunner()
+    const cliRunner = agridCliRunner()
 
     nuxt.hook('nitro:build:public-assets', async () => {
       isBuildProcess = true
       if (!publicDir) return
       try {
         // Inject public sourcemaps
-        // This cannot be done in the close hook. https://github.com/PostHog/posthog/issues/30957#issuecomment-2824545454
+        // This cannot be done in the close hook.
         await cliRunner(getInjectArgs(publicDir, sourcemapsConfig))
       } catch (error) {
         console.error('Failed to process public sourcemaps:', error)
@@ -157,7 +157,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
     })
   },
-})
+}) as import('@nuxt/schema').NuxtModule<ModuleOptions>
 
 function getInjectArgs(directory: string, sourcemapsConfig: SourcemapsConfig) {
   const processOptions: string[] = ['sourcemap', 'inject', '--ignore', '**/node_modules/**', '--directory', directory]

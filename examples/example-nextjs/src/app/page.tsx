@@ -1,5 +1,5 @@
 'use client'
-import { usePostHog } from 'posthog-js/react'
+import { useAgrid } from 'agrid-js/react'
 import { captureServerError } from './actions'
 
 function randomID() {
@@ -7,7 +7,7 @@ function randomID() {
 }
 
 export default function Home() {
-    const posthog = usePostHog()
+    const agrid = useAgrid()
     return (
         <div>
             <main>
@@ -20,13 +20,13 @@ export default function Home() {
                         gap: '30px',
                     }}
                 >
-                    <button onClick={() => posthog.captureException(new Error('exception captured'))}>
+                    <button onClick={() => agrid.captureException(new Error('exception captured'))}>
                         Create client exception!
                     </button>
                     <button onClick={() => captureServerError()}>Create server exception!</button>
                     <button
                         onClick={() =>
-                            posthog.captureException(new Error('custom fingerprint'), {
+                            agrid.captureException(new Error('custom fingerprint'), {
                                 $exception_fingerprint: randomID(),
                             })
                         }

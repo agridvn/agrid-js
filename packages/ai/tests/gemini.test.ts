@@ -1,13 +1,13 @@
-import { PostHog } from 'agrid-node'
-import PostHogGemini from '../src/gemini'
+import { Agrid } from 'agrid-node'
+import AgridGemini from '../src/gemini'
 import { version } from '../package.json'
 
 let mockGeminiResponse: any = {}
 let mockGeminiStreamResponse: any = {}
 
-jest.mock('posthog-node', () => {
+jest.mock('agrid-node', () => {
   return {
-    PostHog: jest.fn().mockImplementation(() => {
+    Agrid: jest.fn().mockImplementation(() => {
       return {
         capture: jest.fn(),
         captureImmediate: jest.fn(),
@@ -44,18 +44,18 @@ const mockGenerateContentStream = (chunks: any[]) => {
   })
 }
 
-describe('PostHogGemini - Jest test suite', () => {
-  let mockPostHogClient: PostHog
-  let client: PostHogGemini
+describe('AgridGemini - Jest test suite', () => {
+  let mockAgridClient: Agrid
+  let client: AgridGemini
 
   beforeEach(() => {
     jest.clearAllMocks()
 
     // Reset the default mocks
-    mockPostHogClient = new (PostHog as any)()
-    client = new PostHogGemini({
+    mockAgridClient = new (Agrid as any)()
+    client = new AgridGemini({
       apiKey: 'test-api-key',
-      posthog: mockPostHogClient as any,
+      agrid: mockAgridClient as any,
     })
 
     // Some default generate content mock
@@ -137,20 +137,20 @@ describe('PostHogGemini - Jest test suite', () => {
     const response = await client.models.generateContent({
       model: 'gemini-2.0-flash-001',
       contents: 'Hello',
-      posthogDistinctId: 'test-id',
-      posthogProperties: { foo: 'bar' },
+      agridDistinctId: 'test-id',
+      agridProperties: { foo: 'bar' },
     })
 
     expect(response).toEqual(mockGeminiResponse)
     // We expect 1 capture call
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
     // Check the capture arguments
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { distinctId, event, properties } = captureArgs[0]
 
     expect(distinctId).toBe('test-id')
     expect(event).toBe('$ai_generation')
-    expect(properties['$ai_lib']).toBe('posthog-ai')
+    expect(properties['$ai_lib']).toBe('agrid-ai')
     expect(properties['$ai_lib_version']).toBe(version)
     expect(properties['$ai_provider']).toBe('gemini')
     expect(properties['$ai_model']).toBe('gemini-2.0-flash-001')
@@ -172,8 +172,8 @@ describe('PostHogGemini - Jest test suite', () => {
     const stream = client.models.generateContentStream({
       model: 'gemini-2.0-flash-001',
       contents: 'Write a short poem',
-      posthogDistinctId: 'test-id',
-      posthogProperties: { foo: 'bar' },
+      agridDistinctId: 'test-id',
+      agridProperties: { foo: 'bar' },
     })
 
     let accumulatedText = ''
@@ -185,14 +185,14 @@ describe('PostHogGemini - Jest test suite', () => {
 
     expect(accumulatedText).toBe('Hello from Gemini!')
     // We expect 1 capture call after streaming completes
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
 
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { distinctId, event, properties } = captureArgs[0]
 
     expect(distinctId).toBe('test-id')
     expect(event).toBe('$ai_generation')
-    expect(properties['$ai_lib']).toBe('posthog-ai')
+    expect(properties['$ai_lib']).toBe('agrid-ai')
     expect(properties['$ai_lib_version']).toBe(version)
     expect(properties['$ai_provider']).toBe('gemini')
     expect(properties['$ai_model']).toBe('gemini-2.0-flash-001')
@@ -214,12 +214,12 @@ describe('PostHogGemini - Jest test suite', () => {
     await client.models.generateContent({
       model: 'gemini-2.0-flash-001',
       contents: 'Hello',
-      posthogDistinctId: 'test-id',
-      posthogGroups: { team: 'ai-team' },
+      agridDistinctId: 'test-id',
+      agridGroups: { team: 'ai-team' },
     })
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { groups } = captureArgs[0]
 
     expect(groups).toEqual({ team: 'ai-team' })
@@ -229,12 +229,12 @@ describe('PostHogGemini - Jest test suite', () => {
     await client.models.generateContent({
       model: 'gemini-2.0-flash-001',
       contents: 'Sensitive information',
-      posthogDistinctId: 'test-id',
-      posthogPrivacyMode: true,
+      agridDistinctId: 'test-id',
+      agridPrivacyMode: true,
     })
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { properties } = captureArgs[0]
 
     expect(properties['$ai_input']).toBeNull()
@@ -250,12 +250,12 @@ describe('PostHogGemini - Jest test suite', () => {
       client.models.generateContent({
         model: 'gemini-2.0-flash-001',
         contents: 'Hello',
-        posthogDistinctId: 'test-id',
+        agridDistinctId: 'test-id',
       })
     ).rejects.toThrow('API Error')
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { properties } = captureArgs[0]
 
     expect(properties['$ai_is_error']).toBe(true)
@@ -268,11 +268,11 @@ describe('PostHogGemini - Jest test suite', () => {
     await client.models.generateContent({
       model: 'gemini-2.0-flash-001',
       contents: ['Hello', 'How are you?'],
-      posthogDistinctId: 'test-id',
+      agridDistinctId: 'test-id',
     })
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { properties } = captureArgs[0]
 
     expect(properties['$ai_input']).toEqual([
@@ -285,11 +285,11 @@ describe('PostHogGemini - Jest test suite', () => {
     await client.models.generateContent({
       model: 'gemini-2.0-flash-001',
       contents: { text: 'Hello world' },
-      posthogDistinctId: 'test-id',
+      agridDistinctId: 'test-id',
     })
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { properties } = captureArgs[0]
 
     expect(properties['$ai_input']).toEqual([{ role: 'user', content: 'Hello world' }])
@@ -299,23 +299,23 @@ describe('PostHogGemini - Jest test suite', () => {
     await client.models.generateContent({
       model: 'gemini-2.0-flash-001',
       contents: 'Hello',
-      posthogDistinctId: 'test-id',
-      posthogCaptureImmediate: true,
+      agridDistinctId: 'test-id',
+      agridCaptureImmediate: true,
     })
 
-    expect(mockPostHogClient.captureImmediate).toHaveBeenCalledTimes(1)
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(0)
+    expect(mockAgridClient.captureImmediate).toHaveBeenCalledTimes(1)
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(0)
   })
 
   test('vertex ai configuration', () => {
-    const vertexClient = new PostHogGemini({
+    const vertexClient = new AgridGemini({
       vertexai: true,
       project: 'test-project',
       location: 'us-central1',
-      posthog: mockPostHogClient as any,
+      agrid: mockAgridClient as any,
     })
 
-    expect(vertexClient).toBeInstanceOf(PostHogGemini)
+    expect(vertexClient).toBeInstanceOf(AgridGemini)
     expect(vertexClient.models).toBeDefined()
   })
 
@@ -378,7 +378,7 @@ describe('PostHogGemini - Jest test suite', () => {
     const stream = client.models.generateContentStream({
       model: 'gemini-2.0-flash-001',
       contents: 'What is the weather?',
-      posthogDistinctId: 'test-id',
+      agridDistinctId: 'test-id',
     })
 
     let accumulatedText = ''
@@ -408,9 +408,9 @@ describe('PostHogGemini - Jest test suite', () => {
       args: { location: 'New York', units: 'celsius' },
     })
 
-    // Check PostHog capture
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    // Check Agrid capture
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { properties } = captureArgs[0]
 
     expect(properties['$ai_output_choices']).toEqual([
@@ -459,7 +459,7 @@ describe('PostHogGemini - Jest test suite', () => {
     const stream = client.models.generateContentStream({
       model: 'gemini-2.0-flash-001',
       contents: 'Tell me a story',
-      posthogDistinctId: 'test-id',
+      agridDistinctId: 'test-id',
     })
 
     let accumulatedText = ''
@@ -471,9 +471,9 @@ describe('PostHogGemini - Jest test suite', () => {
 
     expect(accumulatedText).toBe('The quick brown fox.')
 
-    // Check PostHog capture for proper text accumulation
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    // Check Agrid capture for proper text accumulation
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { properties } = captureArgs[0]
 
     // Should have a single text item with all accumulated text
@@ -490,11 +490,11 @@ describe('PostHogGemini - Jest test suite', () => {
     await client.models.generateContent({
       model: 'gemini-2.0-flash-001',
       contents: 'Hello',
-      posthogTraceId: 'trace-123',
+      agridTraceId: 'trace-123',
     })
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { distinctId, properties } = captureArgs[0]
 
     expect(distinctId).toBe('trace-123')
@@ -505,12 +505,12 @@ describe('PostHogGemini - Jest test suite', () => {
     await client.models.generateContent({
       model: 'gemini-2.0-flash-001',
       contents: 'Hello',
-      posthogDistinctId: 'user-456',
-      posthogTraceId: 'trace-123',
+      agridDistinctId: 'user-456',
+      agridTraceId: 'trace-123',
     })
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { distinctId, properties } = captureArgs[0]
 
     expect(distinctId).toBe('user-456')
@@ -522,11 +522,11 @@ describe('PostHogGemini - Jest test suite', () => {
       model: 'gemini-2.0-flash-001',
       contents: 'What is the weather?',
       config: { systemInstruction: 'You are a helpful weather assistant.' },
-      posthogDistinctId: 'test-system-instruction',
+      agridDistinctId: 'test-system-instruction',
     })
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { distinctId, properties } = captureArgs[0]
 
     expect(distinctId).toBe('test-system-instruction')
@@ -541,11 +541,11 @@ describe('PostHogGemini - Jest test suite', () => {
       model: 'gemini-2.0-flash-001',
       contents: 'What is the capital of France?',
       config: { systemInstruction: { parts: [{ text: 'You are a geography expert.' }] } },
-      posthogDistinctId: 'test-systemInstruction',
+      agridDistinctId: 'test-systemInstruction',
     })
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { distinctId, properties } = captureArgs[0]
 
     expect(distinctId).toBe('test-systemInstruction')
@@ -560,15 +560,15 @@ describe('PostHogGemini - Jest test suite', () => {
       model: 'gemini-2.0-flash-001',
       contents: 'Tell me about AI',
       config: { systemInstruction: 'You are an AI expert.' },
-      posthogDistinctId: 'test-stream-system',
+      agridDistinctId: 'test-stream-system',
     })
 
     for await (const _chunk of stream) {
       // Just consume the stream
     }
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
     const { distinctId, properties } = captureArgs[0]
 
     expect(distinctId).toBe('test-stream-system')
@@ -592,12 +592,12 @@ describe('PostHogGemini - Jest test suite', () => {
             index: 0,
             safetyRatings: [],
             groundingMetadata: {
-              webSearchQueries: ['PostHog features'],
+              webSearchQueries: ['Agrid features'],
               groundingChunks: [
                 {
                   web: {
-                    uri: 'https://posthog.com',
-                    title: 'PostHog',
+                    uri: 'https://agrid.com',
+                    title: 'Agrid',
                   },
                 },
               ],
@@ -616,11 +616,11 @@ describe('PostHogGemini - Jest test suite', () => {
 
       await client.models.generateContent({
         model: 'gemini-2.0-flash-001',
-        contents: 'What is PostHog?',
-        posthogDistinctId: 'test-user',
+        contents: 'What is Agrid?',
+        agridDistinctId: 'test-user',
       })
 
-      const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
       const { properties } = captureArgs[0]
 
       // Gemini uses binary detection (1 or 0)
@@ -664,14 +664,14 @@ describe('PostHogGemini - Jest test suite', () => {
       const stream = client.models.generateContentStream({
         model: 'gemini-2.0-flash-001',
         contents: 'Search query',
-        posthogDistinctId: 'test-user',
+        agridDistinctId: 'test-user',
       })
 
       for await (const _chunk of stream) {
         // Just consume
       }
 
-      const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
       const { properties } = captureArgs[0]
 
       expect(properties['$ai_web_search_count']).toBe(1)
@@ -702,10 +702,10 @@ describe('PostHogGemini - Jest test suite', () => {
       await client.models.generateContent({
         model: 'gemini-2.0-flash-001',
         contents: 'Hello',
-        posthogDistinctId: 'test-user',
+        agridDistinctId: 'test-user',
       })
 
-      const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
       const { properties } = captureArgs[0]
 
       // Should not include web search count when grounding not present
@@ -740,10 +740,10 @@ describe('PostHogGemini - Jest test suite', () => {
       await client.models.generateContent({
         model: 'gemini-2.0-flash-001',
         contents: 'Test',
-        posthogDistinctId: 'test-user',
+        agridDistinctId: 'test-user',
       })
 
-      const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
       const { properties } = captureArgs[0]
 
       // Empty arrays should not trigger web search count
@@ -774,10 +774,10 @@ describe('PostHogGemini - Jest test suite', () => {
       await client.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: 'hi',
-        posthogDistinctId: 'test-user',
+        agridDistinctId: 'test-user',
       })
 
-      const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
       const { properties } = captureArgs[0]
 
       // Empty groundingMetadata object should not trigger web search count
@@ -794,7 +794,7 @@ describe('PostHogGemini - Jest test suite', () => {
                 {
                   functionCall: {
                     name: 'google_search',
-                    args: { query: 'PostHog documentation' },
+                    args: { query: 'Agrid documentation' },
                   },
                 },
               ],
@@ -817,11 +817,11 @@ describe('PostHogGemini - Jest test suite', () => {
 
       await client.models.generateContent({
         model: 'gemini-2.0-flash-001',
-        contents: 'Search for PostHog',
-        posthogDistinctId: 'test-user',
+        contents: 'Search for Agrid',
+        agridDistinctId: 'test-user',
       })
 
-      const [captureArgs] = (mockPostHogClient.capture as jest.Mock).mock.calls
+      const [captureArgs] = (mockAgridClient.capture as jest.Mock).mock.calls
       const { properties } = captureArgs[0]
 
       // Function call with google_search should trigger web search count

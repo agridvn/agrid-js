@@ -1,9 +1,9 @@
-import type { Survey } from 'posthog-js'
-import { usePostHog } from 'posthog-js/react'
+import type { Survey } from 'agrid-js'
+import { useAgrid } from 'agrid-js/react'
 import { useEffect, useState } from 'react'
 
 export default function SurveyForm() {
-    const posthog = usePostHog()
+    const agrid = useAgrid()
     const [surveys, setSurveys] = useState([] as unknown as Survey[])
     const [selectedSurvey, setSelectedSurvey] = useState('')
 
@@ -12,7 +12,7 @@ export default function SurveyForm() {
     }
 
     useEffect(() => {
-        posthog.surveys.getSurveys((surveys: Survey[]) => {
+        agrid.surveys.getSurveys((surveys: Survey[]) => {
             setSurveys(surveys)
             if (surveys.length > 0) {
                 setSelectedSurvey(surveys[0].id)
@@ -35,14 +35,14 @@ export default function SurveyForm() {
                     {arraySurveyItems}
                 </select>
                 <button
-                    onClick={() => posthog.renderSurvey(selectedSurvey, '#survey-container')}
+                    onClick={() => agrid.renderSurvey(selectedSurvey, '#survey-container')}
                     disabled={!selectedSurvey}
                 >
                     Render Survey below
                 </button>
                 <button
                     onClick={() => {
-                        const renderReason = posthog.canRenderSurvey(selectedSurvey)
+                        const renderReason = agrid.canRenderSurvey(selectedSurvey)
                         const message = renderReason?.visible
                             ? `Survey can be rendered: Yes`
                             : `Survey cannot be rendered: ${renderReason?.disabledReason || 'No reason provided'}`

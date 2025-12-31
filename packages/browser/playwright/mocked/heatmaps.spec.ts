@@ -1,4 +1,5 @@
-import { expect, test } from './utils/posthog-playwright-test-base'
+/* eslint-disable agrid-js/no-direct-array-check */
+import { expect, test } from './utils/agrid-playwright-test-base'
 import { start } from './utils/setup'
 import { pollUntilEventCaptured } from './utils/event-capture-utils'
 

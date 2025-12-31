@@ -45,7 +45,7 @@ export default defineNuxtConfig({
 ### Access client in Vue
 
 ```ts
-const { $posthog } = useNuxtApp()
+const { $agrid } = useNuxtApp()
 ```
 
 On the server, the initialized client is intended exclusively for error tracking. For other server-side analytics, instantiate a separate client where needed.

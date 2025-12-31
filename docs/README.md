@@ -47,16 +47,18 @@ npm install agrid-js @agrid/react
 ```
 
 ```jsx
-import { PostHogProvider } from '@agrid/react'
+import { AgridProvider } from '@agrid/react'
 
 function App() {
   return (
-    <PostHogProvider
-      apiKey="YOUR_API_KEY"
-      options={{ api_host: 'YOUR_INGESTION_URL' }}
+    <AgridProvider 
+      apiKey="YOUR_PROJECT_API_KEY"
+      options={{
+        host: "https://app.agrid.vn",
+      }}
     >
-      <YourApp />
-    </PostHogProvider>
+      <MyComponent />
+    </AgridProvider>
   )
 }
 ```

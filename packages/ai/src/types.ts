@@ -1,5 +1,5 @@
 /**
- * Type definitions for PostHog AI SDK
+ * Type definitions for Agrid AI SDK
  * These types are used for formatting responses across different AI providers
  */
 

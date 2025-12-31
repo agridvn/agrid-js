@@ -1,35 +1,35 @@
-import { PostHogOptions } from '@/types'
-import { PostHog } from '@/entrypoints/index.node'
+import { AgridOptions } from '@/types'
+import { Agrid } from '@/entrypoints/index.node'
 import { anyFlagsCall, anyLocalEvalCall, apiImplementation } from './utils'
 
 jest.spyOn(console, 'debug').mockImplementation()
 
 const mockedFetch = jest.spyOn(globalThis, 'fetch').mockImplementation()
 
-const posthogImmediateResolveOptions: PostHogOptions = {
+const agridImmediateResolveOptions: AgridOptions = {
   fetchRetryCount: 0,
 }
 
-type LocalPostHog = Omit<PostHog, 'featureFlagsPoller'> & {
-  featureFlagsPoller: PostHog['featureFlagsPoller']
+type LocalAgrid = Omit<Agrid, 'featureFlagsPoller'> & {
+  featureFlagsPoller: Agrid['featureFlagsPoller']
 }
 
-function buildClient(options: Partial<PostHogOptions> = posthogImmediateResolveOptions): LocalPostHog {
-  return new PostHog('TEST_API_KEY', {
+function buildClient(options: Partial<AgridOptions> = agridImmediateResolveOptions): LocalAgrid {
+  return new Agrid('TEST_API_KEY', {
     host: 'http://example.com',
     personalApiKey: 'TEST_PERSONAL_API_KEY',
     ...options,
-  }) as unknown as LocalPostHog
+  }) as unknown as LocalAgrid
 }
 
 describe('feature flag dependencies', () => {
-  let posthog: LocalPostHog
+  let agrid: LocalAgrid
 
   jest.useFakeTimers()
 
   afterEach(async () => {
     // ensure clean shutdown & no test interdependencies
-    await posthog.shutdown()
+    await agrid.shutdown()
   })
 
   describe('flag dependencies', () => {
@@ -76,9 +76,9 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
-      expect(await posthog.getFeatureFlag('dependent-flag', 'distinct-id')).toEqual(true)
+      expect(await agrid.getFeatureFlag('dependent-flag', 'distinct-id')).toEqual(true)
       expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
     })
 
@@ -140,27 +140,27 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
       expect(
-        await posthog.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
+        await agrid.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
           personProperties: { email: 'anybody@example.com' },
         })
       ).toEqual('kiwi')
 
       expect(
-        await posthog.getFeatureFlag('dependent-flag', 'test-user', {
+        await agrid.getFeatureFlag('dependent-flag', 'test-user', {
           personProperties: { email: 'anybody@example.com' },
         })
       ).toEqual(true)
 
-      const negativeLeafResult = await posthog.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
+      const negativeLeafResult = await agrid.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
         personProperties: { email: 'nobody@not-example.com' },
       })
       expect(negativeLeafResult).toEqual(false)
 
       expect(
-        await posthog.getFeatureFlag('dependent-flag', 'test-user', {
+        await agrid.getFeatureFlag('dependent-flag', 'test-user', {
           personProperties: { email: 'nobody@not-example.com' },
         })
       ).toEqual(false)
@@ -209,10 +209,10 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
-      expect(await posthog.getFeatureFlag('base-flag', 'distinct-id')).toEqual(false)
-      expect(await posthog.getFeatureFlag('dependent-flag', 'distinct-id')).toEqual(false)
+      expect(await agrid.getFeatureFlag('base-flag', 'distinct-id')).toEqual(false)
+      expect(await agrid.getFeatureFlag('dependent-flag', 'distinct-id')).toEqual(false)
       expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
     })
 
@@ -259,9 +259,9 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
-      expect(await posthog.getFeatureFlag('dependent-flag', 'distinct-id')).toEqual(undefined)
+      expect(await agrid.getFeatureFlag('dependent-flag', 'distinct-id')).toEqual(undefined)
       expect(mockedFetch).toHaveBeenCalledWith(...anyFlagsCall)
     })
 
@@ -294,9 +294,9 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
-      expect(await posthog.getFeatureFlag('dependent-flag', 'distinct-id')).toBeUndefined()
+      expect(await agrid.getFeatureFlag('dependent-flag', 'distinct-id')).toBeUndefined()
       expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
     })
 
@@ -365,14 +365,14 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
       // flag-c depends on flag-b, which depends on flag-a - all should be true
-      expect(await posthog.getFeatureFlag('flag-c', 'distinct-id')).toEqual(true)
+      expect(await agrid.getFeatureFlag('flag-c', 'distinct-id')).toEqual(true)
 
       // Verify individual flags work as expected
-      expect(await posthog.getFeatureFlag('flag-a', 'distinct-id')).toEqual(true)
-      expect(await posthog.getFeatureFlag('flag-b', 'distinct-id')).toEqual(true)
+      expect(await agrid.getFeatureFlag('flag-a', 'distinct-id')).toEqual(true)
+      expect(await agrid.getFeatureFlag('flag-b', 'distinct-id')).toEqual(true)
 
       expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
     })
@@ -442,12 +442,12 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
       // When base flag (flag-a) is disabled, the whole chain should fail
-      expect(await posthog.getFeatureFlag('flag-a', 'distinct-id')).toEqual(false)
-      expect(await posthog.getFeatureFlag('flag-b', 'distinct-id')).toEqual(false)
-      expect(await posthog.getFeatureFlag('flag-c', 'distinct-id')).toEqual(false)
+      expect(await agrid.getFeatureFlag('flag-a', 'distinct-id')).toEqual(false)
+      expect(await agrid.getFeatureFlag('flag-b', 'distinct-id')).toEqual(false)
+      expect(await agrid.getFeatureFlag('flag-c', 'distinct-id')).toEqual(false)
 
       expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
     })
@@ -501,18 +501,18 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
       // Both conditions satisfied
       expect(
-        await posthog.getFeatureFlag('mixed-flag', 'user-1', {
+        await agrid.getFeatureFlag('mixed-flag', 'user-1', {
           personProperties: { email: 'test@example.com' },
         })
       ).toEqual(true)
 
       // Flag dependency satisfied but email condition not satisfied
       expect(
-        await posthog.getFeatureFlag('mixed-flag', 'user-2', {
+        await agrid.getFeatureFlag('mixed-flag', 'user-2', {
           personProperties: { email: 'test@other.com' },
         })
       ).toEqual(false)
@@ -563,10 +563,10 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
       // base-flag returns false, so exact match with false should return true
-      expect(await posthog.getFeatureFlag('dependent-flag', 'distinct-id')).toEqual(true)
+      expect(await agrid.getFeatureFlag('dependent-flag', 'distinct-id')).toEqual(true)
       expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
     })
 
@@ -663,18 +663,18 @@ describe('feature flag dependencies', () => {
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
       // All dependencies satisfied - should return true
       expect(
-        await posthog.getFeatureFlag('flag-d', 'distinct-id', {
+        await agrid.getFeatureFlag('flag-d', 'distinct-id', {
           personProperties: { email: 'test@example.com' },
         })
       ).toEqual(true)
 
       // Break the chain by changing flag-a condition - should return false
       expect(
-        await posthog.getFeatureFlag('flag-d', 'distinct-id', {
+        await agrid.getFeatureFlag('flag-d', 'distinct-id', {
           personProperties: { email: 'test@other.com' },
         })
       ).toEqual(false)
@@ -712,10 +712,10 @@ describe('feature flag dependencies', () => {
 
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      const posthog = buildClient()
+      const agrid = buildClient()
 
       // Should return undefined since the dependency chain is missing (InconclusiveMatchError)
-      const result = await posthog.getFeatureFlag('dependent-flag', 'some-distinct-id')
+      const result = await agrid.getFeatureFlag('dependent-flag', 'some-distinct-id')
       expect(result).toBe(undefined)
     })
 
@@ -886,16 +886,16 @@ describe('feature flag dependencies', () => {
 
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-      posthog = buildClient()
+      agrid = buildClient()
 
       // Test successful pineapple -> blue -> breaking-bad chain
-      const leafResult = await posthog.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
+      const leafResult = await agrid.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
         personProperties: { email: 'pineapple@example.com' },
       })
-      const intermediateResult = await posthog.getFeatureFlag('multivariate-intermediate-flag', 'test-user', {
+      const intermediateResult = await agrid.getFeatureFlag('multivariate-intermediate-flag', 'test-user', {
         personProperties: { email: 'pineapple@example.com' },
       })
-      const rootResult = await posthog.getFeatureFlag('multivariate-root-flag', 'test-user', {
+      const rootResult = await agrid.getFeatureFlag('multivariate-root-flag', 'test-user', {
         personProperties: { email: 'pineapple@example.com' },
       })
 
@@ -904,13 +904,13 @@ describe('feature flag dependencies', () => {
       expect(rootResult).toEqual('breaking-bad')
 
       // Test successful mango -> red -> the-wire chain
-      const mangoLeafResult = await posthog.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
+      const mangoLeafResult = await agrid.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
         personProperties: { email: 'mango@example.com' },
       })
-      const mangoIntermediateResult = await posthog.getFeatureFlag('multivariate-intermediate-flag', 'test-user', {
+      const mangoIntermediateResult = await agrid.getFeatureFlag('multivariate-intermediate-flag', 'test-user', {
         personProperties: { email: 'mango@example.com' },
       })
-      const mangoRootResult = await posthog.getFeatureFlag('multivariate-root-flag', 'test-user', {
+      const mangoRootResult = await agrid.getFeatureFlag('multivariate-root-flag', 'test-user', {
         personProperties: { email: 'mango@example.com' },
       })
 
@@ -919,13 +919,13 @@ describe('feature flag dependencies', () => {
       expect(mangoRootResult).toEqual('the-wire')
 
       // Test broken chain - user without matching email gets default/false results
-      const unknownLeafResult = await posthog.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
+      const unknownLeafResult = await agrid.getFeatureFlag('multivariate-leaf-flag', 'test-user', {
         personProperties: { email: 'unknown@example.com' },
       })
-      const unknownIntermediateResult = await posthog.getFeatureFlag('multivariate-intermediate-flag', 'test-user', {
+      const unknownIntermediateResult = await agrid.getFeatureFlag('multivariate-intermediate-flag', 'test-user', {
         personProperties: { email: 'unknown@example.com' },
       })
-      const unknownRootResult = await posthog.getFeatureFlag('multivariate-root-flag', 'test-user', {
+      const unknownRootResult = await agrid.getFeatureFlag('multivariate-root-flag', 'test-user', {
         personProperties: { email: 'unknown@example.com' },
       })
 
@@ -952,11 +952,11 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
         // Access the private method for testing
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', 'control')).toBe(true)
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue('Control', 'Control')).toBe(true)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', 'control')).toBe(true)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue('Control', 'Control')).toBe(true)
       })
 
       it('does not match different cases', async () => {
@@ -973,10 +973,10 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', 'Control')).toBe(false)
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue('Control', 'CONTROL')).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', 'Control')).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue('Control', 'CONTROL')).toBe(false)
       })
 
       it('does not match different strings', async () => {
@@ -993,9 +993,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', 'test')).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', 'test')).toBe(false)
       })
     })
 
@@ -1014,10 +1014,10 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, 'control')).toBe(true)
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, 'test')).toBe(true)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, 'control')).toBe(true)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, 'test')).toBe(true)
       })
 
       it('does not match false when flag has string variant', async () => {
@@ -1034,9 +1034,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue(false, 'control')).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue(false, 'control')).toBe(false)
       })
     })
 
@@ -1055,9 +1055,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, true)).toBe(true)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, true)).toBe(true)
       })
 
       it('matches false with false', async () => {
@@ -1074,9 +1074,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue(false, false)).toBe(true)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue(false, false)).toBe(true)
       })
 
       it('does not match false with true', async () => {
@@ -1093,9 +1093,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue(false, true)).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue(false, true)).toBe(false)
       })
 
       it('does not match true with false', async () => {
@@ -1112,9 +1112,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, false)).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, false)).toBe(false)
       })
     })
 
@@ -1133,9 +1133,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, '')).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue(true, '')).toBe(false)
       })
 
       it('does not match string with empty string', async () => {
@@ -1152,9 +1152,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', '')).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', '')).toBe(false)
       })
     })
 
@@ -1173,9 +1173,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue(123, 'control')).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue(123, 'control')).toBe(false)
       })
 
       it('does not match string with boolean true', async () => {
@@ -1192,9 +1192,9 @@ describe('feature flag dependencies', () => {
         }
         mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-        posthog = buildClient()
+        agrid = buildClient()
 
-        expect((posthog.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', true)).toBe(false)
+        expect((agrid.featureFlagsPoller as any).flagEvaluatesToExpectedValue('control', true)).toBe(false)
       })
     })
   })

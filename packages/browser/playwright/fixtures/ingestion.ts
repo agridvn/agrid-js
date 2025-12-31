@@ -1,15 +1,11 @@
 import { CaptureResult } from '@/types'
-import { PosthogPage, testPostHog } from './posthog'
+import { AgridPage, testAgrid } from './agrid'
 
 const INGESTION_TIMEOUT = 10 * 60 * 1000 // 10 min
 const currentEnv = process.env
-const {
-    POSTHOG_API_KEY = 'private_key',
-    POSTHOG_API_HOST = 'http://localhost:2345',
-    POSTHOG_API_PROJECT = '1',
-} = currentEnv
+const { AGRID_API_KEY = 'private_key', AGRID_API_HOST = 'http://localhost:2345', AGRID_API_PROJECT = '1' } = currentEnv
 
-export const testIngestion = testPostHog.extend<{}, { ingestion: IngestionPage }>({
+export const testIngestion = testAgrid.extend<{}, { ingestion: IngestionPage }>({
     ingestion: [
         async ({}, use) => {
             const ingestion = new IngestionPage()
@@ -17,9 +13,9 @@ export const testIngestion = testPostHog.extend<{}, { ingestion: IngestionPage }
             await use(ingestion)
             // eslint-disable-next-line no-console
             console.log(`
-            Waiting for events from tests to appear in PostHog.
-            You can manually confirm whether the events have shown up at ${POSTHOG_API_HOST}/project/${POSTHOG_API_PROJECT}/activity/explore
-            If they seem to be failing unexpectedly, check grafana for ingestion lag at https://grafana.prod-us.posthog.dev/d/homepage/homepage
+            Waiting for events from tests to appear in Agrid.
+            You can manually confirm whether the events have shown up at ${AGRID_API_HOST}/project/${AGRID_API_PROJECT}/activity/explore
+            If they seem to be failing unexpectedly, check grafana for ingestion lag
             `)
             await ingestion.processSessionChecks()
         },
@@ -37,22 +33,18 @@ export class IngestionPage {
 
     constructor() {}
 
-    addSessionCheck(
-        posthog: PosthogPage,
-        eventsCount: number,
-        check: (events: CaptureResult[]) => Promise<void>
-    ): void {
+    addSessionCheck(agrid: AgridPage, eventsCount: number, check: (events: CaptureResult[]) => Promise<void>): void {
         this.sessionChecks.push({
-            testSessionId: posthog.getTestSessionId(),
-            testTitle: posthog.getTestTitle(),
+            testSessionId: agrid.getTestSessionId(),
+            testTitle: agrid.getTestTitle(),
             eventsCount,
             check,
         })
     }
 
     checkEnv() {
-        if (!POSTHOG_API_HOST || !POSTHOG_API_PROJECT || !POSTHOG_API_KEY) {
-            throw new Error('POSTHOG_API_HOST, POSTHOG_API_PROJECT and POSTHOG_API_KEY env variables must be set')
+        if (!AGRID_API_HOST || !AGRID_API_PROJECT || !AGRID_API_KEY) {
+            throw new Error('AGRID_API_HOST, AGRID_API_PROJECT and AGRID_API_KEY env variables must be set')
         }
     }
 
@@ -130,9 +122,9 @@ export async function retryUntilResults(
 }
 
 export async function queryAPI(testSessionId: string) {
-    const HEADERS = { Authorization: `Bearer ${POSTHOG_API_KEY}` }
+    const HEADERS = { Authorization: `Bearer ${AGRID_API_KEY}` }
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-    const url = `${POSTHOG_API_HOST}/api/projects/${POSTHOG_API_PROJECT}/events?properties=[{"key":"testSessionId","value":["${testSessionId}"],"operator":"exact","type":"event"}]&after=${yesterday}`
+    const url = `${AGRID_API_HOST}/api/projects/${AGRID_API_PROJECT}/events?properties=[{"key":"testSessionId","value":["${testSessionId}"],"operator":"exact","type":"event"}]&after=${yesterday}`
     const response = await fetch(url, {
         headers: HEADERS,
     })

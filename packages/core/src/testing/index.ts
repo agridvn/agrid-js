@@ -1,2 +1,2 @@
-export * from './PostHogCoreTestClient'
+export * from './AgridCoreTestClient'
 export * from './test-utils'

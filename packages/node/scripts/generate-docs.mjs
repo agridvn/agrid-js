@@ -4,17 +4,16 @@ import { generateApiSpecs } from '../../../scripts/docs/parser.js'
 import { HOG_REF } from '../../../scripts/docs/constants.js'
 
 // Read package.json to get version
-const packageJson = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '../package.json'), 'utf8'));
-const version = packageJson.version;
+const packageJson = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '../package.json'), 'utf8'))
+const version = packageJson.version
 
 // Node-specific configuration
 const NODE_SPEC_INFO = {
-  id: 'posthog-node',
-  title: 'PostHog Node.js SDK',
-  description:
-    'PostHog Node.js SDK allows you to capture events and send them to PostHog from your Node.js applications.',
-  slugPrefix: 'posthog-node',
-  specUrl: 'https://github.com/PostHog/posthog-js',
+  id: 'agrid-node',
+  title: 'Agrid Node.js SDK',
+  description: 'Agrid Node.js SDK allows you to capture events and send them to Agrid from your Node.js applications.',
+  slugPrefix: 'agrid-node',
+  specUrl: 'https://github.com/agridvn/agrid-js',
 }
 
 // Node-specific type examples (can be customized as needed)
@@ -38,29 +37,29 @@ const __dirname = import.meta.dirname
 
 const config = {
   packageDir: path.resolve(__dirname, '..'), // packages/node
-  apiJsonPath: path.resolve(__dirname, '../docs/posthog-node.api.json'),
-  outputPath: path.resolve(__dirname, `../references/posthog-node-references-${version}.json`),
+  apiJsonPath: path.resolve(__dirname, '../docs/agrid-node.api.json'),
+  outputPath: path.resolve(__dirname, `../references/agrid-node-references-${version}.json`),
   version: version,
   id: NODE_SPEC_INFO.id,
   hogRef: HOG_REF,
   specInfo: NODE_SPEC_INFO,
   typeExamples: NODE_TYPE_EXAMPLES,
-  parentClass: 'PostHog',
+  parentClass: 'Agrid',
 }
 
 // Ensure references directory exists
-const referencesDir = path.resolve(__dirname, '../references');
+const referencesDir = path.resolve(__dirname, '../references')
 if (!fs.existsSync(referencesDir)) {
-    fs.mkdirSync(referencesDir, { recursive: true });
+  fs.mkdirSync(referencesDir, { recursive: true })
 }
 
 // Generate versioned file
 const output = generateApiSpecs(config)
 
 // Write versioned file
-const versionedPath = path.resolve(__dirname, `../references/posthog-node-references-${version}.json`);
-fs.writeFileSync(versionedPath, JSON.stringify(output, null, 2));
+const versionedPath = path.resolve(__dirname, `../references/agrid-node-references-${version}.json`)
+fs.writeFileSync(versionedPath, JSON.stringify(output, null, 2))
 
 // Copy to latest file
-const latestPath = path.resolve(__dirname, '../references/posthog-node-references-latest.json');
-fs.writeFileSync(latestPath, JSON.stringify(output, null, 2));
+const latestPath = path.resolve(__dirname, '../references/agrid-node-references-latest.json')
+fs.writeFileSync(latestPath, JSON.stringify(output, null, 2))

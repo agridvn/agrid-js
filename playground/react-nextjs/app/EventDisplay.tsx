@@ -1,6 +1,6 @@
 'use client'
 
-import { CaptureResult } from 'posthog-js'
+import { CaptureResult } from 'agrid-js'
 import { useState } from 'react'
 
 interface EventDisplayProps {
@@ -11,7 +11,7 @@ export function EventDisplay({ events }: EventDisplayProps) {
     const [expandedEvents, setExpandedEvents] = useState<Set<string>>(new Set())
 
     const toggleExpanded = (uuid: string) => {
-        setExpandedEvents((prev) => {
+        setExpandedEvents((prev: Set<string>) => {
             const next = new Set(prev)
             if (next.has(uuid)) {
                 next.delete(uuid)
@@ -40,7 +40,7 @@ export function EventDisplay({ events }: EventDisplayProps) {
             }}
         >
             <h2 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '0.75rem', color: '#1f2937' }}>
-                PostHog Events
+                Agrid Events
             </h2>
             {events.length === 0 ? (
                 <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>No events captured yet...</p>

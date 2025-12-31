@@ -9,9 +9,11 @@
 </template>
 
 <script setup lang="ts">
-  const { $posthog } = useNuxtApp();
-  if ($posthog) {
-    const posthog = $posthog()
-    posthog?.capture('<event_name>')
+  // @ts-ignore
+  const { $agrid } = useNuxtApp();
+  if ($agrid) {
+    // @ts-ignore
+    const agrid = $agrid()
+    agrid?.capture('<event_name>')
   }
 </script>

@@ -1,10 +1,4 @@
-import type {
-  PostHogCoreOptions,
-  FeatureFlagValue,
-  JsonType,
-  PostHogFetchOptions,
-  PostHogFetchResponse,
-} from '@agrid/core'
+import type { AgridCoreOptions, FeatureFlagValue, JsonType, AgridFetchOptions, AgridFetchResponse } from '@agrid/core'
 
 export interface IdentifyMessage {
   distinctId: string
@@ -59,7 +53,7 @@ export type FeatureFlagCondition = {
 
 export type BeforeSendFn = (event: EventMessage | null) => EventMessage | null
 
-export type PostHogOptions = PostHogCoreOptions & {
+export type AgridOptions = AgridCoreOptions & {
   persistence?: 'memory'
   personalApiKey?: string
   privacyMode?: boolean
@@ -68,12 +62,12 @@ export type PostHogOptions = PostHogCoreOptions & {
   featureFlagsPollingInterval?: number
   // Maximum size of cache that deduplicates $feature_flag_called calls per user.
   maxCacheSize?: number
-  fetch?: (url: string, options: PostHogFetchOptions) => Promise<PostHogFetchResponse>
+  fetch?: (url: string, options: AgridFetchOptions) => Promise<AgridFetchResponse>
   // Whether to enable feature flag polling for local evaluation by default. Defaults to true when personalApiKey is provided.
   // We recommend setting this to false if you are only using the personalApiKey for evaluating remote config payloads via `getRemoteConfigPayload` and not using local evaluation.
   enableLocalEvaluation?: boolean
   /**
-   * Allows modification or dropping of events before they're sent to PostHog.
+   * Allows modification or dropping of events before they're sent to Agrid.
    * If an array is provided, the functions are run in order.
    * If a function returns null, the event will be dropped.
    */
@@ -116,7 +110,7 @@ export type PostHogOptions = PostHogCoreOptions & {
   __preview_capture_bot_pageviews?: boolean
 }
 
-export type PostHogFeatureFlag = {
+export type AgridFeatureFlag = {
   id: number
   name: string
   key: string
@@ -138,10 +132,10 @@ export type PostHogFeatureFlag = {
   experiment_set: number[]
 }
 
-export interface IPostHog {
+export interface IAgrid {
   /**
    * @description Capture allows you to capture anything a user does within your system,
-   * which you can later use in PostHog to find patterns in usage,
+   * which you can later use in Agrid to find patterns in usage,
    * work out which features to improve or where people are giving up.
    * A capture call requires:
    * @param distinctId which uniquely identifies your user
@@ -163,7 +157,7 @@ export interface IPostHog {
   captureImmediate({ distinctId, event, properties, groups, sendFeatureFlags }: EventMessage): Promise<void>
 
   /**
-   * @description Identify lets you add metadata on your users so you can more easily identify who they are in PostHog,
+   * @description Identify lets you add metadata on your users so you can more easily identify who they are in Agrid,
    * and even do things like segment users by these properties.
    * An identify call requires:
    * @param distinctId which uniquely identifies your user
@@ -172,7 +166,7 @@ export interface IPostHog {
   identify({ distinctId, properties }: IdentifyMessage): void
 
   /**
-   * @description Identify lets you add metadata on your users so you can more easily identify who they are in PostHog.
+   * @description Identify lets you add metadata on your users so you can more easily identify who they are in Agrid.
    * Useful for edge environments where the usual queue-based sending is not preferable. Do not mix immediate and non-immediate calls.
    * @param distinctId which uniquely identifies your user
    * @param properties with a dict with any key: value pairs
@@ -185,7 +179,7 @@ export interface IPostHog {
    * or "What do users do on our website before signing up?"
    * In a purely back-end implementation, this means whenever an anonymous user does something, you'll want to send a session ID with the capture call.
    * Then, when that users signs up, you want to do an alias call with the session ID and the newly created user ID.
-   * The same concept applies for when a user logs in. If you're using PostHog in the front-end and back-end,
+   * The same concept applies for when a user logs in. If you're using Agrid in the front-end and back-end,
    *  doing the identify call in the frontend will be enough.:
    * @param distinctId the current unique id
    * @param alias the unique ID of the user before
@@ -201,8 +195,8 @@ export interface IPostHog {
   aliasImmediate(data: { distinctId: string; alias: string }): Promise<void>
 
   /**
-   * @description PostHog feature flags (https://posthog.com/docs/features/feature-flags)
-   * allow you to safely deploy and roll back new features. Once you've created a feature flag in PostHog,
+   * @description Agrid feature flags (https://posthog.com/docs/features/feature-flags)
+   * allow you to safely deploy and roll back new features. Once you've created a feature flag in Agrid,
    * you can use this method to check if the flag is on for a given user, allowing you to create logic to turn
    * features on and off for different user groups or individual users.
    * @param key the unique key of your feature flag
@@ -229,8 +223,8 @@ export interface IPostHog {
   ): Promise<boolean | undefined>
 
   /**
-   * @description PostHog feature flags (https://posthog.com/docs/features/feature-flags)
-   * allow you to safely deploy and roll back new features. Once you've created a feature flag in PostHog,
+   * @description Agrid feature flags (https://posthog.com/docs/features/feature-flags)
+   * allow you to safely deploy and roll back new features. Once you've created a feature flag in Agrid,
    * you can use this method to check if the flag is on for a given user, allowing you to create logic to turn
    * features on and off for different user groups or individual users.
    * @param key the unique key of your feature flag
@@ -261,7 +255,7 @@ export interface IPostHog {
    *
    * IMPORTANT: The `matchValue` parameter should be the value you previously obtained from `getFeatureFlag()`.
    * If matchValue isn't passed (or is undefined), this method will automatically call `getFeatureFlag()`
-   * internally to fetch the flag value, which could result in a network call to the PostHog server if this flag can
+   * internally to fetch the flag value, which could result in a network call to the Agrid server if this flag can
    * not be evaluated locally. This means that omitting `matchValue` will potentially:
    * - Bypass local evaluation
    * - Count as an additional flag evaluation against your quota
@@ -293,7 +287,7 @@ export interface IPostHog {
 
   /**
    * @description Sets a groups properties, which allows asking questions like "Who are the most active companies"
-   * using my product in PostHog.
+   * using my product in Agrid.
    *
    * @param groupType Type of group (ex: 'company'). Limited to 5 per project
    * @param groupKey Unique identifier for that type of group (ex: 'id:5')
@@ -313,7 +307,7 @@ export interface IPostHog {
    *
    * @param shutdownTimeoutMs The shutdown timeout, in milliseconds. Defaults to 30000 (30s).
    */
-  shutdown(shutdownTimeoutMs?: number): void
+  shutdown(shutdownTimeoutMs?: number): Promise<void>
 
   /**
    * @description Waits for local evaluation to be ready, with an optional timeout.

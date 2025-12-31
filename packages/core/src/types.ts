@@ -1,7 +1,7 @@
-export type PostHogCoreOptions = {
-  /** PostHog API host, usually 'https://us.i.posthog.com' or 'https://eu.i.posthog.com' */
+export type AgridCoreOptions = {
+  /** Agrid API host, usually 'https://app.agrid.com' */
   host?: string
-  /** The number of events to queue before sending to PostHog (flushing) */
+  /** The number of events to queue before sending to Agrid (flushing) */
   flushAt?: number
   /** The interval in milliseconds between periodic flushes */
   flushInterval?: number
@@ -28,7 +28,7 @@ export type PostHogCoreOptions = {
   /**
    * Whether to load surveys when initialized or not
    * Experimental support
-   * Default: false - Surveys are loaded by default, but requires the `PostHogSurveyProvider` to be used
+   * Default: false - Surveys are loaded by default, but requires the `AgridSurveyProvider` to be used
    */
   disableSurveys?: boolean
   /** Option to bootstrap the library with given distinctId and feature flags */
@@ -68,7 +68,7 @@ export type PostHogCoreOptions = {
   evaluationEnvironments?: readonly string[]
 }
 
-export enum PostHogPersistedProperty {
+export enum AgridPersistedProperty {
   AnonymousId = 'anonymous_id',
   DistinctId = 'distinct_id',
   Props = 'props',
@@ -94,7 +94,7 @@ export enum PostHogPersistedProperty {
   RemoteConfig = 'remote_config',
 }
 
-export type PostHogFetchOptions = {
+export type AgridFetchOptions = {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH'
   mode?: 'no-cors'
   credentials?: 'omit'
@@ -103,8 +103,8 @@ export type PostHogFetchOptions = {
   signal?: AbortSignal
 }
 
-// Check out posthog-js for these additional options and try to keep them in sync
-export type PostHogCaptureOptions = {
+// Check out agrid-js for these additional options and try to keep them in sync
+export type AgridCaptureOptions = {
   /** If provided overrides the auto-generated event ID */
   uuid?: string
   /** If provided overrides the auto-generated timestamp */
@@ -112,33 +112,33 @@ export type PostHogCaptureOptions = {
   disableGeoip?: boolean
 }
 
-export type PostHogFetchResponse = {
+export type AgridFetchResponse = {
   status: number
   text: () => Promise<string>
   json: () => Promise<any>
 }
 
-export type PostHogQueueItem = {
+export type AgridQueueItem = {
   message: any
   callback?: (err: any) => void
 }
 
-export type PostHogEventProperties = {
+export type AgridEventProperties = {
   [key: string]: JsonType
 }
 
-export type PostHogGroupProperties = {
+export type AgridGroupProperties = {
   [type: string]: string | number
 }
 
-export type PostHogAutocaptureElement = {
+export type AgridAutocaptureElement = {
   $el_text?: string
   tag_name: string
   href?: string
   nth_child?: number
   nth_of_type?: number
   order?: number
-} & PostHogEventProperties
+} & AgridEventProperties
 // Any key prefixed with `attr__` can be added
 
 export enum Compression {
@@ -146,7 +146,7 @@ export enum Compression {
   Base64 = 'base64',
 }
 
-export type PostHogRemoteConfig = {
+export type AgridRemoteConfig = {
   sessionRecording?:
     | boolean
     | {
@@ -171,7 +171,7 @@ export type PostHogRemoteConfig = {
 
 export type FeatureFlagValue = string | boolean
 
-export type PostHogFlagsResponse = Omit<PostHogRemoteConfig, 'hasFeatureFlags'> & {
+export type AgridFlagsResponse = Omit<AgridRemoteConfig, 'hasFeatureFlags'> & {
   featureFlags: {
     [key: string]: FeatureFlagValue
   }
@@ -191,8 +191,8 @@ export type PostHogFlagsResponse = Omit<PostHogRemoteConfig, 'hasFeatureFlags'> 
   requestId?: string
 }
 
-export type PostHogFeatureFlagsResponse = PartialWithRequired<
-  PostHogFlagsResponse,
+export type AgridFeatureFlagsResponse = PartialWithRequired<
+  AgridFlagsResponse,
   'flags' | 'featureFlags' | 'featureFlagPayloads' | 'requestId'
 >
 
@@ -226,41 +226,41 @@ export type PartialWithRequired<T, K extends keyof T> = {
 }
 
 /**
- * These are the fields we care about from PostHogFlagsResponse for feature flags.
+ * These are the fields we care about from AgridFlagsResponse for feature flags.
  */
-export type PostHogFeatureFlagDetails = PartialWithRequired<
-  PostHogFlagsResponse,
+export type AgridFeatureFlagDetails = PartialWithRequired<
+  AgridFlagsResponse,
   'flags' | 'featureFlags' | 'featureFlagPayloads' | 'requestId'
 >
 
 /**
  * Models the response from the v1 `/flags` endpoint.
  */
-export type PostHogV1FlagsResponse = Omit<PostHogFlagsResponse, 'flags'>
+export type AgridV1FlagsResponse = Omit<AgridFlagsResponse, 'flags'>
 
 /**
  * Models the response from the v2 `/flags` endpoint.
  */
-export type PostHogV2FlagsResponse = Omit<PostHogFlagsResponse, 'featureFlags' | 'featureFlagPayloads'>
+export type AgridV2FlagsResponse = Omit<AgridFlagsResponse, 'featureFlags' | 'featureFlagPayloads'>
 
 /**
  * The format of the flags object in persisted storage
  *
- * When we pull flags from persistence, we can normalize them to PostHogFeatureFlagDetails
+ * When we pull flags from persistence, we can normalize them to AgridFeatureFlagDetails
  * so that we can support v1 and v2 of the API.
  */
-export type PostHogFlagsStorageFormat = Pick<PostHogFeatureFlagDetails, 'flags'>
+export type AgridFlagsStorageFormat = Pick<AgridFeatureFlagDetails, 'flags'>
 
 /**
  * Models legacy flags and payloads return type for many public methods.
  */
-export type PostHogFlagsAndPayloadsResponse = Partial<
-  Pick<PostHogFlagsResponse, 'featureFlags' | 'featureFlagPayloads'>
+export type AgridFlagsAndPayloadsResponse = Partial<
+  Pick<AgridFlagsResponse, 'featureFlags' | 'featureFlagPayloads' | 'flags'>
 >
 
 export type JsonType = string | number | boolean | null | { [key: string]: JsonType } | Array<JsonType> | JsonType[]
 
-export type FetchLike = (url: string, options: PostHogFetchOptions) => Promise<PostHogFetchResponse>
+export type FetchLike = (url: string, options: AgridFetchOptions) => Promise<AgridFetchResponse>
 
 export type FeatureFlagDetail = {
   key: string
@@ -546,6 +546,6 @@ export const knownUnsafeEditableEvent = [
  * These events can be processed by the `beforeCapture` function
  * but can cause unexpected confusion in data.
  *
- * Some features of PostHog rely on receiving 100% of these events
+ * Some features of Agrid rely on receiving 100% of these events
  */
 export type KnownUnsafeEditableEvent = (typeof knownUnsafeEditableEvent)[number]

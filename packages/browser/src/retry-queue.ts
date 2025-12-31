@@ -103,7 +103,7 @@ export class RetryQueue {
         if (!navigator.onLine) {
             logMessage += ' (Browser is offline)'
         }
-        logger.warn(logMessage)
+        logger.info(logMessage)
 
         if (!this._isPolling) {
             this._isPolling = true

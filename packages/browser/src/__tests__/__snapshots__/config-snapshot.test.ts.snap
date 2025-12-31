@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`config snapshot for PostHogConfig 1`] = `
+exports[`config snapshot for AgridConfig 1`] = `
 "{
   "api_host": "string",
   "flags_api_host": [
@@ -92,7 +92,7 @@ exports[`config snapshot for PostHogConfig 1`] = `
     "undefined",
     "string"
   ],
-  "loaded": "(posthog_instance: PostHog) => void",
+  "loaded": "(agrid_instance: Agrid) => void",
   "save_referrer": [
     "false",
     "true"
@@ -385,7 +385,7 @@ exports[`config snapshot for PostHogConfig 1`] = `
       "false",
       "true"
     ],
-    "__capturePostHogExceptions": [
+    "__captureAgridExceptions": [
       "undefined",
       "false",
       "true"

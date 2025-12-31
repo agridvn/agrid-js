@@ -1,8 +1,8 @@
 'use client'
 
-import posthog, { CaptureResult } from 'posthog-js'
-import { PostHogProvider } from '@posthog/react'
-import { useEffect, useState } from 'react'
+import agrid, { CaptureResult } from 'agrid-js'
+import { AgridProvider } from '@agrid/react'
+import React, { useEffect, useState } from 'react'
 import { EventDisplay } from './EventDisplay'
 
 let eventListeners: ((event: CaptureResult | null) => void)[] = []
@@ -15,12 +15,12 @@ export function addEventListener(callback: (event: CaptureResult | null) => void
 }
 
 if (typeof window !== 'undefined') {
-    posthog.init('phc_test_key_for_playground', {
-        api_host: 'https://us.i.posthog.com',
+    agrid.init('agc_test_key_for_playground', {
+        api_host: 'https://app.agrid.vn',
         person_profiles: 'identified_only',
         capture_pageview: 'history_change',
         capture_pageleave: true,
-        before_send: (event) => {
+        before_send: (event: CaptureResult | null) => {
             eventListeners.forEach((callback) => callback(event))
             console.log('Yo! An event', event?.event, event)
             return event
@@ -28,7 +28,7 @@ if (typeof window !== 'undefined') {
     })
 }
 
-export function PHProvider({ children }: { children: React.ReactNode }) {
+export function AgridWrapper({ children }: { children: React.ReactNode }) {
     const [events, setEvents] = useState<CaptureResult[]>([])
 
     useEffect(() => {
@@ -36,18 +36,18 @@ export function PHProvider({ children }: { children: React.ReactNode }) {
             if (!event) {
                 return
             }
-            setEvents((prev) => [event, ...prev].slice(0, 10))
+            setEvents((prev: CaptureResult[]) => [event, ...prev].slice(0, 10))
         })
 
-        posthog.capture('playground_loaded')
+        agrid.capture('playground_loaded')
 
         return removeListener
     }, [])
 
     return (
-        <PostHogProvider client={posthog}>
+        <AgridProvider client={agrid}>
             <EventDisplay events={events} />
             {children}
-        </PostHogProvider>
+        </AgridProvider>
     )
 }

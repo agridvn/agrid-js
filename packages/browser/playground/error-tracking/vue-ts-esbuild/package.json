@@ -6,8 +6,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vue-tsc -b && vite build",
-        "upload": "posthog-cli sourcemap upload --directory ./dist/assets",
-        "inject": "posthog-cli sourcemap inject --directory ./dist/assets",
+        "upload": "agrid-cli sourcemap upload --directory ./dist/assets",
+        "inject": "agrid-cli sourcemap inject --directory ./dist/assets",
         "preview": "vite preview"
     },
     "dependencies": {

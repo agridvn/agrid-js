@@ -1,10 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@posthog/nuxt'],
+  modules: ['@agrid/nuxt'],
   compatibilityDate: '2025-11-03',
-  posthogConfig: {
-    host: process.env.POSTHOG_API_HOST!,
-    publicKey: process.env.POSTHOG_PROJECT_API_KEY!,
+  agridConfig: {
+    host: process.env.AGRID_API_HOST!,
+    publicKey: process.env.AGRID_PROJECT_API_KEY!,
     debug: true,
     clientConfig: {
       capture_exceptions: true,
@@ -17,9 +17,9 @@ export default defineNuxtConfig({
       enabled: true,
       version: '3',
       logLevel: 'debug',
-      envId: process.env.POSTHOG_API_PROJECT!,
+      envId: process.env.AGRID_API_PROJECT!,
       project: 'my-project',
-      personalApiKey: process.env.POSTHOG_PERSONAL_API_KEY!,
+      personalApiKey: process.env.AGRID_PERSONAL_API_KEY!,
     },
   },
 })

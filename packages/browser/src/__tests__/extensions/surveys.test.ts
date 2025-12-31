@@ -232,9 +232,7 @@ describe('usePopupVisibility', () => {
     test('should handle multiple surveys with overlapping conditions', () => {
         jest.useFakeTimers()
         const mockSurvey2 = { ...mockSurvey, id: 'testSurvey2', name: 'Test survey 2' } as Survey
-        const { result: result1 } = renderHook(() =>
-            usePopupVisibility(mockSurvey, mockAgrid, 0, false, removeSurvey)
-        )
+        const { result: result1 } = renderHook(() => usePopupVisibility(mockSurvey, mockAgrid, 0, false, removeSurvey))
         const { result: result2 } = renderHook(() =>
             usePopupVisibility(mockSurvey2, mockAgrid, 500, false, removeSurvey)
         )

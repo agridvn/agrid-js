@@ -13,75 +13,75 @@ yarn add agrid-js-lite
 It is entirely written in Typescript and has a minimal API as follows:
 
 ```ts
-import PostHog from 'agrid-js-lite'
+import Agrid from 'agrid-js-lite'
 
-const posthog = new PostHog('YOUR_PROJECT_API_KEY', {
+const agrid = new Agrid('YOUR_PROJECT_API_KEY', {
   // host: 'YOUR_INGESTION_URL'
 })
 
 // Capture generic events
-posthog.capture('my-event', { myProperty: 'foo' })
+agrid.capture('my-event', { myProperty: 'foo' })
 
 // Identify a user (e.g. on login)
-posthog.identify('my-unique-user-id', { email: 'user@example.com', name: 'Jane Doe' })
+agrid.identify('my-unique-user-id', { email: 'user@example.com', name: 'Jane Doe' })
 // ...or with Set Once additional properties
-posthog.identify('my-unique-user-id', { $set: { email: 'example@agrid.com', name: 'Jane Doe' }, $set_once: { vip: true } })
+agrid.identify('my-unique-user-id', { $set: { email: 'example@agrid.com', name: 'Jane Doe' }, $set_once: { vip: true } })
 
 // Reset a user (e.g. on logout)
-posthog.reset()
+agrid.reset()
 
 // Register properties to be sent with all subsequent events
-posthog.register({ itemsInBasket: 3 })
+agrid.register({ itemsInBasket: 3 })
 // ...or get rid of them if you don't want them anymore
-posthog.unregister('itemsInBasket')
+agrid.unregister('itemsInBasket')
 
 // Add the user to a group
-posthog.group('organisations', 'org-1')
+agrid.group('organisations', 'org-1')
 // ...or multiple groups at once
-posthog.group({ organisations: 'org-1', project: 'project-1' })
+agrid.group({ organisations: 'org-1', project: 'project-1' })
 
 // Simple feature flags
-if (posthog.isFeatureEnabled('my-feature-flag')) {
+if (agrid.isFeatureEnabled('my-feature-flag')) {
   renderFlaggedFunctionality()
 } else {
   renderDefaultFunctionality()
 }
 
 // Multivariate feature flags
-if (posthog.getFeatureFlag('my-feature-flag-with-variants') === 'variant1') {
+if (agrid.getFeatureFlag('my-feature-flag-with-variants') === 'variant1') {
   renderVariant1()
-} else if (posthog.getFeatureFlag('my-feature-flag-with-variants') === 'variant2') {
+} else if (agrid.getFeatureFlag('my-feature-flag-with-variants') === 'variant2') {
   renderVariant1()
-} else if (posthog.getFeatureFlag('my-feature-flag-with-variants') === 'control') {
+} else if (agrid.getFeatureFlag('my-feature-flag-with-variants') === 'control') {
   renderControl()
 }
 
 // Override a feature flag for a specific user (e.g. for testing or user preference)
-posthog.overrideFeatureFlag('my-feature-flag', true)
+agrid.overrideFeatureFlag('my-feature-flag', true)
 
 // Listen reactively to feature flag changes
-posthog.onFeatureFlag('my-feature-flag', (value) => {
+agrid.onFeatureFlag('my-feature-flag', (value) => {
   respondToFeatureFlagChange(value)
 })
 
 // Opt users in or out, persisting across sessions (default is they are opted in)
-posthog.optOut() // Will stop tracking
-posthog.optIn() // Will start tracking
+agrid.optOut() // Will stop tracking
+agrid.optIn() // Will start tracking
 ```
 
 ## History API Navigation Tracking
 
-Single-page applications (SPAs) typically use the History API (`pushState`, `replaceState`) for navigation instead of full page loads. By default, PostHog only tracks the initial page load.
+Single-page applications (SPAs) typically use the History API (`pushState`, `replaceState`) for navigation instead of full page loads. By default, Agrid only tracks the initial page load.
 
 To automatically track navigation events in SPAs, enable the `captureHistoryEvents` option:
 
 ```ts
-const posthog = new PostHog('my-api-key', {
+const agrid = new Agrid('my-api-key', {
   captureHistoryEvents: true
 })
 ```
 
-When enabled, PostHog will:
+When enabled, Agrid will:
 - Track calls to `history.pushState()` and `history.replaceState()`
 - Track `popstate` events (browser back/forward navigation)
 - Send these as `$pageview` events with the current URL and pathname

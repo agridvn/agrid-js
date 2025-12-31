@@ -4,13 +4,13 @@ import { PostHog } from 'posthog-node'
 
 const app = new Hono()
 
-const posthog = new PostHog(process.env.POSTHOG_PROJECT_API_KEY!, {
+const agrid = new PostHog(process.env.POSTHOG_PROJECT_API_KEY!, {
     host: process.env.POSTHOG_API_HOST,
     enableExceptionAutocapture: true,
 })
 
 app.onError(async (err, c) => {
-    posthog.captureException(new Error(err.message, { cause: err }), 'user_distinct_id_with_err_rethrow', {
+    agrid.captureException(new Error(err.message, { cause: err }), 'user_distinct_id_with_err_rethrow', {
         path: c.req.path,
         method: c.req.method,
         url: c.req.url,

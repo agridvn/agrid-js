@@ -12,10 +12,10 @@ describe('Array entrypoint', () => {
     )
 
     it('should not contain any script loaders', () => {
-        expect(arrayJs).toContain('__PosthogExtensions__.loadExternalDependency=')
-        expect(arrayFullJs).toContain('__PosthogExtensions__.loadExternalDependency=')
-        expect(arrayNoExternalJs).not.toContain('__PosthogExtensions__.loadExternalDependency=')
-        expect(arrayFullNoExternalJs).not.toContain('__PosthogExtensions__.loadExternalDependency=')
+        expect(arrayJs).toContain('__AgridExtensions__.loadExternalDependency=')
+        expect(arrayFullJs).toContain('__AgridExtensions__.loadExternalDependency=')
+        expect(arrayNoExternalJs).not.toContain('__AgridExtensions__.loadExternalDependency=')
+        expect(arrayFullNoExternalJs).not.toContain('__AgridExtensions__.loadExternalDependency=')
     })
 })
 
@@ -30,9 +30,9 @@ describe('Module entrypoint', () => {
 
     it('should not contain any script loaders', () => {
         // For the module loader, the code isn't minified
-        expect(moduleJs).toContain('__PosthogExtensions__.loadExternalDependency=')
-        expect(moduleFullJs).toContain('__PosthogExtensions__.loadExternalDependency=')
-        expect(moduleNoExternalJs).not.toContain('__PosthogExtensions__.loadExternalDependency=')
-        expect(moduleFullNoExternalJs).not.toContain('__PosthogExtensions__.loadExternalDependency=')
+        expect(moduleJs).toContain('__AgridExtensions__.loadExternalDependency=')
+        expect(moduleFullJs).toContain('__AgridExtensions__.loadExternalDependency=')
+        expect(moduleNoExternalJs).not.toContain('__AgridExtensions__.loadExternalDependency=')
+        expect(moduleFullNoExternalJs).not.toContain('__AgridExtensions__.loadExternalDependency=')
     })
 })

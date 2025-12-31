@@ -1,6 +1,6 @@
 {
   "name": "agrid-node",
-  "version": "5.11.7",
+  "version": "5.11.8",
   "description": "Agrid Node.js integration for server-side analytics and feature flags",
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
     "clean": "rimraf dist coverage",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "test:unit": "jest",
+    "test:unit": "pnpm build && jest",
     "prebuild": "node -p \"'export const version = \\'' + require('./package.json').version + '\\''\" > src/version.ts",
     "build": "rslib build",
     "dev": "rslib build -w",
@@ -39,7 +39,10 @@
     "analytics",
     "node",
     "server-side",
-    "feature-flags"
+    "feature-flags",
+    "stats",
+    "analysis",
+    "funnels"
   ],
   "publishConfig": {
     "access": "public"
@@ -59,12 +62,6 @@
     "@babel/preset-env": "7.27.2",
     "@babel/preset-typescript": "^7.27.1"
   },
-  "keywords": [
-    "posthog",
-    "stats",
-    "analysis",
-    "funnels"
-  ],
   "exports": {
     ".": {
       "types": "./dist/entrypoints/index.node.d.ts",

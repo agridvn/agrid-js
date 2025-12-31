@@ -145,7 +145,7 @@ const plugins = (es5, noExternal) => [
 
                               // used in surveys, however, this shouldn't be needed
                               // TODO: figure out how to remove them
-                              '_posthog',
+                              '_agrid',
                               '_instance',
                               '_surveyEventReceiver',
                               // we don't mangle _surveyManager as it's used by external surveys to paint them on the dom directly
@@ -166,11 +166,11 @@ const plugins = (es5, noExternal) => [
                               '_sessionTimeoutMs',
 
                               // set on global window object (the ones using __ are not mangled anyway BUT be abundantly cautious)
-                              '_POSTHOG_REMOTE_CONFIG',
-                              '__POSTHOG_INSTRUMENTED__',
-                              '__PosthogExtensions__',
-                              '__posthog_wrapped__',
-                              '__Posthog__',
+                              '_AGRID_REMOTE_CONFIG',
+                              '__AGRID_INSTRUMENTED__',
+                              '__AgridExtensions__',
+                              '__agrid_wrapped__',
+                              '__Agrid__',
                               '_patchFetch',
                               '_patchXHR',
 
@@ -196,7 +196,7 @@ const plugins = (es5, noExternal) => [
                               'getSurveys',
                               'getActiveMatchingSurveys',
                               'captureException',
-                              'posthog',
+                              'agrid',
                               'version',
                               'surveys',
                               'calculateEventProperties',
@@ -207,7 +207,7 @@ const plugins = (es5, noExternal) => [
                               '_calculate_event_properties', // deprecated in favour of calculateEventProperties
 
                               // URL parameters
-                              '__posthog_debug',
+                              '__agrid_debug',
 
                               // attribution params, not used in a way that would be mangled but be cautious
                               '_kx',

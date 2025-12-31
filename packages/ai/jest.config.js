@@ -5,6 +5,6 @@ module.exports = {
   silent: true,
   verbose: false,
   moduleNameMapper: {
-    '^posthog-node$': '<rootDir>/tests/__mocks__/posthog-node.ts',
+    '^agrid-node$': '<rootDir>/tests/__mocks__/agrid-node.ts',
   },
 }

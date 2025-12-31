@@ -12,12 +12,7 @@ import { type eventWithTime } from './types/rrweb-types'
 
 import { isNullish, isUndefined } from '@agrid/core'
 import { createLogger } from '../../utils/logger'
-import {
-    assignableWindow,
-    LazyLoadedSessionRecordingInterface,
-    AgridExtensionKind,
-    window,
-} from '../../utils/globals'
+import { assignableWindow, LazyLoadedSessionRecordingInterface, AgridExtensionKind, window } from '../../utils/globals'
 import { DISABLED, LAZY_LOADING, SessionRecordingStatus, TriggerType } from './external/triggerMatching'
 
 const LOGGER_PREFIX = '[SessionRecording]'
@@ -110,16 +105,12 @@ export class SessionRecording {
             !assignableWindow?.__AgridExtensions__?.rrweb?.record ||
             !assignableWindow.__AgridExtensions__?.initSessionRecording
         ) {
-            assignableWindow.__AgridExtensions__?.loadExternalDependency?.(
-                this._instance,
-                this._scriptName,
-                (err) => {
-                    if (err) {
-                        return logger.error('could not load recorder', err)
-                    }
-                    this._onScriptLoaded(startReason)
+            assignableWindow.__AgridExtensions__?.loadExternalDependency?.(this._instance, this._scriptName, (err) => {
+                if (err) {
+                    return logger.error('could not load recorder', err)
                 }
-            )
+                this._onScriptLoaded(startReason)
+            })
         } else {
             this._onScriptLoaded(startReason)
         }

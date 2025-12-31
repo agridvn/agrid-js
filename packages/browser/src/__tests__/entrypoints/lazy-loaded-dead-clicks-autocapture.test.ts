@@ -23,8 +23,8 @@ describe('LazyLoadedDeadClicksAutocapture', () => {
     beforeEach(async () => {
         jest.setSystemTime(1000)
 
-        assignableWindow.__PosthogExtensions__ = assignableWindow.__PosthogExtensions__ || {}
-        assignableWindow.__PosthogExtensions__.loadExternalDependency = jest
+        assignableWindow.__AgridExtensions__ = assignableWindow.__AgridExtensions__ || {}
+        assignableWindow.__AgridExtensions__.loadExternalDependency = jest
             .fn()
             .mockImplementation(() => (_ph: Agrid, _name: string, cb: (err?: Error) => void) => {
                 cb()

@@ -1,43 +1,37 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-require-imports, no-undef, no-console */
 /**
- * Simple test script for PostHog remote config endpoint.
+ * Simple test script for Agrid remote config endpoint.
+ *
+ * Usage:
+ *   AGRID_API_KEY=phc_... node remote-config-example.js
  */
 
-const { PostHog } = require('../../packages/node/lib/node')
+const { Agrid } = require('../../packages/node/lib/node')
 
-// Initialize PostHog client
-const posthog = new PostHog('phc_...', {
-    personalApiKey: 'phx_...', // or 'phx_...'
-    host: 'http://localhost:8000', // or 'https://us.posthog.com'
-    debug: true,
+const apiKey = process.env.AGRID_API_KEY || 'agr_test_key'
+const host = process.env.AGRID_HOST || 'https://app.agrid.vn'
+
+// Initialize Agrid client
+const agrid = new Agrid(apiKey, {
+    host,
+    flushAt: 1,
+    flushInterval: 0,
 })
 
-async function testRemoteConfig() {
-    console.log('Testing remote config endpoint...')
+const distinctId = 'user-123'
+const flagKey = 'my-remote-config'
 
-    // Test feature flag key - replace with an actual flag key from your project
-    const flagKey = 'unencrypted-remote-config-setting'
-
+async function run() {
     try {
-        // Get remote config payload
-        const payload = await posthog.getRemoteConfigPayload(flagKey)
-        console.log(`✅ Success! Remote config payload for '${flagKey}':`, payload)
-    } catch (error) {
-        console.error(`❌ Error getting remote config:`, error.message)
+        console.log(`Fetching remote config for flag: ${flagKey}`)
+        const payload = await agrid.getRemoteConfigPayload(flagKey)
+        console.log('Remote config payload:', payload)
+    } catch (e) {
+        console.error('Error fetching remote config:', e)
     } finally {
-        // Clean shutdown
-        await posthog.shutdown()
+        await agrid.shutdown()
     }
 }
 
-// Handle uncaught errors gracefully
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason)
-    process.exit(1)
-})
-
-// Run the test
-if (require.main === module) {
-    testRemoteConfig()
-}
+run()

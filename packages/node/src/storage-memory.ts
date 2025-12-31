@@ -1,13 +1,13 @@
-import { PostHogPersistedProperty } from '@agrid/core'
+import { AgridPersistedProperty } from '@agrid/core'
 
-export class PostHogMemoryStorage {
+export class AgridMemoryStorage {
   private _memoryStorage: { [key: string]: any | undefined } = {}
 
-  getProperty(key: PostHogPersistedProperty): any | undefined {
+  getProperty(key: AgridPersistedProperty): any | undefined {
     return this._memoryStorage[key]
   }
 
-  setProperty(key: PostHogPersistedProperty, value: any | null): void {
+  setProperty(key: AgridPersistedProperty, value: any | null): void {
     this._memoryStorage[key] = value !== null ? value : undefined
   }
 }

@@ -2,15 +2,15 @@ import '../src/__tests__/helpers/mock-logger'
 
 import { waitFor } from '@testing-library/dom'
 import 'regenerator-runtime/runtime'
-import { createPosthogInstance } from '../src/__tests__/helpers/posthog-instance'
-import { PostHog } from '../src/posthog-core'
+import { createPosthogInstance } from '../src/__tests__/helpers/agrid-instance'
+import { Agrid } from '../src/agrid-core'
 import { logger } from '../src/utils/logger'
 import { uuidv7 } from '../src/uuidv7'
 import { getRequests } from './mock-server'
 
 describe('FunctionalTests / Identify', () => {
     let token: string
-    let posthog: PostHog
+    let posthog: Agrid
     let anonymousId: string
 
     beforeEach(async () => {

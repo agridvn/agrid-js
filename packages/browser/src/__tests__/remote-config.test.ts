@@ -40,7 +40,7 @@ describe('RemoteConfigLoader', () => {
             assignableWindow._AGRID_REMOTE_CONFIG = undefined
             assignableWindow.AGRID_DEBUG = true
 
-            assignableWindow.__PosthogExtensions__.loadExternalDependency = jest.fn(
+            assignableWindow.__AgridExtensions__.loadExternalDependency = jest.fn(
                 (_ph: Agrid, _name: string, cb: (err?: any) => void) => {
                     assignableWindow._AGRID_REMOTE_CONFIG = {}
                     assignableWindow._AGRID_REMOTE_CONFIG[_ph.config.token] = {
@@ -63,7 +63,7 @@ describe('RemoteConfigLoader', () => {
             }
             new RemoteConfigLoader(agrid).load()
 
-            expect(assignableWindow.__PosthogExtensions__.loadExternalDependency).not.toHaveBeenCalled()
+            expect(assignableWindow.__AgridExtensions__.loadExternalDependency).not.toHaveBeenCalled()
             expect(agrid._send_request).not.toHaveBeenCalled()
 
             expect(agrid._onRemoteConfig).toHaveBeenCalledWith(config)
@@ -72,7 +72,7 @@ describe('RemoteConfigLoader', () => {
         it('loads the script if window config not set', () => {
             new RemoteConfigLoader(agrid).load()
 
-            expect(assignableWindow.__PosthogExtensions__.loadExternalDependency).toHaveBeenCalledWith(
+            expect(assignableWindow.__AgridExtensions__.loadExternalDependency).toHaveBeenCalledWith(
                 agrid,
                 'remote-config',
                 expect.any(Function)
@@ -82,7 +82,7 @@ describe('RemoteConfigLoader', () => {
         })
 
         it('loads the json if window config not set and js failed', () => {
-            assignableWindow.__PosthogExtensions__.loadExternalDependency = jest.fn(
+            assignableWindow.__AgridExtensions__.loadExternalDependency = jest.fn(
                 (_ph: Agrid, _name: string, cb: (err?: any) => void) => {
                     cb()
                 }
@@ -90,7 +90,7 @@ describe('RemoteConfigLoader', () => {
 
             new RemoteConfigLoader(agrid).load()
 
-            expect(assignableWindow.__PosthogExtensions__.loadExternalDependency).toHaveBeenCalled()
+            expect(assignableWindow.__AgridExtensions__.loadExternalDependency).toHaveBeenCalled()
             expect(agrid._send_request).toHaveBeenCalledWith({
                 method: 'GET',
                 url: 'https://test.com/array/testtoken/config',

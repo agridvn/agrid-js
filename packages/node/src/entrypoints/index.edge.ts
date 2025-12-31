@@ -1,7 +1,7 @@
 export * from '../exports'
 
 import ErrorTracking from '../extensions/error-tracking'
-import { PostHogBackendClient } from '../client'
+import { AgridBackendClient } from '../client'
 import { ErrorTracking as CoreErrorTracking } from '@agrid/core'
 
 ErrorTracking.errorPropertiesBuilder = new CoreErrorTracking.ErrorPropertiesBuilder(
@@ -15,7 +15,7 @@ ErrorTracking.errorPropertiesBuilder = new CoreErrorTracking.ErrorPropertiesBuil
   [CoreErrorTracking.nodeStackLineParser]
 )
 
-export class PostHog extends PostHogBackendClient {
+export class Agrid extends AgridBackendClient {
   getLibraryId(): string {
     return 'agrid-edge'
   }

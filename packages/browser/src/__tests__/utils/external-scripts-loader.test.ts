@@ -21,7 +21,7 @@ describe('external-scripts-loader', () => {
 
         it('should insert the given script before the one already on the page', () => {
             document!.body.appendChild(document!.createElement('script'))
-            assignableWindow.__PosthogExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
+            assignableWindow.__AgridExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
             const scripts = document!.getElementsByTagName('script')
             const new_script = scripts[0]
 
@@ -35,10 +35,10 @@ describe('external-scripts-loader', () => {
 
         it('should not add duplicate scripts when called multiple times with the same URL', () => {
             // First call to load the script
-            assignableWindow.__PosthogExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
+            assignableWindow.__AgridExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
 
             // Second call with the same script
-            assignableWindow.__PosthogExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
+            assignableWindow.__AgridExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
 
             const scripts = document!.getElementsByTagName('script')
             expect(scripts.length).toBe(1)
@@ -55,18 +55,16 @@ describe('external-scripts-loader', () => {
         })
 
         it("should add the script to the page when there aren't any preexisting scripts on the page", () => {
-            assignableWindow.__PosthogExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
+            assignableWindow.__AgridExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
             const scripts = document!.getElementsByTagName('script')
 
             expect(scripts?.length).toBe(1)
             expect(scripts![0].type).toBe('text/javascript')
-            expect(scripts![0].src).toMatchInlineSnapshot(
-                `"https://us-assets.i.agrid.com/static/recorder.js?v=1.0.0"`
-            )
+            expect(scripts![0].src).toMatchInlineSnapshot(`"https://us-assets.i.agrid.com/static/recorder.js?v=1.0.0"`)
         })
 
         it('should respond with an error if one happens', () => {
-            assignableWindow.__PosthogExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
+            assignableWindow.__AgridExtensions__.loadExternalDependency(mockAgrid, 'recorder', callback)
             const scripts = document!.getElementsByTagName('script')
             const new_script = scripts[0]
 
@@ -77,7 +75,7 @@ describe('external-scripts-loader', () => {
         it('should add a timestamp to the toolbar loader', () => {
             jest.useFakeTimers()
             jest.setSystemTime(1726067100000)
-            assignableWindow.__PosthogExtensions__.loadExternalDependency(mockAgrid, 'toolbar', callback)
+            assignableWindow.__AgridExtensions__.loadExternalDependency(mockAgrid, 'toolbar', callback)
             const scripts = document!.getElementsByTagName('script')
             const new_script = scripts[0]
             expect(new_script.src).toBe('https://us-assets.i.agrid.com/static/toolbar.js?v=1.0.0&t=1726067100000')
@@ -88,7 +86,7 @@ describe('external-scripts-loader', () => {
                 script.nonce = '123'
                 return script
             }
-            assignableWindow.__PosthogExtensions__.loadExternalDependency(mockAgrid, 'toolbar', callback)
+            assignableWindow.__AgridExtensions__.loadExternalDependency(mockAgrid, 'toolbar', callback)
             const scripts = document!.getElementsByTagName('script')
             const new_script = scripts[0]
             expect(new_script.nonce).toBe('123')
@@ -96,7 +94,7 @@ describe('external-scripts-loader', () => {
 
         it('does not load script if prepare_external_dependency_script returns null', () => {
             mockAgrid.config.prepare_external_dependency_script = () => null
-            assignableWindow.__PosthogExtensions__.loadExternalDependency(mockAgrid, 'toolbar', callback)
+            assignableWindow.__AgridExtensions__.loadExternalDependency(mockAgrid, 'toolbar', callback)
             const scripts = document!.getElementsByTagName('script')
             expect(scripts.length).toBe(0)
             expect(callback).toHaveBeenCalledWith('prepare_external_dependency_script returned null')

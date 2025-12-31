@@ -1,18 +1,18 @@
 import { LangChainCallbackHandler } from '../src/langchain/callbacks'
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 import { AIMessage } from '@langchain/core/messages'
 import { version } from '../package.json'
 
-const mockPostHogClient = {
+const mockAgridClient = {
   capture: jest.fn(),
-} as unknown as PostHog
+} as unknown as Agrid
 
 describe('LangChainCallbackHandler', () => {
   let handler: LangChainCallbackHandler
 
   beforeEach(() => {
     handler = new LangChainCallbackHandler({
-      client: mockPostHogClient,
+      client: mockAgridClient,
     })
     jest.clearAllMocks()
   })
@@ -63,11 +63,11 @@ describe('LangChainCallbackHandler', () => {
     handler.handleLLMEnd(llmResult, runId)
 
     // Verify capture was called
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
     // Check $ai_lib and $ai_lib_version
-    expect(captureCall[0].properties['$ai_lib']).toBe('posthog-ai')
+    expect(captureCall[0].properties['$ai_lib']).toBe('agrid-ai')
     expect(captureCall[0].properties['$ai_lib_version']).toBe(version)
 
     // Check $ai_framework
@@ -198,8 +198,8 @@ describe('LangChainCallbackHandler', () => {
 
     handler.handleLLMEnd(llmResult, runId)
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
     expect(captureCall[0].event).toBe('$ai_generation')
     // Input tokens should be reduced: 150 - 100 = 50
@@ -251,8 +251,8 @@ describe('LangChainCallbackHandler', () => {
 
     handler.handleLLMEnd(llmResult, runId)
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
     expect(captureCall[0].event).toBe('$ai_generation')
     // Input tokens should be 0, not negative: max(80 - 100, 0) = 0
@@ -302,8 +302,8 @@ describe('LangChainCallbackHandler', () => {
 
     handler.handleLLMEnd(llmResult, runId)
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
     expect(captureCall[0].event).toBe('$ai_generation')
     // Input tokens should remain unchanged at 100
@@ -354,8 +354,8 @@ describe('LangChainCallbackHandler', () => {
 
     handler.handleLLMEnd(llmResult, runId)
 
-    expect(mockPostHogClient.capture).toHaveBeenCalledTimes(1)
-    const [captureCall] = (mockPostHogClient.capture as jest.Mock).mock.calls
+    expect(mockAgridClient.capture).toHaveBeenCalledTimes(1)
+    const [captureCall] = (mockAgridClient.capture as jest.Mock).mock.calls
 
     expect(captureCall[0].event).toBe('$ai_generation')
     // Input tokens should remain 0 (no subtraction because input_tokens is falsy)

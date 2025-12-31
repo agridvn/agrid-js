@@ -1,5 +1,5 @@
-import { PostHogOptions } from '@/types'
-import { PostHog } from '@/entrypoints/index.node'
+import { AgridOptions } from '@/types'
+import { Agrid } from '@/entrypoints/index.node'
 import {
   matchProperty,
   InconclusiveMatchError,
@@ -11,18 +11,18 @@ jest.spyOn(console, 'debug').mockImplementation()
 
 const mockedFetch = jest.spyOn(globalThis, 'fetch').mockImplementation()
 
-const posthogImmediateResolveOptions: PostHogOptions = {
+const agridImmediateResolveOptions: AgridOptions = {
   fetchRetryCount: 0,
 }
 
 describe('local evaluation', () => {
-  let posthog: PostHog
+  let agrid: Agrid
 
   jest.useFakeTimers()
 
   afterEach(async () => {
     // ensure clean shutdown & no test interdependencies
-    await posthog.shutdown()
+    await agrid.shutdown()
   })
 
   it('evaluates person properties with undefined property values', async () => {
@@ -72,14 +72,14 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlag('person-flag', 'some-distinct-id', {
+      await agrid.getFeatureFlag('person-flag', 'some-distinct-id', {
         personProperties: {
           latestBuildVersion: undefined,
           latestBuildVersionMajor: undefined,
@@ -120,17 +120,17 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlag('person-flag', 'some-distinct-id', { personProperties: { region: 'USA' } })
+      await agrid.getFeatureFlag('person-flag', 'some-distinct-id', { personProperties: { region: 'USA' } })
     ).toEqual(true)
     expect(
-      await posthog.getFeatureFlag('person-flag', 'some-distinct-id', { personProperties: { region: 'Canada' } })
+      await agrid.getFeatureFlag('person-flag', 'some-distinct-id', { personProperties: { region: 'Canada' } })
     ).toEqual(false)
     expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
   })
@@ -166,27 +166,27 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // # groups not passed in, hence false
     expect(
-      await posthog.getFeatureFlag('group-flag', 'some-distinct-id', {
+      await agrid.getFeatureFlag('group-flag', 'some-distinct-id', {
         groupProperties: { company: { name: 'Project Name 1' } },
       })
     ).toEqual(false)
     expect(
-      await posthog.getFeatureFlag('group-flag', 'some-distinct-2', {
+      await agrid.getFeatureFlag('group-flag', 'some-distinct-2', {
         groupProperties: { company: { name: 'Project Name 2' } },
       })
     ).toEqual(false)
 
     // # this is good
     expect(
-      await posthog.getFeatureFlag('group-flag', 'some-distinct-2', {
+      await agrid.getFeatureFlag('group-flag', 'some-distinct-2', {
         groups: { company: 'amazon_without_rollout' },
         groupProperties: { company: { name: 'Project Name 1' } },
       })
@@ -194,7 +194,7 @@ describe('local evaluation', () => {
 
     // # rollout % not met
     expect(
-      await posthog.getFeatureFlag('group-flag', 'some-distinct-2', {
+      await agrid.getFeatureFlag('group-flag', 'some-distinct-2', {
         groups: { company: 'amazon' },
         groupProperties: { company: { name: 'Project Name 1' } },
       })
@@ -202,7 +202,7 @@ describe('local evaluation', () => {
 
     // # property mismatch
     expect(
-      await posthog.getFeatureFlag('group-flag', 'some-distinct-2', {
+      await agrid.getFeatureFlag('group-flag', 'some-distinct-2', {
         groups: { company: 'amazon_without_rollout' },
         groupProperties: { company: { name: 'Project Name 2' } },
       })
@@ -246,14 +246,14 @@ describe('local evaluation', () => {
       apiImplementation({ localFlags: flags, decideFlags: { 'group-flag': 'flags-fallback-value' } })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
     // # group_type_mappings not present, so fallback to `/flags`
     expect(
-      await posthog.getFeatureFlag('group-flag', 'some-distinct-2', {
+      await agrid.getFeatureFlag('group-flag', 'some-distinct-2', {
         groupProperties: {
           company: { name: 'Project Name 1' },
         },
@@ -319,14 +319,14 @@ describe('local evaluation', () => {
       apiImplementation({ localFlags: flags, decideFlags: { 'complex-flag': 'flags-fallback-value' } })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlag('complex-flag', 'some-distinct-id', {
+      await agrid.getFeatureFlag('complex-flag', 'some-distinct-id', {
         personProperties: { region: 'USA', name: 'Aloha' },
       })
     ).toEqual(true)
@@ -334,7 +334,7 @@ describe('local evaluation', () => {
 
     // # this distinctIDs hash is < rollout %
     expect(
-      await posthog.getFeatureFlag('complex-flag', 'some-distinct-id_within_rollout?', {
+      await agrid.getFeatureFlag('complex-flag', 'some-distinct-id_within_rollout?', {
         personProperties: { region: 'USA', email: 'a@b.com' },
       })
     ).toEqual(true)
@@ -342,7 +342,7 @@ describe('local evaluation', () => {
 
     // # will fall back on `/flags`, as all properties present for second group, but that group resolves to false
     expect(
-      await posthog.getFeatureFlag('complex-flag', 'some-distinct-id_outside_rollout?', {
+      await agrid.getFeatureFlag('complex-flag', 'some-distinct-id_outside_rollout?', {
         personProperties: { region: 'USA', email: 'a@b.com' },
       })
     ).toEqual('flags-fallback-value')
@@ -368,7 +368,7 @@ describe('local evaluation', () => {
 
     // # same as above
     expect(
-      await posthog.getFeatureFlag('complex-flag', 'some-distinct-id', { personProperties: { doesnt_matter: '1' } })
+      await agrid.getFeatureFlag('complex-flag', 'some-distinct-id', { personProperties: { doesnt_matter: '1' } })
     ).toEqual('flags-fallback-value')
     expect(mockedFetch).toHaveBeenCalledWith(
       'http://example.com/flags/?v=2&config=true',
@@ -387,14 +387,14 @@ describe('local evaluation', () => {
     mockedFetch.mockClear()
 
     expect(
-      await posthog.getFeatureFlag('complex-flag', 'some-distinct-id', { personProperties: { region: 'USA' } })
+      await agrid.getFeatureFlag('complex-flag', 'some-distinct-id', { personProperties: { region: 'USA' } })
     ).toEqual('flags-fallback-value')
     expect(mockedFetch).toHaveBeenCalledTimes(1) // TODO: Check this
     mockedFetch.mockClear()
 
     // # won't need to fallback when all values are present, and resolves to False
     expect(
-      await posthog.getFeatureFlag('complex-flag', 'some-distinct-id_outside_rollout?', {
+      await agrid.getFeatureFlag('complex-flag', 'some-distinct-id_outside_rollout?', {
         personProperties: { region: 'USA', email: 'a@b.com', name: 'X', doesnt_matter: '1' },
       })
     ).toEqual(false)
@@ -448,19 +448,19 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // # beta-feature fallbacks to flags because property type is unknown
-    expect(await posthog.getFeatureFlag('beta-feature', 'some-distinct-id')).toEqual('alakazam')
+    expect(await agrid.getFeatureFlag('beta-feature', 'some-distinct-id')).toEqual('alakazam')
     expect(mockedFetch).toHaveBeenCalledWith(...anyFlagsCall)
     mockedFetch.mockClear()
 
     // # beta-feature2 fallbacks to flags because region property not given with call
-    expect(await posthog.getFeatureFlag('beta-feature2', 'some-distinct-id')).toEqual('alakazam2')
+    expect(await agrid.getFeatureFlag('beta-feature2', 'some-distinct-id')).toEqual('alakazam2')
     expect(mockedFetch).toHaveBeenCalledWith(...anyFlagsCall)
   })
 
@@ -511,28 +511,28 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // # beta-feature should fallback to flags because property type is unknown
     // # but doesn't because only_evaluate_locally is true
-    expect(await posthog.getFeatureFlag('beta-feature', 'some-distinct-id', { onlyEvaluateLocally: true })).toEqual(
+    expect(await agrid.getFeatureFlag('beta-feature', 'some-distinct-id', { onlyEvaluateLocally: true })).toEqual(
       undefined
     )
-    expect(await posthog.isFeatureEnabled('beta-feature', 'some-distinct-id', { onlyEvaluateLocally: true })).toEqual(
+    expect(await agrid.isFeatureEnabled('beta-feature', 'some-distinct-id', { onlyEvaluateLocally: true })).toEqual(
       undefined
     )
     expect(mockedFetch).not.toHaveBeenCalledWith(...anyFlagsCall)
 
     // # beta-feature2 should fallback to flags because region property not given with call
     // # but doesn't because only_evaluate_locally is true
-    expect(await posthog.getFeatureFlag('beta-feature2', 'some-distinct-id', { onlyEvaluateLocally: true })).toEqual(
+    expect(await agrid.getFeatureFlag('beta-feature2', 'some-distinct-id', { onlyEvaluateLocally: true })).toEqual(
       undefined
     )
-    expect(await posthog.isFeatureEnabled('beta-feature2', 'some-distinct-id', { onlyEvaluateLocally: true })).toEqual(
+    expect(await agrid.isFeatureEnabled('beta-feature2', 'some-distinct-id', { onlyEvaluateLocally: true })).toEqual(
       undefined
     )
     expect(mockedFetch).not.toHaveBeenCalledWith(...anyFlagsCall)
@@ -559,20 +559,20 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags, decideFlags: {} }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // # beta-feature resolves to False
-    expect(await posthog.getFeatureFlag('beta-feature', 'some-distinct-id')).toEqual(false)
-    expect(await posthog.isFeatureEnabled('beta-feature', 'some-distinct-id')).toEqual(false)
+    expect(await agrid.getFeatureFlag('beta-feature', 'some-distinct-id')).toEqual(false)
+    expect(await agrid.isFeatureEnabled('beta-feature', 'some-distinct-id')).toEqual(false)
     expect(mockedFetch).not.toHaveBeenCalledWith(...anyFlagsCall)
 
     // # beta-feature2 falls back to flags, and whatever flags returns is the value
-    expect(await posthog.getFeatureFlag('beta-feature2', 'some-distinct-id')).toEqual(undefined)
-    expect(await posthog.isFeatureEnabled('beta-feature2', 'some-distinct-id')).toEqual(undefined)
+    expect(await agrid.getFeatureFlag('beta-feature2', 'some-distinct-id')).toEqual(undefined)
+    expect(await agrid.isFeatureEnabled('beta-feature2', 'some-distinct-id')).toEqual(undefined)
     expect(mockedFetch).toHaveBeenCalledWith(...anyFlagsCall)
   })
 
@@ -600,14 +600,14 @@ describe('local evaluation', () => {
       apiImplementation({ localFlags: flags, decideFlags: { 'beta-feature': 'flags-fallback-value' } })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // # beta-feature2 falls back to flags, which on error returns default
-    expect(await posthog.getFeatureFlag('beta-feature', 'some-distinct-id')).toEqual('flags-fallback-value')
+    expect(await agrid.getFeatureFlag('beta-feature', 'some-distinct-id')).toEqual('flags-fallback-value')
     expect(mockedFetch).toHaveBeenCalledWith(...anyFlagsCall)
   })
 
@@ -666,14 +666,14 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // # beta-feature value overridden by /flags
-    expect(await posthog.getAllFlags('distinct-id')).toEqual({
+    expect(await agrid.getAllFlags('distinct-id')).toEqual({
       'beta-feature': 'variant-1',
       'beta-feature2': 'variant-2',
       'disabled-feature': false,
@@ -747,14 +747,14 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // # beta-feature value overridden by /flags
-    expect((await posthog.getAllFlagsAndPayloads('distinct-id')).featureFlagPayloads).toEqual({
+    expect((await agrid.getAllFlagsAndPayloads('distinct-id')).featureFlagPayloads).toEqual({
       'beta-feature': 100,
       'beta-feature2': 300,
     })
@@ -817,14 +817,14 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // # beta-feature2 has no value
-    expect(await posthog.getAllFlags('distinct-id', { onlyEvaluateLocally: true })).toEqual({
+    expect(await agrid.getAllFlags('distinct-id', { onlyEvaluateLocally: true })).toEqual({
       'beta-feature': true,
       'disabled-feature': false,
     })
@@ -896,14 +896,14 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      (await posthog.getAllFlagsAndPayloads('distinct-id', { onlyEvaluateLocally: true })).featureFlagPayloads
+      (await agrid.getAllFlagsAndPayloads('distinct-id', { onlyEvaluateLocally: true })).featureFlagPayloads
     ).toEqual({
       'beta-feature': 'some-payload',
     })
@@ -921,13 +921,13 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
-    expect(await posthog.getAllFlags('distinct-id')).toEqual({
+    expect(await agrid.getAllFlags('distinct-id')).toEqual({
       'beta-feature': 'variant-1',
       'beta-feature2': 'variant-2',
     })
@@ -947,13 +947,13 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
-    expect((await posthog.getAllFlagsAndPayloads('distinct-id')).featureFlagPayloads).toEqual({
+    expect((await agrid.getAllFlagsAndPayloads('distinct-id')).featureFlagPayloads).toEqual({
       'beta-feature': 100,
       'beta-feature2': 300,
     })
@@ -1002,13 +1002,13 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
-    expect(await posthog.getAllFlags('distinct-id')).toEqual({ 'beta-feature': true, 'disabled-feature': false })
+    expect(await agrid.getAllFlags('distinct-id')).toEqual({ 'beta-feature': true, 'disabled-feature': false })
     expect(mockedFetch).not.toHaveBeenCalledWith(...anyFlagsCall)
   })
 
@@ -1059,13 +1059,13 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
-    expect((await posthog.getAllFlagsAndPayloads('distinct-id')).featureFlagPayloads).toEqual({ 'beta-feature': 'new' })
+    expect((await agrid.getAllFlagsAndPayloads('distinct-id')).featureFlagPayloads).toEqual({ 'beta-feature': 'new' })
     expect(mockedFetch).not.toHaveBeenCalledWith(...anyFlagsCall)
   })
 
@@ -1110,13 +1110,13 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
-    expect(await posthog.getAllFlags('distinct-id')).toEqual({ 'beta-feature': true, 'disabled-feature': false })
+    expect(await agrid.getAllFlags('distinct-id')).toEqual({ 'beta-feature': true, 'disabled-feature': false })
     expect(mockedFetch).not.toHaveBeenCalledWith(...anyFlagsCall)
 
     //   # Now, after a poll interval, flag 1 is inactive, and flag 2 rollout is set to 100%.
@@ -1156,9 +1156,9 @@ describe('local evaluation', () => {
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags2 }))
 
     // # force reload to simulate poll interval
-    await posthog.reloadFeatureFlags()
+    await agrid.reloadFeatureFlags()
 
-    expect(await posthog.getAllFlags('distinct-id')).toEqual({ 'beta-feature': false, 'disabled-feature': true })
+    expect(await agrid.getAllFlags('distinct-id')).toEqual({ 'beta-feature': false, 'disabled-feature': true })
     expect(mockedFetch).not.toHaveBeenCalledWith(...anyFlagsCall)
   })
 
@@ -1215,20 +1215,20 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'some-distinct-id', { personProperties: { region: 'UK' } })
+      await agrid.getFeatureFlag('beta-feature', 'some-distinct-id', { personProperties: { region: 'UK' } })
     ).toEqual(false)
     expect(mockedFetch).not.toHaveBeenCalledWith(...anyFlagsCall)
 
     // # even though 'other' property is not present, the cohort should still match since it's an OR condition
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'some-distinct-id', {
+      await agrid.getFeatureFlag('beta-feature', 'some-distinct-id', {
         personProperties: { region: 'USA', nation: 'UK' },
       })
     ).toEqual(true)
@@ -1236,7 +1236,7 @@ describe('local evaluation', () => {
 
     // # even though 'other' property is not present, the cohort should still match since it's an OR condition
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'some-distinct-id', {
+      await agrid.getFeatureFlag('beta-feature', 'some-distinct-id', {
         personProperties: { region: 'USA', other: 'thing' },
       })
     ).toEqual(true)
@@ -1296,20 +1296,20 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'some-distinct-id', { personProperties: { region: 'UK' } })
+      await agrid.getFeatureFlag('beta-feature', 'some-distinct-id', { personProperties: { region: 'UK' } })
     ).toEqual(false)
     expect(mockedFetch).not.toHaveBeenCalledWith(...anyFlagsCall)
 
     // # even though 'other' property is not present, the cohort should still match since it's an OR condition
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'some-distinct-id', {
+      await agrid.getFeatureFlag('beta-feature', 'some-distinct-id', {
         personProperties: { region: 'USA', nation: 'UK' },
       })
     ).toEqual(true)
@@ -1317,7 +1317,7 @@ describe('local evaluation', () => {
 
     // # since 'other' is negated, we return False. Since 'nation' is not present, we can't tell whether the flag should be true or false, so go to flags
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'some-distinct-id', {
+      await agrid.getFeatureFlag('beta-feature', 'some-distinct-id', {
         personProperties: { region: 'USA', other: 'thing' },
       })
     ).toEqual(undefined)
@@ -1326,7 +1326,7 @@ describe('local evaluation', () => {
     mockedFetch.mockClear()
 
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'some-distinct-id', {
+      await agrid.getFeatureFlag('beta-feature', 'some-distinct-id', {
         personProperties: { region: 'USA', other: 'thing2' },
       })
     ).toEqual(true)
@@ -1348,7 +1348,7 @@ describe('local evaluation', () => {
                   {
                     key: 'email',
                     operator: 'exact',
-                    value: 'test@posthog.com',
+                    value: 'test@agrid.com',
                     type: 'person',
                   },
                 ],
@@ -1385,16 +1385,16 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'test_id', { personProperties: { email: 'test@posthog.com' } })
+      await agrid.getFeatureFlag('beta-feature', 'test_id', { personProperties: { email: 'test@agrid.com' } })
     ).toEqual('second-variant')
-    expect(await posthog.getFeatureFlag('beta-feature', 'example_id')).toEqual('first-variant')
+    expect(await agrid.getFeatureFlag('beta-feature', 'example_id')).toEqual('first-variant')
 
     expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
     // flags not called
@@ -1416,7 +1416,7 @@ describe('local evaluation', () => {
                   {
                     key: 'email',
                     operator: 'exact',
-                    value: 'test@posthog.com',
+                    value: 'test@agrid.com',
                     type: 'person',
                   },
                 ],
@@ -1429,7 +1429,7 @@ describe('local evaluation', () => {
                   {
                     key: 'email',
                     operator: 'exact',
-                    value: 'test@posthog.com',
+                    value: 'test@agrid.com',
                     type: 'person',
                   },
                 ],
@@ -1466,19 +1466,19 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'test_id', { personProperties: { email: 'test@posthog.com' } })
+      await agrid.getFeatureFlag('beta-feature', 'test_id', { personProperties: { email: 'test@agrid.com' } })
     ).toEqual('second-variant')
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'example_id', { personProperties: { email: 'test@posthog.com' } })
+      await agrid.getFeatureFlag('beta-feature', 'example_id', { personProperties: { email: 'test@agrid.com' } })
     ).toEqual('second-variant')
-    expect(await posthog.getFeatureFlag('beta-feature', 'example_id')).toEqual('first-variant')
+    expect(await agrid.getFeatureFlag('beta-feature', 'example_id')).toEqual('first-variant')
 
     expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
     // flags not called
@@ -1500,7 +1500,7 @@ describe('local evaluation', () => {
                   {
                     key: 'email',
                     operator: 'exact',
-                    value: 'test@posthog.com',
+                    value: 'test@agrid.com',
                     type: 'person',
                   },
                 ],
@@ -1537,16 +1537,16 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlag('beta-feature', 'test_id', { personProperties: { email: 'test@posthog.com' } })
+      await agrid.getFeatureFlag('beta-feature', 'test_id', { personProperties: { email: 'test@agrid.com' } })
     ).toEqual('third-variant')
-    expect(await posthog.getFeatureFlag('beta-feature', 'example_id')).toEqual('second-variant')
+    expect(await agrid.getFeatureFlag('beta-feature', 'example_id')).toEqual('second-variant')
 
     expect(mockedFetch).toHaveBeenCalledWith(...anyLocalEvalCall)
     // flags not called
@@ -1599,15 +1599,15 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // Even though the person has the email that would trigger the override variant,
     // they should get the result from the first matching condition (which matches everyone)
-    const result = await posthog.getFeatureFlag('test-feature', 'test_id', {
+    const result = await agrid.getFeatureFlag('test-feature', 'test_id', {
       personProperties: { email: 'override@example.com' },
     })
 
@@ -1649,21 +1649,21 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlagPayload('person-flag', 'some-distinct-id', true, {
+      await agrid.getFeatureFlagPayload('person-flag', 'some-distinct-id', true, {
         personProperties: { region: 'USA' },
       })
     ).toEqual({
       log: 'all',
     })
     expect(
-      await posthog.getFeatureFlagPayload('person-flag', 'some-distinct-id', undefined, {
+      await agrid.getFeatureFlagPayload('person-flag', 'some-distinct-id', undefined, {
         personProperties: { region: 'USA' },
       })
     ).toEqual({
@@ -1689,7 +1689,7 @@ describe('local evaluation', () => {
                   {
                     key: 'email',
                     operator: 'exact',
-                    value: 'test@posthog.com',
+                    value: 'test@agrid.com',
                     type: 'person',
                   },
                 ],
@@ -1729,15 +1729,15 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     expect(
-      await posthog.getFeatureFlagPayload('beta-feature', 'test_id', 'second-variant', {
-        personProperties: { email: 'test@posthog.com' },
+      await agrid.getFeatureFlagPayload('beta-feature', 'test_id', 'second-variant', {
+        personProperties: { email: 'test@agrid.com' },
       })
     ).toEqual(2500)
 
@@ -1748,32 +1748,32 @@ describe('local evaluation', () => {
 
   describe('isLocalEvaluationReady', () => {
     it('returns false when featureFlagsPoller is undefined', () => {
-      posthog = new PostHog('TEST_API_KEY', {
+      agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
-      expect(posthog.isLocalEvaluationReady()).toBe(false)
+      expect(agrid.isLocalEvaluationReady()).toBe(false)
     })
 
     it('returns false when featureFlagsPoller has not loaded successfully', () => {
-      posthog = new PostHog('TEST_API_KEY', {
+      agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
         personalApiKey: 'TEST_PERSONAL_API_KEY',
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
-      expect(posthog.isLocalEvaluationReady()).toBe(false)
+      expect(agrid.isLocalEvaluationReady()).toBe(false)
     })
 
     it('returns false when featureFlagsPoller has no flags', async () => {
       const flags = { flags: [] }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
-      posthog = new PostHog('TEST_API_KEY', {
+      agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
         personalApiKey: 'TEST_PERSONAL_API_KEY',
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
-      await posthog.reloadFeatureFlags()
-      expect(posthog.isLocalEvaluationReady()).toBe(false)
+      await agrid.reloadFeatureFlags()
+      expect(agrid.isLocalEvaluationReady()).toBe(false)
     })
 
     it('returns true when featureFlagsPoller has loaded flags successfully', async () => {
@@ -1796,13 +1796,13 @@ describe('local evaluation', () => {
         ],
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
-      posthog = new PostHog('TEST_API_KEY', {
+      agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
         personalApiKey: 'TEST_PERSONAL_API_KEY',
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
-      await posthog.reloadFeatureFlags()
-      expect(posthog.isLocalEvaluationReady()).toBe(true)
+      await agrid.reloadFeatureFlags()
+      expect(agrid.isLocalEvaluationReady()).toBe(true)
     })
   })
 
@@ -1822,35 +1822,35 @@ describe('local evaluation', () => {
         ],
       }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
-      posthog = new PostHog('TEST_API_KEY', {
+      agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
         personalApiKey: 'TEST_PERSONAL_API_KEY',
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
 
-      expect(await posthog.waitForLocalEvaluationReady()).toBe(true)
+      expect(await agrid.waitForLocalEvaluationReady()).toBe(true)
     })
 
     it('returns false when local evaluation endpoint returns empty flags', async () => {
       const flags = { flags: [] }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
-      posthog = new PostHog('TEST_API_KEY', {
+      agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
         personalApiKey: 'TEST_PERSONAL_API_KEY',
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
-      expect(await posthog.waitForLocalEvaluationReady()).toBe(false)
+      expect(await agrid.waitForLocalEvaluationReady()).toBe(false)
     })
 
     it('returns false when local evaluation is not enabled', async () => {
       const flags = { flags: [] }
       mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
-      posthog = new PostHog('TEST_API_KEY', {
+      agrid = new Agrid('TEST_API_KEY', {
         host: 'http://example.com',
         personalApiKey: undefined,
-        ...posthogImmediateResolveOptions,
+        ...agridImmediateResolveOptions,
       })
-      expect(await posthog.waitForLocalEvaluationReady()).toBe(false)
+      expect(await agrid.waitForLocalEvaluationReady()).toBe(false)
     })
   })
 
@@ -1889,14 +1889,14 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     const eventHandler = jest.fn()
-    posthog.on('localEvaluationFlagsLoaded', eventHandler)
+    agrid.on('localEvaluationFlagsLoaded', eventHandler)
 
     // Wait for initial load
     await waitForPromises()
@@ -1909,14 +1909,14 @@ describe('local evaluation', () => {
       throw new Error('Failed to load flags')
     })
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     const eventHandler = jest.fn()
-    posthog.on('localEvaluationFlagsLoaded', eventHandler)
+    agrid.on('localEvaluationFlagsLoaded', eventHandler)
 
     // Wait for initial load
     await waitForPromises()
@@ -1945,21 +1945,21 @@ describe('local evaluation', () => {
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     const eventHandler = jest.fn()
-    posthog.on('localEvaluationFlagsLoaded', eventHandler)
+    agrid.on('localEvaluationFlagsLoaded', eventHandler)
 
     // Wait for initial load
     await waitForPromises()
     eventHandler.mockClear() // Clear initial call
 
     // Reload flags
-    await posthog.reloadFeatureFlags()
+    await agrid.reloadFeatureFlags()
 
     expect(eventHandler).toHaveBeenCalledWith(1) // Should be called with number of flags loaded
   })
@@ -2027,13 +2027,13 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
-    const result = await posthog.getFeatureFlag('default-pinned-mini-apps', 'test-distinct-id', {
+    const result = await agrid.getFeatureFlag('default-pinned-mini-apps', 'test-distinct-id', {
       personProperties: {
         $geoip_country_code: 'DE',
       },
@@ -2085,14 +2085,14 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // Call WITHOUT matchValue - should evaluate the flag and throw RequiresServerEvaluation
-    const result = await posthog.getFeatureFlagPayload('default-pinned-mini-apps', 'test-distinct-id', undefined, {
+    const result = await agrid.getFeatureFlagPayload('default-pinned-mini-apps', 'test-distinct-id', undefined, {
       personProperties: {},
     })
 
@@ -2141,14 +2141,14 @@ describe('local evaluation', () => {
       })
     )
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // Call WITH matchValue - should use it to look up local payload
-    const result = await posthog.getFeatureFlagPayload('test-flag', 'test-distinct-id', 'variant-a')
+    const result = await agrid.getFeatureFlagPayload('test-flag', 'test-distinct-id', 'variant-a')
 
     // Should return local payload
     expect(result).toEqual('local-payload-a')
@@ -2194,18 +2194,18 @@ describe('getFeatureFlag', () => {
       ],
     }
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags }))
-    const posthog = new PostHog('TEST_API_KEY', {
+    const agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
     let capturedMessage: any
-    posthog.on('capture', (message) => {
+    agrid.on('capture', (message) => {
       capturedMessage = message
     })
 
     expect(
-      await posthog.getFeatureFlag('complex-flag', 'some-distinct-id', {
+      await agrid.getFeatureFlag('complex-flag', 'some-distinct-id', {
         personProperties: {
           region: 'USA',
         } as unknown as Record<string, string>,
@@ -2217,15 +2217,15 @@ describe('getFeatureFlag', () => {
     expect(capturedMessage).toMatchObject({
       distinct_id: 'some-distinct-id',
       event: '$feature_flag_called',
-      library: posthog.getLibraryId(),
-      library_version: posthog.getLibraryVersion(),
+      library: agrid.getLibraryId(),
+      library_version: agrid.getLibraryVersion(),
       properties: {
         '$feature/complex-flag': true,
         $feature_flag: 'complex-flag',
         $feature_flag_response: true,
         $groups: undefined,
-        $lib: posthog.getLibraryId(),
-        $lib_version: posthog.getLibraryVersion(),
+        $lib: agrid.getLibraryId(),
+        $lib_version: agrid.getLibraryVersion(),
         locally_evaluated: true,
       },
     })
@@ -2593,11 +2593,11 @@ describe('match properties', () => {
     expect(matchProperty(property_b, { key: undefined })).toBe(false)
     expect(matchProperty(property_b, { key: 'null' })).toBe(true)
 
-    const property_c = { key: 'key', value: 'app.posthog.com', operator: 'icontains' }
+    const property_c = { key: 'key', value: 'app.agrid.com', operator: 'icontains' }
     expect(matchProperty(property_c, { key: null })).toBe(false)
     expect(matchProperty(property_c, { key: undefined })).toBe(false)
     expect(matchProperty(property_c, { key: 'lol' })).toBe(false)
-    expect(matchProperty(property_c, { key: 'https://app.posthog.com' })).toBe(true)
+    expect(matchProperty(property_c, { key: 'https://app.agrid.com' })).toBe(true)
 
     const property_d = { key: 'key', value: '.+', operator: 'regex' }
     expect(matchProperty(property_d, { key: null })).toBe(false)
@@ -2745,18 +2745,18 @@ describe('relative date parsing', () => {
 
 describe('consistency tests', () => {
   // # These tests are the same across all libraries
-  // # See https://github.com/PostHog/posthog/blob/master/posthog/test/test_feature_flag.py#L627
+  // # See https://github.com/Agrid/agrid/blob/master/agrid/test/test_feature_flag.py#L627
   // # where this test has directly been copied from.
   // # They ensure that the server and library hash calculations are in sync.
 
-  let posthog: PostHog
+  let agrid: Agrid
   jest.useFakeTimers()
 
   afterEach(async () => {
-    await posthog.shutdown()
+    await agrid.shutdown()
   })
 
-  it('is consistent for simple flags', () => {
+  it('is consistent for simple flags', async () => {
     const flags = {
       flags: [
         {
@@ -2773,10 +2773,10 @@ describe('consistency tests', () => {
 
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags, decideFlags: {}, flagsStatus: 400 }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     const results = [
@@ -3782,11 +3782,11 @@ describe('consistency tests', () => {
       true,
     ]
 
-    results.forEach(async (result, index) => {
+    for (const [index, result] of results.entries()) {
       const distinctId = `distinct_id_${index}`
-      const value = await posthog.isFeatureEnabled('simple-flag', distinctId)
+      const value = await agrid.isFeatureEnabled('simple-flag', distinctId)
       expect(value).toBe(result)
-    })
+    }
   })
 
   it('is consistent for multivariate flags', async () => {
@@ -3815,10 +3815,10 @@ describe('consistency tests', () => {
 
     mockedFetch.mockImplementation(apiImplementation({ localFlags: flags, decideFlags: {}, flagsStatus: 400 }))
 
-    posthog = new PostHog('TEST_API_KEY', {
+    agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     const results = [
@@ -4824,11 +4824,11 @@ describe('consistency tests', () => {
       'first-variant',
     ]
 
-    results.forEach(async (result, index) => {
+    for (const [index, result] of results.entries()) {
       const distinctId = `distinct_id_${index}`
-      const value = await posthog.getFeatureFlag('multivariate-flag', distinctId)
+      const value = await agrid.getFeatureFlag('multivariate-flag', distinctId)
       expect(value).toBe(result)
-    })
+    }
   })
 })
 
@@ -4842,26 +4842,26 @@ describe('quota limiting', () => {
       })
     )
 
-    const posthog = new PostHog('TEST_API_KEY', {
+    const agrid = new Agrid('TEST_API_KEY', {
       host: 'http://example.com',
       personalApiKey: 'TEST_PERSONAL_API_KEY',
-      ...posthogImmediateResolveOptions,
+      ...agridImmediateResolveOptions,
     })
 
     // Enable debug mode to see the messages
-    posthog.debug(true)
+    agrid.debug(true)
 
     // Force a reload and wait for it to complete
-    await posthog.reloadFeatureFlags()
+    await agrid.reloadFeatureFlags()
 
     // locally evaluate the flags
-    const res = await posthog.getAllFlagsAndPayloads('distinct-id', { onlyEvaluateLocally: true })
+    const res = await agrid.getAllFlagsAndPayloads('distinct-id', { onlyEvaluateLocally: true })
 
     // expect the flags to be cleared and for the debug message to be logged
     expect(res.featureFlags).toEqual({})
     expect(res.featureFlagPayloads).toEqual({})
     expect(consoleSpy).toHaveBeenCalledWith(
-      '[FEATURE FLAGS] Feature flags quota limit exceeded - unsetting all local flags. Learn more about billing limits at https://posthog.com/docs/billing/limits-alerts'
+      '[FEATURE FLAGS] Feature flags quota limit exceeded - unsetting all local flags. Learn more about billing limits at https://agrid.com/docs/billing/limits-alerts'
     )
 
     consoleSpy.mockRestore()

@@ -1,7 +1,7 @@
-import { PostHog } from '../../../dist/entrypoints/index.node.mjs'
+import { Agrid } from '../../../dist/entrypoints/index.node.mjs'
 import { parentPort } from 'worker_threads'
 
-const posthog = new PostHog('api_key', {
+const agrid = new Agrid('api_key', {
   enableExceptionAutocapture: true,
 })
 
@@ -18,11 +18,9 @@ parentPort.on('message', (msg) => {
 })
 
 await new Promise((res) => {
-  posthog.capture = (event) => {
+  agrid.capture = (event) => {
     event.distinctId = 'stable_id'
     parentPort.postMessage({ method: 'capture', event })
     res()
   }
 })
-
-await posthog.shutdown()

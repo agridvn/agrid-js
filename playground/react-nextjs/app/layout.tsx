@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-import { PHProvider } from './providers'
+import { AgridWrapper } from './providers'
 import './globals.css'
 
 export const metadata: Metadata = {
-    title: 'PostHog InView Playground',
-    description: 'Test PostHog InView component with a cat gallery',
+    title: 'Agrid InView Playground',
+    description: 'Test Agrid InView component with a cat gallery',
 }
 
 export default function RootLayout({
@@ -15,7 +15,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <PHProvider>{children}</PHProvider>
+                <AgridWrapper>{children}</AgridWrapper>
             </body>
         </html>
     )

@@ -82,6 +82,9 @@ export function AgridProvider({ children, client, apiKey, options }: WithOptiona
         const previousInitialization = previousInitializationRef.current
 
         if (!previousInitialization) {
+            if (!apiKey) {
+                return
+            }
             // If it's the first time running this, but it has been loaded elsewhere, warn the user about it.
             if (agridJs.__loaded) {
                 console.warn('[Agrid.js] `agrid` was already loaded elsewhere. This may cause issues.')

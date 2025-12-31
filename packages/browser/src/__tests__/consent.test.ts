@@ -28,8 +28,7 @@ jest.retryTimes(3)
 describe('consentManager', () => {
     const createAgrid = async (config: Partial<AgridConfig> = {}) => {
         const agrid = await new Promise<Agrid>(
-            (resolve) =>
-                defaultAgrid().init('testtoken', { ...config, loaded: (agrid) => resolve(agrid) }, uuidv7())!
+            (resolve) => defaultAgrid().init('testtoken', { ...config, loaded: (agrid) => resolve(agrid) }, uuidv7())!
         )
         agrid.debug()
         return agrid

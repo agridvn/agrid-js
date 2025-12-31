@@ -4,7 +4,7 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-pnpmfileChecksum: sha256-51V53DYAleXHgPrntlBZSmeS8lOCPoT1zhKZkbvcJZs=
+pnpmfileChecksum: sha256-3DAI+fkHaKjBBj02tdw1j+9ClFB6LNgMSh6h25pzFnI=
 
 importers:
 
@@ -31,9 +31,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.0.0
         version: 18.3.7(@types/react@18.3.25)
-      posthog-js-lite:
-        specifier: file:../../target/posthog-js-lite.tgz
-        version: file:../../target/posthog-js-lite.tgz
+      agrid-js-lite:
+        specifier: file:../../target/agrid-js-lite.tgz
+        version: file:../../target/agrid-js-lite.tgz
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -54,6 +54,10 @@ packages:
 
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
+
+  '@agrid/core@file:../../target/agrid-core.tgz':
+    resolution: {integrity: sha512-ChzUDGQv0keLkUsnbIDJxzNg47tDTIUXMZ4yOHkLj6hUQ0BO7kOWYb465NqJ5m03go5kJUzT3Or72zitaXjVjw==, tarball: file:../../target/agrid-core.tgz}
+    version: 1.5.7
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -1048,10 +1052,6 @@ packages:
       webpack-plugin-serve:
         optional: true
 
-  '@posthog/core@file:../../target/posthog-core.tgz':
-    resolution: {integrity: sha512-7nPDTJPXjXh04WMQI5m24EE1ldT05vH336BZ11Kfdd/eyvKpNHoHWFrVIqlVvuRHcS2Bo5mnvoHAG1ph7wXUeg==, tarball: file:../../target/posthog-core.tgz}
-    version: 1.2.2
-
   '@rollup/plugin-babel@5.3.1':
     resolution: {integrity: sha512-WFfdLWU/xVWKeRQnKmIAQULUI7Il0gZnBIH/ZFO069wYIfPu+8zrfp/KMW0atmELoRDq8FbiP3VCss9MhCut7Q==}
     engines: {node: '>= 10.0.0'}
@@ -1509,6 +1509,10 @@ packages:
   agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
+
+  agrid-js-lite@file:../../target/agrid-js-lite.tgz:
+    resolution: {integrity: sha512-nyD/K5D5nVzEXCKcA+FrH53wc6vKcmfUxZFjbp0CLRTv7MFsunil7DwpGRHHh/2TjM8//zBkNTZG5D63DQxuoQ==, tarball: file:../../target/agrid-js-lite.tgz}
+    version: 4.1.15
 
   ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
@@ -4408,10 +4412,6 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-js-lite@file:../../target/posthog-js-lite.tgz:
-    resolution: {integrity: sha512-4FIUpfT5qi7dZ92WTMP3Y9m/n+9XZGRjce0Uq2PUm0m7SQ0VT19kthSXRC+L8+WMumyxjqsgTmhqgX/MdWvqQg==, tarball: file:../../target/posthog-js-lite.tgz}
-    version: 4.1.1
-
   prelude-ls@1.1.2:
     resolution: {integrity: sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==}
     engines: {node: '>= 0.8.0'}
@@ -5560,6 +5560,10 @@ packages:
 snapshots:
 
   '@adobe/css-tools@4.4.4': {}
+
+  '@agrid/core@file:../../target/agrid-core.tgz':
+    dependencies:
+      cross-spawn: 7.0.6
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -6837,8 +6841,6 @@ snapshots:
       type-fest: 0.21.3
       webpack-dev-server: 4.15.2(webpack@5.102.0)
 
-  '@posthog/core@file:../../target/posthog-core.tgz': {}
-
   '@rollup/plugin-babel@5.3.1(@babel/core@7.28.4)(@types/babel__core@7.20.5)(rollup@2.79.2)':
     dependencies:
       '@babel/core': 7.28.4
@@ -7411,6 +7413,10 @@ snapshots:
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
+
+  agrid-js-lite@file:../../target/agrid-js-lite.tgz:
+    dependencies:
+      '@agrid/core': file:../../target/agrid-core.tgz
 
   ajv-formats@2.1.1(ajv@8.17.1):
     optionalDependencies:
@@ -10824,10 +10830,6 @@ snapshots:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
-
-  posthog-js-lite@file:../../target/posthog-js-lite.tgz:
-    dependencies:
-      '@posthog/core': file:../../target/posthog-core.tgz
 
   prelude-ls@1.1.2: {}
 

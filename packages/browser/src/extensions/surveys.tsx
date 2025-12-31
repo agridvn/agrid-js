@@ -251,11 +251,7 @@ export class SurveyManager {
         const { shadow } = retrieveSurveyShadow(survey, this._agrid)
         if (delaySeconds <= 0) {
             return Preact.render(
-                <SurveyPopup
-                    agrid={this._agrid}
-                    survey={survey}
-                    removeSurveyFromFocus={this._removeSurveyFromFocus}
-                />,
+                <SurveyPopup agrid={this._agrid} survey={survey} removeSurveyFromFocus={this._removeSurveyFromFocus} />,
                 shadow
             )
         }

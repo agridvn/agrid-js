@@ -34,7 +34,7 @@ jobs:
       - uses: ./.github/actions/is-affected
         id: is-affected
         with:
-          package-name: posthog-js
+          package-name: agrid-js
 
       - name: Build package
         run: pnpm build
@@ -89,8 +89,8 @@ jobs:
         with:
           build: false
 
-      - name: Build posthog-js
-        run: pnpm exec turbo --filter=posthog-js build
+      - name: Build agrid-js
+        run: pnpm exec turbo --filter=agrid-js build
         env:
           WRITE_MANGLED_PROPERTIES: 1
 

@@ -29,7 +29,7 @@ describe('SiteApps', () => {
         document.head.innerHTML = ''
 
         // Reset assignableWindow properties
-        assignableWindow.__PosthogExtensions__ = {
+        assignableWindow.__AgridExtensions__ = {
             loadSiteApp: jest.fn().mockImplementation((_instance, _url, callback) => {
                 // Simulate async loading
                 setTimeout(() => {
@@ -233,7 +233,7 @@ describe('SiteApps', () => {
 
             expect(removeCaptureHook).toHaveBeenCalled()
             expect(siteAppsInstance['_stopBuffering']).toBeUndefined()
-            expect(assignableWindow.__PosthogExtensions__?.loadSiteApp).not.toHaveBeenCalled()
+            expect(assignableWindow.__AgridExtensions__?.loadSiteApp).not.toHaveBeenCalled()
         })
 
         it('does not loads site apps if disabled', () => {
@@ -247,7 +247,7 @@ describe('SiteApps', () => {
 
             expect(removeCaptureHook).toHaveBeenCalled()
             expect(siteAppsInstance['_stopBuffering']).toBeUndefined()
-            expect(assignableWindow.__PosthogExtensions__?.loadSiteApp).not.toHaveBeenCalled()
+            expect(assignableWindow.__AgridExtensions__?.loadSiteApp).not.toHaveBeenCalled()
         })
 
         it('does not load site apps if new global loader exists', () => {
@@ -270,7 +270,7 @@ describe('SiteApps', () => {
                 siteApps: [{ id: '1', url: '/site_app/1' }],
             } as RemoteConfig)
 
-            expect(assignableWindow.__PosthogExtensions__?.loadSiteApp).not.toHaveBeenCalled()
+            expect(assignableWindow.__AgridExtensions__?.loadSiteApp).not.toHaveBeenCalled()
         })
 
         it('loads site apps if new global loader is not available', () => {
@@ -283,13 +283,13 @@ describe('SiteApps', () => {
 
             expect(removeCaptureHook).toHaveBeenCalled()
             expect(siteAppsInstance['_stopBuffering']).toBeUndefined()
-            expect(assignableWindow.__PosthogExtensions__?.loadSiteApp).toHaveBeenCalledTimes(2)
-            expect(assignableWindow.__PosthogExtensions__?.loadSiteApp).toHaveBeenCalledWith(
+            expect(assignableWindow.__AgridExtensions__?.loadSiteApp).toHaveBeenCalledTimes(2)
+            expect(assignableWindow.__AgridExtensions__?.loadSiteApp).toHaveBeenCalledWith(
                 agrid,
                 '/site_app/1',
                 expect.any(Function)
             )
-            expect(assignableWindow.__PosthogExtensions__?.loadSiteApp).toHaveBeenCalledWith(
+            expect(assignableWindow.__AgridExtensions__?.loadSiteApp).toHaveBeenCalledWith(
                 agrid,
                 '/site_app/2',
                 expect.any(Function)

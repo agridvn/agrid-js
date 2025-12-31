@@ -3,8 +3,8 @@
 ### Requirements
 
 ```shell
-# Install PostHog CLI globally
-cargo install posthog-cli
+# Install Agrid CLI globally
+cargo install agrid-cli
 ```
 
 From the project root directory:
@@ -13,26 +13,26 @@ From the project root directory:
 pnpm install
 
 # Build local version of agrid-js
-pnpm run build-posthog
+pnpm run build-agrid
 ```
 
 ## Sourcemaps management
 
 Commands to test sourcemap upload:
 ```shell
-# Generate build artifacts and use posthog-cli to inject snippets into sources and sourcemaps
-VITE_POSTHOG_KEY='<your-project-key>' VITE_POSTHOG_HOST='http://localhost:8010' pnpm run build
+# Generate build artifacts and use agrid-cli to inject snippets into sources and sourcemaps
+VITE_AGRID_KEY='<your-project-key>' VITE_AGRID_HOST='http://localhost:8010' pnpm run build
 
 # For NextJS based app use
-NEXT_PUBLIC_POSTHOG_KEY='<your-project-key>' NEXT_PUBLIC_POSTHOG_HOST='http://localhost:8010' pnpm run build
+NEXT_PUBLIC_AGRID_KEY='<your-project-key>' NEXT_PUBLIC_AGRID_HOST='http://localhost:8010' pnpm run build
 
-# Use posthog-cli to inject snippets into sources and sourcemaps
+# Use agrid-cli to inject snippets into sources and sourcemaps
 pnpm run inject
 
-# Upload sourcemaps to PostHog
+# Upload sourcemaps to Agrid
 pnpm run upload
 
 # Run application locally with newly generated minified build and sourcemaps
-# Start sending exceptions to PostHog
+# Start sending exceptions to Agrid
 pnpm run preview
 ```

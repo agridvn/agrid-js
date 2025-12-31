@@ -1,7 +1,7 @@
 import { addUncaughtExceptionListener, addUnhandledRejectionListener } from './autocapture'
-import { PostHogBackendClient } from '@/client'
+import { AgridBackendClient } from '@/client'
 import { uuidv7 } from '@agrid/core'
-import { EventMessage, PostHogOptions } from '@/types'
+import { EventMessage, AgridOptions } from '@/types'
 import type { Logger } from '@agrid/core'
 import { BucketedRateLimiter } from '@agrid/core'
 import { ErrorTracking as CoreErrorTracking } from '@agrid/core'
@@ -9,14 +9,14 @@ import { ErrorTracking as CoreErrorTracking } from '@agrid/core'
 const SHUTDOWN_TIMEOUT = 2000
 
 export default class ErrorTracking {
-  private client: PostHogBackendClient
+  private client: AgridBackendClient
   private _exceptionAutocaptureEnabled: boolean
   private _rateLimiter: BucketedRateLimiter<string>
   private _logger: Logger
 
   static errorPropertiesBuilder: CoreErrorTracking.ErrorPropertiesBuilder
 
-  constructor(client: PostHogBackendClient, options: PostHogOptions, _logger: Logger) {
+  constructor(client: AgridBackendClient, options: AgridOptions, _logger: Logger) {
     this.client = client
     this._exceptionAutocaptureEnabled = options.enableExceptionAutocapture || false
     this._logger = _logger

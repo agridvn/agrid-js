@@ -27,7 +27,7 @@ describe('Toolbar', () => {
             set_config: jest.fn(),
         } as unknown as Agrid
 
-        assignableWindow.__PosthogExtensions__ = {
+        assignableWindow.__AgridExtensions__ = {
             loadExternalDependency: jest.fn((_ph, _path: any, callback: any) => callback()),
         }
 

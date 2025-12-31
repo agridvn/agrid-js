@@ -4,7 +4,7 @@ import { createModulerModifier } from '../extensions/error-tracking/modifiers/mo
 import { addSourceContext } from '../extensions/error-tracking/modifiers/context-lines.node'
 import ErrorTracking from '../extensions/error-tracking'
 
-import { PostHogBackendClient } from '../client'
+import { AgridBackendClient } from '../client'
 import { ErrorTracking as CoreErrorTracking } from '@agrid/core'
 
 ErrorTracking.errorPropertiesBuilder = new CoreErrorTracking.ErrorPropertiesBuilder(
@@ -19,7 +19,7 @@ ErrorTracking.errorPropertiesBuilder = new CoreErrorTracking.ErrorPropertiesBuil
   [createModulerModifier(), addSourceContext]
 )
 
-export class PostHog extends PostHogBackendClient {
+export class Agrid extends AgridBackendClient {
   getLibraryId(): string {
     return 'agrid-node'
   }

@@ -7,11 +7,11 @@
         "dev": "vite",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
-        "inject": "posthog-cli sourcemap inject --directory ./dist",
-        "upload": "posthog-cli sourcemap upload --directory ./dist",
+        "inject": "agrid-cli sourcemap inject --directory ./dist",
+        "upload": "agrid-cli sourcemap upload --directory ./dist",
         "preview": "vite preview",
-        "link-posthog": "pnpm link ../../..",
-        "build-posthog": "cd ../../.. && NODE_ENV=dev pnpm i && pnpm run build"
+        "link-agrid": "pnpm link ../../..",
+        "build-agrid": "cd ../../.. && NODE_ENV=dev pnpm i && pnpm run build"
     },
     "dependencies": {
         "agrid-js": "link:../../..",

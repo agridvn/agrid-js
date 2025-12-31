@@ -42,7 +42,7 @@ describe('Exception Observer', () => {
         // assignableWindow.onerror = jest.fn()
         // assignableWindow.onerror__AGRID_INSTRUMENTED__ = true
 
-        assignableWindow.__PosthogExtensions__.errorWrappingFunctions = agridErrorWrappingFunctions
+        assignableWindow.__AgridExtensions__.errorWrappingFunctions = agridErrorWrappingFunctions
     }
 
     const expectNoHandlers = () => {
@@ -58,7 +58,7 @@ describe('Exception Observer', () => {
         })
 
         agrid = await createPosthogInstance(uuidv7(), { before_send: beforeSendMock })
-        assignableWindow.__PosthogExtensions__ = {
+        assignableWindow.__AgridExtensions__ = {
             loadExternalDependency: loadScriptMock,
         }
 

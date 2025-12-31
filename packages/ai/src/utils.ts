@@ -1,4 +1,4 @@
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 import { Buffer } from 'buffer'
 import OpenAIOrignal from 'openai'
 import AnthropicOriginal from '@anthropic-ai/sdk'
@@ -8,7 +8,7 @@ import type { Tool as GeminiTool } from '@google/genai'
 import type { FormattedMessage, FormattedContent, TokenUsage } from './types'
 import { version } from '../package.json'
 import { v4 as uuidv4 } from 'uuid'
-import { isString } from './typeGuards'
+import { isString, isUndefined, isNull, isArray } from './typeGuards'
 
 type ChatCompletionCreateParamsBase = OpenAIOrignal.Chat.Completions.ChatCompletionCreateParams
 type MessageCreateParams = AnthropicOriginal.Messages.MessageCreateParams
@@ -35,7 +35,7 @@ export function toContentString(content: unknown): string {
   if (typeof content === 'string') {
     return content
   }
-  if (content !== undefined && content !== null && typeof content === 'object') {
+  if (!isUndefined(content) && !isNull(content) && typeof content === 'object') {
     try {
       return JSON.stringify(content)
     } catch {
@@ -61,7 +61,7 @@ export interface MonitoringEventPropertiesWithDefaults {
 export type MonitoringEventProperties = Partial<MonitoringEventPropertiesWithDefaults>
 
 export type MonitoringParams = {
-  [K in keyof MonitoringEventProperties as `posthog${Capitalize<string & K>}`]: MonitoringEventProperties[K]
+  [K in keyof MonitoringEventProperties as `agrid${Capitalize<string & K>}`]: MonitoringEventProperties[K]
 }
 
 export interface CostOverride {
@@ -99,7 +99,7 @@ export const getModelParams = (
   ] as const
 
   for (const key of paramKeys) {
-    if (key in params && (params as any)[key] !== undefined) {
+    if (key in params && !isUndefined((params as any)[key])) {
       modelParams[key] = (params as any)[key]
     }
   }
@@ -201,7 +201,7 @@ export const formatResponseOpenAI = (response: any): FormattedMessage[] => {
       if (item.type === 'message') {
         role = item.role
 
-        if (item.content && Array.isArray(item.content)) {
+        if (item.content && isArray(item.content)) {
           for (const contentItem of item.content) {
             if (contentItem.type === 'output_text' && contentItem.text) {
               content.push({ type: 'text', text: contentItem.text })
@@ -243,7 +243,7 @@ export const formatResponseOpenAI = (response: any): FormattedMessage[] => {
 export const formatResponseGemini = (response: any): FormattedMessage[] => {
   const output: FormattedMessage[] = []
 
-  if (response.candidates && Array.isArray(response.candidates)) {
+  if (response.candidates && isArray(response.candidates)) {
     for (const candidate of response.candidates) {
       if (candidate.content && candidate.content.parts) {
         const content: FormattedContent = []
@@ -297,12 +297,12 @@ export const mergeSystemPrompt = (params: MessageCreateParams & MonitoringParams
   return params.messages
 }
 
-export const withPrivacyMode = (client: PostHog, privacyMode: boolean, input: any): any => {
+export const withPrivacyMode = (client: Agrid, privacyMode: boolean, input: any): any => {
   return (client as any).privacy_mode || privacyMode ? null : input
 }
 
 function toSafeString(input: unknown): string {
-  if (input === undefined || input === null) {
+  if (isUndefined(input) || isNull(input)) {
     return ''
   }
   if (typeof input === 'string') {
@@ -358,11 +358,11 @@ export function calculateWebSearchCount(result: unknown): number {
 
   // Priority 1: Exact Count
   // Check for OpenAI Responses API web_search_call items
-  if ('output' in result && Array.isArray(result.output)) {
+  if ('output' in result && isArray(result.output)) {
     let count = 0
 
     for (const item of result.output) {
-      if (typeof item === 'object' && item !== null && 'type' in item && item.type === 'web_search_call') {
+      if (typeof item === 'object' && !isNull(item) && 'type' in item && item.type === 'web_search_call') {
         count++
       }
     }
@@ -375,35 +375,35 @@ export function calculateWebSearchCount(result: unknown): number {
   // Priority 2: Binary Detection (1 or 0)
 
   // Check for citations at root level (Perplexity)
-  if ('citations' in result && Array.isArray(result.citations) && result.citations.length > 0) {
+  if ('citations' in result && isArray(result.citations) && result.citations.length > 0) {
     return 1
   }
 
   // Check for search_results at root level (Perplexity via OpenRouter)
-  if ('search_results' in result && Array.isArray(result.search_results) && result.search_results.length > 0) {
+  if ('search_results' in result && isArray(result.search_results) && result.search_results.length > 0) {
     return 1
   }
 
   // Check for usage.search_context_size (Perplexity via OpenRouter)
-  if ('usage' in result && typeof result.usage === 'object' && result.usage !== null) {
+  if ('usage' in result && typeof result.usage === 'object' && !isNull(result.usage)) {
     if ('search_context_size' in result.usage && result.usage.search_context_size) {
       return 1
     }
   }
 
   // Check for annotations with url_citation in choices[].message or choices[].delta (OpenAI/Perplexity)
-  if ('choices' in result && Array.isArray(result.choices)) {
+  if ('choices' in result && isArray(result.choices)) {
     for (const choice of result.choices) {
-      if (typeof choice === 'object' && choice !== null) {
+      if (typeof choice === 'object' && !isNull(choice)) {
         // Check both message (non-streaming) and delta (streaming) for annotations
         const content = ('message' in choice ? choice.message : null) || ('delta' in choice ? choice.delta : null)
 
-        if (typeof content === 'object' && content !== null && 'annotations' in content) {
+        if (typeof content === 'object' && !isNull(content) && 'annotations' in content) {
           const annotations = content.annotations
 
-          if (Array.isArray(annotations)) {
+          if (isArray(annotations)) {
             const hasUrlCitation = annotations.some((ann: unknown) => {
-              return typeof ann === 'object' && ann !== null && 'type' in ann && ann.type === 'url_citation'
+              return typeof ann === 'object' && !isNull(ann) && 'type' in ann && ann.type === 'url_citation'
             })
 
             if (hasUrlCitation) {
@@ -416,19 +416,19 @@ export function calculateWebSearchCount(result: unknown): number {
   }
 
   // Check for annotations in output[].content[] (OpenAI Responses API)
-  if ('output' in result && Array.isArray(result.output)) {
+  if ('output' in result && isArray(result.output)) {
     for (const item of result.output) {
-      if (typeof item === 'object' && item !== null && 'content' in item) {
+      if (typeof item === 'object' && !isNull(item) && 'content' in item) {
         const content = item.content
 
-        if (Array.isArray(content)) {
+        if (isArray(content)) {
           for (const contentItem of content) {
-            if (typeof contentItem === 'object' && contentItem !== null && 'annotations' in contentItem) {
+            if (typeof contentItem === 'object' && !isNull(contentItem) && 'annotations' in contentItem) {
               const annotations = contentItem.annotations
 
-              if (Array.isArray(annotations)) {
+              if (isArray(annotations)) {
                 const hasUrlCitation = annotations.some((ann: unknown) => {
-                  return typeof ann === 'object' && ann !== null && 'type' in ann && ann.type === 'url_citation'
+                  return typeof ann === 'object' && !isNull(ann) && 'type' in ann && ann.type === 'url_citation'
                 })
 
                 if (hasUrlCitation) {
@@ -443,11 +443,11 @@ export function calculateWebSearchCount(result: unknown): number {
   }
 
   // Check for grounding_metadata (Gemini)
-  if ('candidates' in result && Array.isArray(result.candidates)) {
+  if ('candidates' in result && isArray(result.candidates)) {
     for (const candidate of result.candidates) {
       if (
         typeof candidate === 'object' &&
-        candidate !== null &&
+        !isNull(candidate) &&
         'grounding_metadata' in candidate &&
         candidate.grounding_metadata
       ) {
@@ -501,8 +501,8 @@ export enum AIEvent {
   Embedding = '$ai_embedding',
 }
 
-export type SendEventToPosthogParams = {
-  client: PostHog
+export type SendEventToAgridParams = {
+  client: Agrid
   eventType?: AIEvent
   distinctId?: string
   traceId: string
@@ -529,13 +529,13 @@ export type SendEventToPosthogParams = {
 }
 
 function sanitizeValues(obj: any): any {
-  if (obj === undefined || obj === null) {
+  if (isUndefined(obj) || isNull(obj)) {
     return obj
   }
   const jsonSafe = JSON.parse(JSON.stringify(obj))
   if (typeof jsonSafe === 'string') {
     return Buffer.from(jsonSafe, STRING_FORMAT).toString(STRING_FORMAT)
-  } else if (Array.isArray(jsonSafe)) {
+  } else if (isArray(jsonSafe)) {
     return jsonSafe.map(sanitizeValues)
   } else if (jsonSafe && typeof jsonSafe === 'object') {
     return Object.fromEntries(Object.entries(jsonSafe).map(([k, v]) => [k, sanitizeValues(v)]))
@@ -543,30 +543,30 @@ function sanitizeValues(obj: any): any {
   return jsonSafe
 }
 
-const POSTHOG_PARAMS_MAP: Record<keyof MonitoringParams, string> = {
-  posthogDistinctId: 'distinctId',
-  posthogTraceId: 'traceId',
-  posthogProperties: 'properties',
-  posthogPrivacyMode: 'privacyMode',
-  posthogGroups: 'groups',
-  posthogModelOverride: 'modelOverride',
-  posthogProviderOverride: 'providerOverride',
-  posthogCostOverride: 'costOverride',
-  posthogCaptureImmediate: 'captureImmediate',
+const AGRID_PARAMS_MAP: Record<keyof MonitoringParams, string> = {
+  agridDistinctId: 'distinctId',
+  agridTraceId: 'traceId',
+  agridProperties: 'properties',
+  agridPrivacyMode: 'privacyMode',
+  agridGroups: 'groups',
+  agridModelOverride: 'modelOverride',
+  agridProviderOverride: 'providerOverride',
+  agridCostOverride: 'costOverride',
+  agridCaptureImmediate: 'captureImmediate',
 }
 
-export function extractPosthogParams<T>(body: T & MonitoringParams): {
+export function extractAgridParams<T>(body: T & MonitoringParams): {
   providerParams: T
-  posthogParams: MonitoringEventPropertiesWithDefaults
+  agridParams: MonitoringEventPropertiesWithDefaults
 } {
   const providerParams: Record<string, unknown> = {}
-  const posthogParams: Record<string, unknown> = {}
+  const agridParams: Record<string, unknown> = {}
 
   for (const [key, value] of Object.entries(body)) {
-    if (POSTHOG_PARAMS_MAP[key as keyof MonitoringParams]) {
-      posthogParams[POSTHOG_PARAMS_MAP[key as keyof MonitoringParams]] = value
-    } else if (key.startsWith('posthog')) {
-      console.warn(`Unknown Posthog parameter ${key}`)
+    if (AGRID_PARAMS_MAP[key as keyof MonitoringParams]) {
+      agridParams[AGRID_PARAMS_MAP[key as keyof MonitoringParams]] = value
+    } else if (key.startsWith('agrid')) {
+      console.warn(`Unknown Agrid parameter ${key}`)
     } else {
       providerParams[key] = value
     }
@@ -574,7 +574,7 @@ export function extractPosthogParams<T>(body: T & MonitoringParams): {
 
   return {
     providerParams: providerParams as T,
-    posthogParams: addDefaults(posthogParams),
+    agridParams: addDefaults(agridParams),
   }
 }
 
@@ -586,7 +586,7 @@ function addDefaults(params: MonitoringEventProperties): MonitoringEventProperti
   }
 }
 
-export const sendEventToPosthog = async ({
+export const sendEventToAgrid = async ({
   client,
   eventType = AIEvent.Generation,
   distinctId,
@@ -604,7 +604,7 @@ export const sendEventToPosthog = async ({
   error,
   tools,
   captureImmediate = false,
-}: SendEventToPosthogParams): Promise<void> => {
+}: SendEventToAgridParams): Promise<void> => {
   if (!client.capture) {
     return Promise.resolve()
   }
@@ -621,9 +621,9 @@ export const sendEventToPosthog = async ({
     }
   }
   let costOverrideData = {}
-  if (params.posthogCostOverride) {
-    const inputCostUSD = (params.posthogCostOverride.inputCost ?? 0) * (usage.inputTokens ?? 0)
-    const outputCostUSD = (params.posthogCostOverride.outputCost ?? 0) * (usage.outputTokens ?? 0)
+  if (params.agridCostOverride) {
+    const inputCostUSD = (params.agridCostOverride.inputCost ?? 0) * (usage.inputTokens ?? 0)
+    const outputCostUSD = (params.agridCostOverride.outputCost ?? 0) * (usage.outputTokens ?? 0)
     costOverrideData = {
       $ai_input_cost_usd: inputCostUSD,
       $ai_output_cost_usd: outputCostUSD,
@@ -639,21 +639,21 @@ export const sendEventToPosthog = async ({
   }
 
   const properties = {
-    $ai_lib: 'posthog-ai',
+    $ai_lib: 'agrid-ai',
     $ai_lib_version: version,
-    $ai_provider: params.posthogProviderOverride ?? provider,
-    $ai_model: params.posthogModelOverride ?? model,
+    $ai_provider: params.agridProviderOverride ?? provider,
+    $ai_model: params.agridModelOverride ?? model,
     $ai_model_parameters: getModelParams(params),
-    $ai_input: withPrivacyMode(client, params.posthogPrivacyMode ?? false, safeInput),
-    $ai_output_choices: withPrivacyMode(client, params.posthogPrivacyMode ?? false, safeOutput),
+    $ai_input: withPrivacyMode(client, params.agridPrivacyMode ?? false, safeInput),
+    $ai_output_choices: withPrivacyMode(client, params.agridPrivacyMode ?? false, safeOutput),
     $ai_http_status: httpStatus,
     $ai_input_tokens: usage.inputTokens ?? 0,
-    ...(usage.outputTokens !== undefined ? { $ai_output_tokens: usage.outputTokens } : {}),
+    ...(!isUndefined(usage.outputTokens) ? { $ai_output_tokens: usage.outputTokens } : {}),
     ...additionalTokenValues,
     $ai_latency: latency,
     $ai_trace_id: traceId,
     $ai_base_url: baseURL,
-    ...params.posthogProperties,
+    ...params.agridProperties,
     ...(distinctId ? {} : { $process_person_profile: false }),
     ...(tools ? { $ai_tools: tools } : {}),
     ...errorData,
@@ -664,7 +664,7 @@ export const sendEventToPosthog = async ({
     distinctId: distinctId ?? traceId,
     event: eventType,
     properties,
-    groups: params.posthogGroups,
+    groups: params.agridGroups,
   }
 
   if (captureImmediate) {
@@ -685,7 +685,7 @@ export function formatOpenAIResponsesInput(input: unknown, instructions?: string
     })
   }
 
-  if (Array.isArray(input)) {
+  if (isArray(input)) {
     for (const item of input) {
       if (typeof item === 'string') {
         messages.push({ role: 'user', content: item })

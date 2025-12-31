@@ -1,3 +1,4 @@
+/* eslint-disable agrid-js/no-direct-array-check, agrid-js/no-direct-undefined-check, agrid-js/no-direct-function-check, agrid-js/no-direct-number-check, agrid-js/no-direct-null-check */
 import { wrapLanguageModel } from 'ai'
 import type {
   LanguageModelV2,
@@ -7,10 +8,10 @@ import type {
   LanguageModelV2StreamPart,
 } from '@ai-sdk/provider'
 import { v4 as uuidv4 } from 'uuid'
-import { PostHog } from 'agrid-node'
+import { Agrid } from 'agrid-node'
 import {
   CostOverride,
-  sendEventToPosthog,
+  sendEventToAgrid,
   truncate,
   MAX_OUTPUT_SIZE,
   extractAvailableToolCalls,
@@ -22,30 +23,30 @@ import { redactBase64DataUrl } from '../sanitization'
 import { isString } from '../typeGuards'
 
 interface ClientOptions {
-  posthogDistinctId?: string
-  posthogTraceId?: string
-  posthogProperties?: Record<string, any>
-  posthogPrivacyMode?: boolean
-  posthogGroups?: Record<string, any>
-  posthogModelOverride?: string
-  posthogProviderOverride?: string
-  posthogCostOverride?: CostOverride
-  posthogCaptureImmediate?: boolean
+  agridDistinctId?: string
+  agridTraceId?: string
+  agridProperties?: Record<string, any>
+  agridPrivacyMode?: boolean
+  agridGroups?: Record<string, any>
+  agridModelOverride?: string
+  agridProviderOverride?: string
+  agridCostOverride?: CostOverride
+  agridCaptureImmediate?: boolean
 }
 
 interface CreateInstrumentationMiddlewareOptions {
-  posthogDistinctId?: string
-  posthogTraceId?: string
-  posthogProperties?: Record<string, any>
-  posthogPrivacyMode?: boolean
-  posthogGroups?: Record<string, any>
-  posthogModelOverride?: string
-  posthogProviderOverride?: string
-  posthogCostOverride?: CostOverride
-  posthogCaptureImmediate?: boolean
+  agridDistinctId?: string
+  agridTraceId?: string
+  agridProperties?: Record<string, any>
+  agridPrivacyMode?: boolean
+  agridGroups?: Record<string, any>
+  agridModelOverride?: string
+  agridProviderOverride?: string
+  agridCostOverride?: CostOverride
+  agridCaptureImmediate?: boolean
 }
 
-interface PostHogInput {
+interface AgridInput {
   role: string
   type?: string
   content?:
@@ -75,9 +76,9 @@ const mapVercelParams = (params: any): Record<string, any> => {
   }
 }
 
-const mapVercelPrompt = (messages: LanguageModelV2Prompt): PostHogInput[] => {
+const mapVercelPrompt = (messages: LanguageModelV2Prompt): AgridInput[] => {
   // Map and truncate individual content
-  const inputs: PostHogInput[] = messages.map((message) => {
+  const inputs: AgridInput[] = messages.map((message) => {
     let content: any
 
     // Handle system role which has string content
@@ -174,18 +175,18 @@ const mapVercelPrompt = (messages: LanguageModelV2Prompt): PostHogInput[] => {
     if (removedCount > 0) {
       // Add one placeholder to indicate how many were removed
       inputs.unshift({
-        role: 'posthog',
+        role: 'agrid',
         content: `[${removedCount} message${removedCount === 1 ? '' : 's'} removed due to size limit]`,
       })
     }
   } catch (error) {
     console.error('Error stringifying inputs', error)
-    return [{ role: 'posthog', content: 'An error occurred while processing your request. Please try again.' }]
+    return [{ role: 'agrid', content: 'An error occurred while processing your request. Please try again.' }]
   }
   return inputs
 }
 
-const mapVercelOutput = (result: LanguageModelV2Content[]): PostHogInput[] => {
+const mapVercelOutput = (result: LanguageModelV2Content[]): AgridInput[] => {
   const content: OutputContentItem[] = result.map((item) => {
     if (item.type === 'text') {
       return { type: 'text', text: truncate(item.text) }
@@ -264,7 +265,7 @@ const extractProvider = (model: LanguageModelV2): string => {
 }
 
 export const createInstrumentationMiddleware = (
-  phClient: PostHog,
+  phClient: Agrid,
   model: LanguageModelV2,
   options: CreateInstrumentationMiddlewareOptions
 ): LanguageModelV2Middleware => {
@@ -274,8 +275,8 @@ export const createInstrumentationMiddleware = (
       const mergedParams = {
         ...options,
         ...mapVercelParams(params),
-        posthogProperties: {
-          ...options.posthogProperties,
+        agridProperties: {
+          ...options.agridProperties,
           $ai_framework: 'vercel',
         },
       }
@@ -284,8 +285,8 @@ export const createInstrumentationMiddleware = (
       try {
         const result = await doGenerate()
         const modelId =
-          options.posthogModelOverride ?? (result.response?.modelId ? result.response.modelId : model.modelId)
-        const provider = options.posthogProviderOverride ?? extractProvider(model)
+          options.agridModelOverride ?? (result.response?.modelId ? result.response.modelId : model.modelId)
+        const provider = options.agridProviderOverride ?? extractProvider(model)
         const baseURL = '' // cannot currently get baseURL from vercel
         const content = mapVercelOutput(result.content)
         const latency = (Date.now() - startTime) / 1000
@@ -335,13 +336,13 @@ export const createInstrumentationMiddleware = (
           webSearchCount,
           ...additionalTokenValues,
         }
-        await sendEventToPosthog({
+        await sendEventToAgrid({
           client: phClient,
-          distinctId: options.posthogDistinctId,
-          traceId: options.posthogTraceId ?? uuidv4(),
+          distinctId: options.agridDistinctId,
+          traceId: options.agridTraceId ?? uuidv4(),
           model: modelId,
           provider: provider,
-          input: options.posthogPrivacyMode ? '' : mapVercelPrompt(params.prompt),
+          input: options.agridPrivacyMode ? '' : mapVercelPrompt(params.prompt),
           output: content,
           latency,
           baseURL,
@@ -349,19 +350,19 @@ export const createInstrumentationMiddleware = (
           httpStatus: 200,
           usage,
           tools: availableTools,
-          captureImmediate: options.posthogCaptureImmediate,
+          captureImmediate: options.agridCaptureImmediate,
         })
 
         return result
       } catch (error: any) {
         const modelId = model.modelId
-        await sendEventToPosthog({
+        await sendEventToAgrid({
           client: phClient,
-          distinctId: options.posthogDistinctId,
-          traceId: options.posthogTraceId ?? uuidv4(),
+          distinctId: options.agridDistinctId,
+          traceId: options.agridTraceId ?? uuidv4(),
           model: modelId,
           provider: model.provider,
-          input: options.posthogPrivacyMode ? '' : mapVercelPrompt(params.prompt),
+          input: options.agridPrivacyMode ? '' : mapVercelPrompt(params.prompt),
           output: [],
           latency: 0,
           baseURL: '',
@@ -374,7 +375,7 @@ export const createInstrumentationMiddleware = (
           isError: true,
           error: truncate(JSON.stringify(error)),
           tools: availableTools,
-          captureImmediate: options.posthogCaptureImmediate,
+          captureImmediate: options.agridCaptureImmediate,
         })
         throw error
       }
@@ -395,14 +396,14 @@ export const createInstrumentationMiddleware = (
       const mergedParams = {
         ...options,
         ...mapVercelParams(params),
-        posthogProperties: {
-          ...options.posthogProperties,
+        agridProperties: {
+          ...options.agridProperties,
           $ai_framework: 'vercel',
         },
       }
 
-      const modelId = options.posthogModelOverride ?? model.modelId
-      const provider = options.posthogProviderOverride ?? extractProvider(model)
+      const modelId = options.agridModelOverride ?? model.modelId
+      const provider = options.agridProviderOverride ?? extractProvider(model)
       const availableTools = extractAvailableToolCalls('vercel', params)
       const baseURL = '' // cannot currently get baseURL from vercel
 
@@ -555,13 +556,13 @@ export const createInstrumentationMiddleware = (
               webSearchCount,
             }
 
-            await sendEventToPosthog({
+            await sendEventToAgrid({
               client: phClient,
-              distinctId: options.posthogDistinctId,
-              traceId: options.posthogTraceId ?? uuidv4(),
+              distinctId: options.agridDistinctId,
+              traceId: options.agridTraceId ?? uuidv4(),
               model: modelId,
               provider: provider,
-              input: options.posthogPrivacyMode ? '' : mapVercelPrompt(params.prompt),
+              input: options.agridPrivacyMode ? '' : mapVercelPrompt(params.prompt),
               output: output,
               latency,
               baseURL,
@@ -569,7 +570,7 @@ export const createInstrumentationMiddleware = (
               httpStatus: 200,
               usage: finalUsage,
               tools: availableTools,
-              captureImmediate: options.posthogCaptureImmediate,
+              captureImmediate: options.agridCaptureImmediate,
             })
           },
         })
@@ -579,13 +580,13 @@ export const createInstrumentationMiddleware = (
           ...rest,
         }
       } catch (error: any) {
-        await sendEventToPosthog({
+        await sendEventToAgrid({
           client: phClient,
-          distinctId: options.posthogDistinctId,
-          traceId: options.posthogTraceId ?? uuidv4(),
+          distinctId: options.agridDistinctId,
+          traceId: options.agridTraceId ?? uuidv4(),
           model: modelId,
           provider: provider,
-          input: options.posthogPrivacyMode ? '' : mapVercelPrompt(params.prompt),
+          input: options.agridPrivacyMode ? '' : mapVercelPrompt(params.prompt),
           output: [],
           latency: 0,
           baseURL: '',
@@ -598,7 +599,7 @@ export const createInstrumentationMiddleware = (
           isError: true,
           error: truncate(JSON.stringify(error)),
           tools: availableTools,
-          captureImmediate: options.posthogCaptureImmediate,
+          captureImmediate: options.agridCaptureImmediate,
         })
         throw error
       }
@@ -610,14 +611,14 @@ export const createInstrumentationMiddleware = (
 
 export const wrapVercelLanguageModel = (
   model: LanguageModelV2,
-  phClient: PostHog,
+  phClient: Agrid,
   options: ClientOptions
 ): LanguageModelV2 => {
-  const traceId = options.posthogTraceId ?? uuidv4()
+  const traceId = options.agridTraceId ?? uuidv4()
   const middleware = createInstrumentationMiddleware(phClient, model, {
     ...options,
-    posthogTraceId: traceId,
-    posthogDistinctId: options.posthogDistinctId,
+    agridTraceId: traceId,
+    agridDistinctId: options.agridDistinctId,
   })
 
   const wrappedModel = wrapLanguageModel({

@@ -22,7 +22,7 @@ describe(`Module-based loader in Node env`, () => {
                 siteApps: [],
             },
         } as any
-        // assignableWindow.__PosthogExtensions__ = {}
+        // assignableWindow.__AgridExtensions__ = {}
 
         jest.useFakeTimers()
         jest.spyOn(agrid, '_send_request').mockReturnValue()

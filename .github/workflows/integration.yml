@@ -3,7 +3,7 @@ on: [pull_request]
 env:
   POSTHOG_PROJECT_KEY: "${{ secrets.POSTHOG_PROJECT_KEY }}"
   POSTHOG_API_KEY: "${{ secrets.POSTHOG_API_KEY }}"
-  POSTHOG_API_HOST: https://us.i.posthog.com
+  POSTHOG_API_HOST: https://us.i.agrid.com
   POSTHOG_API_PROJECT: 11213
 
 permissions:
@@ -46,7 +46,7 @@ jobs:
       - uses: ./.github/actions/is-affected
         id: is-affected
         with:
-          package-name: posthog-js
+          package-name: agrid-js
 
       - name: Build packages
         if: ${{ steps.is-affected.outputs.is-affected == 'true' }}

@@ -1,5 +1,5 @@
-import { FeatureFlagCondition, FlagProperty, FlagPropertyValue, PostHogFeatureFlag, PropertyGroup } from '../../types'
-import type { FeatureFlagValue, JsonType, PostHogFetchOptions, PostHogFetchResponse } from '@agrid/core'
+import { FeatureFlagCondition, FlagProperty, FlagPropertyValue, AgridFeatureFlag, PropertyGroup } from '../../types'
+import type { FeatureFlagValue, JsonType, AgridFetchOptions, AgridFetchResponse } from '@agrid/core'
 import { safeSetTimeout } from '@agrid/core'
 import { hashSHA1 } from './crypto'
 
@@ -49,7 +49,7 @@ type FeatureFlagsPollerOptions = {
   host: string
   pollingInterval: number
   timeout?: number
-  fetch?: (url: string, options: PostHogFetchOptions) => Promise<PostHogFetchResponse>
+  fetch?: (url: string, options: AgridFetchOptions) => Promise<AgridFetchResponse>
   onError?: (error: Error) => void
   onLoad?: (count: number) => void
   customHeaders?: { [key: string]: string }
@@ -59,15 +59,15 @@ class FeatureFlagsPoller {
   pollingInterval: number
   personalApiKey: string
   projectApiKey: string
-  featureFlags: Array<PostHogFeatureFlag>
-  featureFlagsByKey: Record<string, PostHogFeatureFlag>
+  featureFlags: Array<AgridFeatureFlag>
+  featureFlagsByKey: Record<string, AgridFeatureFlag>
   groupTypeMapping: Record<string, string>
   cohorts: Record<string, PropertyGroup>
   loadedSuccessfullyOnce: boolean
   timeout?: number
   host: FeatureFlagsPollerOptions['host']
   poller?: NodeJS.Timeout
-  fetch: (url: string, options: PostHogFetchOptions) => Promise<PostHogFetchResponse>
+  fetch: (url: string, options: AgridFetchOptions) => Promise<AgridFetchResponse>
   debugMode: boolean = false
   onError?: (error: Error) => void
   customHeaders?: { [key: string]: string }
@@ -119,7 +119,9 @@ class FeatureFlagsPoller {
     personProperties: Record<string, string> = {},
     groupProperties: Record<string, Record<string, string>> = {}
   ): Promise<FeatureFlagValue | undefined> {
-    await this.loadFeatureFlags()
+    if (!this.loadedSuccessfullyOnce) {
+      await this.loadFeatureFlags()
+    }
 
     let response: FeatureFlagValue | undefined = undefined
     let featureFlag = undefined
@@ -208,7 +210,7 @@ class FeatureFlagsPoller {
   }
 
   async computeFlagAndPayloadLocally(
-    flag: PostHogFeatureFlag,
+    flag: AgridFeatureFlag,
     distinctId: string,
     groups: Record<string, string> = {},
     personProperties: Record<string, string> = {},
@@ -252,7 +254,7 @@ class FeatureFlagsPoller {
   }
 
   private async computeFlagValueLocally(
-    flag: PostHogFeatureFlag,
+    flag: AgridFeatureFlag,
     distinctId: string,
     groups: Record<string, string> = {},
     personProperties: Record<string, string> = {},
@@ -419,7 +421,7 @@ class FeatureFlagsPoller {
   }
 
   async matchFeatureFlagProperties(
-    flag: PostHogFeatureFlag,
+    flag: AgridFeatureFlag,
     distinctId: string,
     properties: Record<string, string>,
     evaluationCache: Record<string, FeatureFlagValue> = {}
@@ -467,7 +469,7 @@ class FeatureFlagsPoller {
   }
 
   async isConditionMatch(
-    flag: PostHogFeatureFlag,
+    flag: AgridFeatureFlag,
     distinctId: string,
     condition: FeatureFlagCondition,
     properties: Record<string, string>,
@@ -507,7 +509,7 @@ class FeatureFlagsPoller {
     return true
   }
 
-  async getMatchingVariant(flag: PostHogFeatureFlag, distinctId: string): Promise<FeatureFlagValue | undefined> {
+  async getMatchingVariant(flag: AgridFeatureFlag, distinctId: string): Promise<FeatureFlagValue | undefined> {
     const hashValue = await _hash(flag.key, distinctId, 'variant')
     const matchingVariant = this.variantLookupTable(flag).find((variant) => {
       return hashValue >= variant.valueMin && hashValue < variant.valueMax
@@ -519,7 +521,7 @@ class FeatureFlagsPoller {
     return undefined
   }
 
-  variantLookupTable(flag: PostHogFeatureFlag): { valueMin: number; valueMax: number; key: string }[] {
+  variantLookupTable(flag: AgridFeatureFlag): { valueMin: number; valueMax: number; key: string }[] {
     const lookupTable: { valueMin: number; valueMax: number; key: string }[] = []
     let valueMin = 0
     let valueMax = 0
@@ -599,13 +601,13 @@ class FeatureFlagsPoller {
           this.shouldBeginExponentialBackoff = true
           this.backOffCount += 1
           throw new ClientError(
-            `Your project key or personal API key is invalid. Setting next polling interval to ${this.getPollingInterval()}ms. More information: https://posthog.com/docs/api#rate-limiting`
+            `Your project key or personal API key is invalid. Setting next polling interval to ${this.getPollingInterval()}ms. More information: https://agrid.com/docs/api#rate-limiting`
           )
 
         case 402:
           // Quota exceeded - clear all flags
           console.warn(
-            '[FEATURE FLAGS] Feature flags quota limit exceeded - unsetting all local flags. Learn more about billing limits at https://posthog.com/docs/billing/limits-alerts'
+            '[FEATURE FLAGS] Feature flags quota limit exceeded - unsetting all local flags. Learn more about billing limits at https://agrid.com/docs/billing/limits-alerts'
           )
           this.featureFlags = []
           this.featureFlagsByKey = {}
@@ -618,7 +620,7 @@ class FeatureFlagsPoller {
           this.shouldBeginExponentialBackoff = true
           this.backOffCount += 1
           throw new ClientError(
-            `Your personal API key does not have permission to fetch feature flag definitions for local evaluation. Setting next polling interval to ${this.getPollingInterval()}ms. Are you sure you're using the correct personal and Project API key pair? More information: https://posthog.com/docs/api/overview`
+            `Your personal API key does not have permission to fetch feature flag definitions for local evaluation. Setting next polling interval to ${this.getPollingInterval()}ms. Are you sure you're using the correct personal and Project API key pair? More information: https://agrid.com/docs/api/overview`
           )
 
         case 429:
@@ -626,7 +628,7 @@ class FeatureFlagsPoller {
           this.shouldBeginExponentialBackoff = true
           this.backOffCount += 1
           throw new ClientError(
-            `You are being rate limited. Setting next polling interval to ${this.getPollingInterval()}ms. More information: https://posthog.com/docs/api#rate-limiting`
+            `You are being rate limited. Setting next polling interval to ${this.getPollingInterval()}ms. More information: https://agrid.com/docs/api#rate-limiting`
           )
 
         case 200: {
@@ -637,10 +639,10 @@ class FeatureFlagsPoller {
             return
           }
 
-          this.featureFlags = (responseJson.flags as PostHogFeatureFlag[]) ?? []
+          this.featureFlags = (responseJson.flags as AgridFeatureFlag[]) ?? []
           this.featureFlagsByKey = this.featureFlags.reduce(
             (acc, curr) => ((acc[curr.key] = curr), acc),
-            <Record<string, PostHogFeatureFlag>>{}
+            <Record<string, AgridFeatureFlag>>{}
           )
           this.groupTypeMapping = (responseJson.group_type_mapping as Record<string, string>) || {}
           this.cohorts = (responseJson.cohorts as Record<string, PropertyGroup>) || {}
@@ -663,7 +665,7 @@ class FeatureFlagsPoller {
     }
   }
 
-  private getPersonalApiKeyRequestOptions(method: 'GET' | 'POST' | 'PUT' | 'PATCH' = 'GET'): PostHogFetchOptions {
+  private getPersonalApiKeyRequestOptions(method: 'GET' | 'POST' | 'PUT' | 'PATCH' = 'GET'): AgridFetchOptions {
     return {
       method,
       headers: {
@@ -674,7 +676,7 @@ class FeatureFlagsPoller {
     }
   }
 
-  async _requestFeatureFlagDefinitions(): Promise<PostHogFetchResponse> {
+  async _requestFeatureFlagDefinitions(): Promise<AgridFetchResponse> {
     const url = `${this.host}/api/feature_flag/local_evaluation?token=${this.projectApiKey}&send_cohorts`
 
     const options = this.getPersonalApiKeyRequestOptions()

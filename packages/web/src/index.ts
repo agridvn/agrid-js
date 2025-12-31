@@ -1,5 +1,5 @@
-import { PostHog } from './posthog-web'
+import { AgridWeb } from './agrid-web'
 
-export default PostHog
+export default AgridWeb
 
-export * from './posthog-web'
+export * from './agrid-web'

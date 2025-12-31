@@ -1,4 +1,4 @@
-import { PostHogV2FlagsResponse } from '@agrid/core'
+import { AgridV2FlagsResponse } from '@agrid/core'
 import util from 'util'
 
 type ErrorResponse = {
@@ -6,7 +6,7 @@ type ErrorResponse = {
   json: () => Promise<any>
 }
 
-export const apiImplementationV4 = (flagsResponse: PostHogV2FlagsResponse | ErrorResponse) => {
+export const apiImplementationV4 = (flagsResponse: AgridV2FlagsResponse | ErrorResponse) => {
   return (url: any): Promise<any> => {
     if ((url as any).includes('/flags/?v=2&config=true')) {
       // Check if the response is a flags response or an error response

@@ -7,7 +7,3 @@ export const AgridContext = createContext<{ client: Agrid; bootstrap?: Bootstrap
     client: agridJs,
     bootstrap: undefined,
 })
-
-// Backward compatibility aliases
-export type PostHog = Agrid
-export const PostHogContext = AgridContext
