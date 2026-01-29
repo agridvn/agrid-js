@@ -1,9 +1,5 @@
 <p align="center">
-  <img alt="Agrid Logo" src="https://user-images.githubusercontent.com/65415371/205059737-c8a4f836-4889-4654-902e-f302b187b6a0.png" width="200">
-</p>
-
-<p align="center">
-  <strong>Library for tracking user behavior on the web - Agrid JS — Product Analytics & Feature Flags SDK</strong>
+  <strong>Thư viện theo dõi hành vi người dùng trên Web - Agrid JS — SDK Phân Tích Sản Phẩm & Cờ Tính Năng</strong>
 </p>
 
 <p align="center">
@@ -22,22 +18,22 @@
 </p>
 
 <p align="center">
-  <a href="#-quick-start">Quick Start</a> •
-  <a href="#-installation-guide">Installation Guide</a> •
-  <a href="#-packages">Packages</a> •
-  <a href="#-usage-examples">Usage Examples</a> •
-  <a href="#-development">Development</a>
+  <a href="#-bắt-đầu-nhanh">Bắt đầu nhanh</a> •
+  <a href="#-hướng-dẫn-cài-đặt">Hướng dẫn cài đặt</a> •
+  <a href="#-các-gói">Các gói</a> •
+  <a href="#-ví-dụ-sử-dụng">Ví dụ sử dụng</a> •
+  <a href="#-phát-triển">Phát triển</a>
 </p>
 
 ---
 
-# Library for tracking user behavior on the web - Agrid JS
+# Thư viện theo dõi hành vi người dùng trên Web - Agrid JS
 
-Library for tracking user behavior on the web - Agrid JS is a comprehensive JavaScript SDK for product analytics, feature flags, session recording, heatmaps, surveys, and more. This monorepo contains multiple packages to integrate Agrid across Browser, Node.js, React, React Native, Nuxt, and NextJS.
+**Thư viện theo dõi hành vi người dùng trên Web - Agrid JS** là bộ SDK JavaScript toàn diện cho phân tích sản phẩm, cờ tính năng, ghi lại phiên, bản đồ nhiệt, khảo sát và nhiều hơn nữa. Monorepo này chứa nhiều gói để tích hợp Agrid trên Trình duyệt (Browser), Node.js, React, React Native, Nuxt và NextJS.
 
-## 🚀 Quick Start
+## 🚀 Bắt đầu nhanh
 
-### JavaScript (Browser)
+### JavaScript (Trình duyệt)
 
 ```html
 <script>
@@ -97,71 +93,76 @@ client.capture({
 
 ---
 
-## 🧩 Installation Guide
+## 🧩 Hướng dẫn cài đặt
 
-### Browser (primary SDK `agrid-js`)
-- Install: `npm install agrid-js`
-- Initialize with `agrid.init(apiKey, { api_host })` as shown above.
-- Supports autocapture, feature flags, session recording, heatmaps, surveys.
+### Trình duyệt (SDK chính `agrid-js`)
+
+- Cài đặt: `npm install agrid-js`
+- Khởi tạo với `agrid.init(apiKey, { api_host })` như ví dụ trên.
+- Hỗ trợ tự động thu thập (autocapture), cờ tính năng, ghi phiên, bản đồ nhiệt, khảo sát.
 
 ### React (`@agrid/react`)
-- Install: `npm install agrid-js @agrid/react`
-- Wrap your app with `AgridProvider` and use hooks `useAgrid`, `useFeatureFlagEnabled`.
-- Requires `react >= 16.8.0` and a compatible `agrid-js` per peer dependencies.
+
+- Cài đặt: `npm install agrid-js @agrid/react`
+- Bọc ứng dụng của bạn với `AgridProvider` và sử dụng các hook `useAgrid`, `useFeatureFlagEnabled`.
+- Yêu cầu `react >= 16.8.0` và phiên bản `agrid-js` tương thích theo peer dependencies.
 
 ### Node.js (`agrid-node`)
-- Install: `npm install agrid-node`
-- Requires `node >= 20`.
-- Use the `Agrid` client to send server-side events, feature flags, and identification.
 
-
-
+- Cài đặt: `npm install agrid-node`
+- Yêu cầu `node >= 20`.
+- Sử dụng client `Agrid` để gửi sự kiện phía server, cờ tính năng và định danh.
 
 ### Lite (`agrid-js-lite`)
-- Install: `npm install agrid-js-lite`
-- Optimized for bundle size; supports core analytics and feature flags.
+
+- Cài đặt: `npm install agrid-js-lite`
+- Tối ưu hóa kích thước gói; hỗ trợ các tính năng phân tích cốt lõi và cờ tính năng.
 
 ### Nuxt (`@agrid/nuxt`)
-- Install: `npm install @agrid/nuxt`
-- Register the module in `nuxt.config.ts` and configure `apiKey`, `apiHost`.
-- Internally relies on `agrid-js`/`agrid-node` depending on context.
+
+- Cài đặt: `npm install @agrid/nuxt`
+- Đăng ký module trong `nuxt.config.ts` và cấu hình `apiKey`, `apiHost`.
+- Bên trong dựa vào `agrid-js`/`agrid-node` tùy thuộc vào ngữ cảnh.
 
 ### Next.js Config (`@agrid/nextjs-config`)
-- Install: `npm install @agrid/nextjs-config`
-- Helps configure NextJS for analytics/feature flags and CLI version checks.
+
+- Cài đặt: `npm install @agrid/nextjs-config`
+- Giúp cấu hình NextJS cho phân tích/cờ tính năng và kiểm tra phiên bản CLI.
 
 ### AI (`@agrid/ai`)
-- Install: `npm install @agrid/ai`
-- Peer requirement: `agrid-node ^5.0.0`.
-- Integrations for OpenAI, Anthropic, Gemini, LangChain, and Vercel AI SDK.
+
+- Cài đặt: `npm install @agrid/ai`
+- Yêu cầu peer: `agrid-node ^5.0.0`.
+- Tích hợp cho OpenAI, Anthropic, Gemini, LangChain và Vercel AI SDK.
 
 ### Internal Core (`@agrid/core`)
-- Install: `npm install @agrid/core`
-- Shared core used by multiple SDKs; typically not needed directly unless for advanced use.
 
-### Using pnpm/yarn
+- Cài đặt: `npm install @agrid/core`
+- Core dùng chung cho nhiều SDK; thường không cần dùng trực tiếp trừ khi cho mục đích nâng cao.
 
-- pnpm: `pnpm add <package-name>`
-- yarn: `yarn add <package-name>`
+### Sử dụng pnpm/yarn
+
+- pnpm: `pnpm add <tên-gói>`
+- yarn: `yarn add <tên-gói>`
 
 ---
 
 ## 📦 Packages
 
-- `agrid-js` (Browser SDK) — full-featured browser integration
-- `agrid-js-lite` (Lite SDK) — smaller bundle, core functionality
-- `agrid-node` (Node.js SDK) — server-side analytics and flags
-- `@agrid/react` (React SDK) — provider and hooks
-- `@agrid/core` (Core) — shared core functionality
-- `@agrid/nuxt` (Nuxt Module) — Nuxt 3/4 integration
-- `@agrid/nextjs-config` (NextJS Config) — NextJS configuration helper
-- `@agrid/ai` (AI Integration) — Node.js AI integrations
+- `agrid-js` (Browser SDK) — tích hợp trình duyệt đầy đủ tính năng
+- `agrid-js-lite` (Lite SDK) — gói nhỏ gọn, chức năng cốt lõi
+- `agrid-node` (Node.js SDK) — phân tích và cờ phía server
+- `@agrid/react` (React SDK) — provider và hooks
+- `@agrid/core` (Core) — chức năng cốt lõi dùng chung
+- `@agrid/nuxt` (Nuxt Module) — tích hợp Nuxt 3/4
+- `@agrid/nextjs-config` (NextJS Config) — trợ giúp cấu hình NextJS
+- `@agrid/ai` (AI Integration) — tích hợp AI cho Node.js
 
 ---
 
 ## 💡 Usage Examples
 
-### Track Events
+### Theo dõi sự kiện (Track Events)
 
 ```javascript
 agrid.capture('button_clicked', {
@@ -177,7 +178,7 @@ agrid.capture('purchase_completed', {
 })
 ```
 
-### Identify Users
+### Định danh người dùng (Identify Users)
 
 ```javascript
 agrid.identify('user_123', {
@@ -187,16 +188,16 @@ agrid.identify('user_123', {
 })
 ```
 
-### Feature Flags
+### Cờ tính năng (Feature Flags)
 
 ```javascript
 if (agrid.isFeatureEnabled('new-checkout-flow')) {
-  // Show the new checkout flow
+  // Hiển thị quy trình thanh toán mới
 }
 
 const buttonColor = agrid.getFeatureFlag('button-color')
 if (buttonColor === 'blue') {
-  // Use a blue button
+  // Sử dụng nút màu xanh
 }
 ```
 
@@ -226,9 +227,9 @@ function MyComponent() {
 
 ## 🏗️ Development
 
-### Prerequisites
+### Yêu cầu tiên quyết
 
-- Node.js `v22.17.1` (see `.nvmrc`)
+- Node.js `v22.17.1` (xem `.nvmrc`)
 - pnpm `@10.12.4`
 - TypeScript `5.8.2`
 
@@ -241,7 +242,7 @@ pnpm test
 pnpm lint
 ```
 
-### Workflow
+### Quy trình làm việc
 
 ```bash
 pnpm dev
@@ -249,29 +250,30 @@ pnpm --filter=agrid-js build
 pnpm --filter=agrid-js test:unit
 ```
 
-See also: [AGENTS.md](./AGENTS.md), [CONTRIBUTING.md](./CONTRIBUTING.md).
+Xem thêm: [AGENTS.md](./AGENTS.md), [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ---
 
 ## 📄 License
 
-MIT — see [LICENSE](./LICENSE).
+MIT — xem [LICENSE](./LICENSE).
 
 ---
 
 ## 🔗 Links
 
 - Website: https://agrid.vn
-- Documentation: https://github.com/agridvn/agrid-js#readme
+- Tài liệu: https://github.com/agridvn/agrid-js#readme
 - GitHub: https://github.com/agridvn/agrid-js
 - npm: https://www.npmjs.com/package/agrid-js
 - Issues: https://github.com/agridvn/agrid-js/issues
 
 ---
 
-## 🙏 Acknowledgments
-Library for tracking user behavior on the web - Agrid JS is a fork of [PostHog JS](https://github.com/PostHog/posthog-js), adapted for the Agrid platform.
+## 🙏 Lời cảm ơn
+
+Thư viện theo dõi hành vi người dùng trên Web - Agrid JS là bản fork của [PostHog JS](https://github.com/PostHog/posthog-js), được điều chỉnh cho nền tảng Agrid.
 
 <p align="center">
-  Made with ❤️ by the Agrid team
+  Được làm với ❤️ bởi đội ngũ Agrid
 </p>
