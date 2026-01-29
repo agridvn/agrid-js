@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Agrid JS — Product Analytics & Feature Flags SDK</strong>
+  <strong>Library for tracking user behavior on the web - Agrid JS — Product Analytics & Feature Flags SDK</strong>
 </p>
 
 <p align="center">
@@ -31,9 +31,9 @@
 
 ---
 
-# Agrid JS
+# Library for tracking user behavior on the web - Agrid JS
 
-**Agrid JS** is a comprehensive JavaScript SDK for product analytics, feature flags, session recording, heatmaps, surveys, and more. This monorepo contains multiple packages to integrate Agrid across Browser, Node.js, React, React Native, Nuxt, and NextJS.
+Library for tracking user behavior on the web - Agrid JS is a comprehensive JavaScript SDK for product analytics, feature flags, session recording, heatmaps, surveys, and more. This monorepo contains multiple packages to integrate Agrid across Browser, Node.js, React, React Native, Nuxt, and NextJS.
 
 ## 🚀 Quick Start
 
@@ -100,19 +100,16 @@ client.capture({
 ## 🧩 Installation Guide
 
 ### Browser (primary SDK `agrid-js`)
-
 - Install: `npm install agrid-js`
 - Initialize with `agrid.init(apiKey, { api_host })` as shown above.
 - Supports autocapture, feature flags, session recording, heatmaps, surveys.
 
 ### React (`@agrid/react`)
-
 - Install: `npm install agrid-js @agrid/react`
 - Wrap your app with `AgridProvider` and use hooks `useAgrid`, `useFeatureFlagEnabled`.
 - Requires `react >= 16.8.0` and a compatible `agrid-js` per peer dependencies.
 
 ### Node.js (`agrid-node`)
-
 - Install: `npm install agrid-node`
 - Requires `node >= 20`.
 - Use the `Agrid` client to send server-side events, feature flags, and identification.
@@ -121,29 +118,24 @@ client.capture({
 
 
 ### Lite (`agrid-js-lite`)
-
 - Install: `npm install agrid-js-lite`
 - Optimized for bundle size; supports core analytics and feature flags.
 
 ### Nuxt (`@agrid/nuxt`)
-
 - Install: `npm install @agrid/nuxt`
 - Register the module in `nuxt.config.ts` and configure `apiKey`, `apiHost`.
 - Internally relies on `agrid-js`/`agrid-node` depending on context.
 
 ### Next.js Config (`@agrid/nextjs-config`)
-
 - Install: `npm install @agrid/nextjs-config`
 - Helps configure NextJS for analytics/feature flags and CLI version checks.
 
 ### AI (`@agrid/ai`)
-
 - Install: `npm install @agrid/ai`
 - Peer requirement: `agrid-node ^5.0.0`.
 - Integrations for OpenAI, Anthropic, Gemini, LangChain, and Vercel AI SDK.
 
 ### Internal Core (`@agrid/core`)
-
 - Install: `npm install @agrid/core`
 - Shared core used by multiple SDKs; typically not needed directly unless for advanced use.
 
@@ -278,8 +270,7 @@ MIT — see [LICENSE](./LICENSE).
 ---
 
 ## 🙏 Acknowledgments
-
-Agrid JS is a fork of [PostHog JS](https://github.com/PostHog/posthog-js), adapted for the Agrid platform.
+Library for tracking user behavior on the web - Agrid JS is a fork of [PostHog JS](https://github.com/PostHog/posthog-js), adapted for the Agrid platform.
 
 <p align="center">
   Made with ❤️ by the Agrid team

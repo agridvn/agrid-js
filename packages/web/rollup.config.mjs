@@ -21,7 +21,7 @@ configs.push({
       format: `es`,
     },
   ],
-  
+
   external: external(packageJson),
   plugins: plugins(extensions),
 })
