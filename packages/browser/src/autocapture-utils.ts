@@ -3,7 +3,7 @@ import { each, entries } from './utils'
 
 import { isNullish, isString, isUndefined, isArray, isBoolean } from '@agrid/core'
 import { logger } from './utils/logger'
-import { window } from './utils/globals'
+import { window, document } from './utils/globals'
 import { isDocumentFragment, isElementNode, isTag, isTextNode } from './utils/element-utils'
 import { includes, trim } from '@agrid/core'
 
@@ -112,6 +112,9 @@ export function getEventTarget(e: Event): Element | null {
     } else {
         if ((e.target as HTMLElement)?.shadowRoot) {
             return (e.composedPath()[0] as Element) || null
+        }
+        if (e.target === document) {
+            return document.documentElement
         }
         return (e.target as Element) || null
     }
@@ -292,7 +295,7 @@ export function shouldCaptureDomEvent(
     const tag = el.tagName.toLowerCase()
     switch (tag) {
         case 'html':
-            return false
+            return !!(event.type === 'scroll')
         case 'form':
             return (allowedEventTypes || ['submit']).indexOf(event.type) >= 0
         case 'input':

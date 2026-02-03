@@ -1,17 +1,17 @@
 {
     "name": "agrid-js",
-    "version": "1.292.16",
+    "version": "1.292.17",
     "description": "Agrid JS allows you to automatically capture usage and send events to Agrid.",
     "repository": {
         "type": "git",
         "url": "https://github.com/agridvn/agrid-js.git",
         "directory": "packages/browser"
     },
-  "author": {
-    "name": "Agrid",
-    "email": "info@agrid.vn",
-    "url": "https://agrid.vn"
-  },
+    "author": {
+        "name": "Agrid",
+        "email": "info@agrid.vn",
+        "url": "https://agrid.vn"
+    },
     "license": "MIT",
     "homepage": "https://github.com/agridvn/agrid-js#readme",
     "keywords": [

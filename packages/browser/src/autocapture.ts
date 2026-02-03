@@ -274,6 +274,7 @@ export class Autocapture {
         addEventListener(document, 'submit', handler, { capture: true })
         addEventListener(document, 'change', handler, { capture: true })
         addEventListener(document, 'click', handler, { capture: true })
+        addEventListener(document, 'scroll', handler, { capture: true })
 
         if (this._config.capture_copied_text) {
             const copiedTextHandler = (e: Event) => {
@@ -381,7 +382,7 @@ export class Autocapture {
                 isCopyAutocapture,
                 // we also don't want to restrict copy checks to clicks,
                 // so we pass that knowledge in here, rather than add the logic inside the check
-                isCopyAutocapture ? ['copy', 'cut'] : undefined
+                isCopyAutocapture ? ['copy', 'cut'] : e.type === 'scroll' ? ['scroll'] : undefined
             )
         ) {
             const { props, explicitNoCapture } = autocapturePropertiesForElement(target, {
