@@ -181,10 +181,12 @@ agrid.capture('purchase_completed', {
 ### Định danh người dùng (Identify Users)
 
 ```javascript
-agrid.identify('user_123', {
-  email: 'user@example.com',
+agrid.identify('0908888888', {
+  phone: '0908888888',
   name: 'John Doe',
-  plan: 'premium'
+  email: 'sample@email.com',
+  address: '173 - 179 đường Trương Văn Bang, phường Cát Lái, Thành phố Hồ Chí Minh.',
+  other_info: 'Some other information'
 })
 ```
 
