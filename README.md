@@ -183,8 +183,8 @@ agrid.capture('purchase_completed', {
 ```javascript
 agrid.identify('0908888888', {
   phone: '0908888888',
-  name: 'John Doe',
-  email: 'sample@email.com',
+  name: 'Nguyễn Văn A',
+  email: 'nguyen_van_a@email.com',
   address: '173 - 179 đường Trương Văn Bang, phường Cát Lái, Thành phố Hồ Chí Minh.',
   other_info: 'Some other information'
 })
