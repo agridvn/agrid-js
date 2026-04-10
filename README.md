@@ -179,7 +179,7 @@ agrid.capture('purchase_completed', {
 ```
 
 ### Định danh người dùng (Identify Users)
-
+- Định danh khi người dùng đăng nhập hoặc gửi form liên hệ
 ```javascript
 agrid.identify('0908888888', {
   phone: '0908888888',
