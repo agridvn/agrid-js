@@ -179,7 +179,7 @@ agrid.capture('purchase_completed', {
 ```
 
 ### Định danh người dùng (Identify Users)
-- Định danh khi người dùng đăng nhập hoặc gửi form liên hệ
+- Định danh khi người dùng đăng nhập hoặc gửi form liên hệ:
 ```javascript
 agrid.identify('0908888888', {
   phone: '0908888888',
@@ -188,6 +188,10 @@ agrid.identify('0908888888', {
   address: '173 - 179 đường Trương Văn Bang, phường Cát Lái, Thành phố Hồ Chí Minh.',
   other_info: 'Some other information'
 })
+```
+- Reset thông tin định danh khi người dùng đăng xuất:
+```javascript
+agrid.reset()
 ```
 
 ### Cờ tính năng (Feature Flags)
